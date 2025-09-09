@@ -431,6 +431,40 @@ const mockClaims: Claim[] = [
         eftCheckDate: "",
         priced: ""
       }
+    },
+    claimHeaderInfo: {
+      generalClaimData: {
+        serviceFromDate: "08/03/2023",
+        serviceToDate: "08/03/2023",
+        assignmentOfBenefits: "Y",
+        providerParticipation: "PAR",
+        providerContract: "CEPMS0",
+        treatmentAuth: "-",
+        patientAccount: "N41127.23297",
+        emergency: "No",
+        employment: "No",
+        coveredZipRadius: "-",
+        frequency: "-",
+        bbiIndicator: "-",
+        pciIndicator: "-",
+        fsbInd: "None",
+        fsbExclusion: "X",
+      },
+      benefitIndicators: {
+        cob: "No",
+        cobRule: "-",
+        medInd: "No",
+        medicareAdvantage: "Yes",
+        cdhp: "N",
+        planPayer: "N",
+        cobPercentage: "0",
+      },
+      diagnosisCodes: {
+        dx1: "G800",
+        dx2: "0",
+        dx3: "0",
+        medRule: "-",
+      },
     }
   },
   {
