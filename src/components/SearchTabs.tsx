@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ClaimImage from "./ClaimImage";
+import Member from "./Member";
 import { SearchData } from "@/services/claimsService";
 
 interface SearchTabsProps {
@@ -39,13 +40,7 @@ const SearchTabs = ({ searchData }: SearchTabsProps) => {
           </TabsContent>
 
           <TabsContent value="member">
-            <Card>
-              <CardContent className="p-6">
-                <div className="text-muted-foreground">
-                  Member sub-tab content will be added in the next phase.
-                </div>
-              </CardContent>
-            </Card>
+            <Member />
           </TabsContent>
 
           <TabsContent value="pricing">
