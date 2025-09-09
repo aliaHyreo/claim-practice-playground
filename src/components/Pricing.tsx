@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RefreshCw } from "lucide-react";
 
 interface PricingData {
@@ -22,7 +21,6 @@ interface PricingProps {
 }
 
 const Pricing = ({ pricingData }: PricingProps) => {
-  const [selectedAction, setSelectedAction] = useState<string>("");
   const [claimLines, setClaimLines] = useState(
     pricingData?.claimLines || [
       {
@@ -58,12 +56,6 @@ const Pricing = ({ pricingData }: PricingProps) => {
         writeOff: 200
       }
     ]);
-    setSelectedAction("");
-  };
-
-  const handleSubmit = () => {
-    console.log("Submitting action:", selectedAction);
-    // Handle submission logic here
   };
 
   return (
@@ -152,31 +144,7 @@ const Pricing = ({ pricingData }: PricingProps) => {
       </div>
 
       {/* Action Buttons Section */}
-      <div className="flex justify-between items-center">
-        {/* Action Dropdown and Submit */}
-        <div className="flex items-center gap-3">
-          <Select value={selectedAction} onValueChange={setSelectedAction}>
-            <SelectTrigger className="w-40 bg-orange-100 border-orange-200 text-orange-800 font-medium hover:bg-orange-200">
-              <SelectValue placeholder="Find items" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="pay">Pay</SelectItem>
-              <SelectItem value="deny">Deny</SelectItem>
-              <SelectItem value="pend">Pend</SelectItem>
-              <SelectItem value="route">Route</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          {selectedAction && (
-            <Button 
-              onClick={handleSubmit}
-              className="bg-orange-600 hover:bg-orange-700 text-white"
-            >
-              Submit
-            </Button>
-          )}
-        </div>
-
+      <div className="flex justify-end items-center">
         {/* Pricing Action Buttons */}
         <div className="flex gap-3">
           <Button

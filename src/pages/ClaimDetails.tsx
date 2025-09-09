@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, RefreshCw } from "lucide-react";
 import { ClaimsService, type Claim } from "@/services/claimsService";
 import { useToast } from "@/hooks/use-toast";
@@ -22,6 +23,7 @@ const ClaimDetails = () => {
   const { toast } = useToast();
   const [claim, setClaim] = useState<Claim | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [selectedAction, setSelectedAction] = useState<string>("");
 
   useEffect(() => {
     if (dcn) {
@@ -59,6 +61,16 @@ const ClaimDetails = () => {
 
   const getEditBadgeVariant = (edit: string) => {
     return edit === "507" ? "destructive" : "secondary";
+  };
+
+  const handleActionSubmit = () => {
+    if (selectedAction) {
+      toast({
+        title: "Action Submitted",
+        description: `Claim has been ${selectedAction.toLowerCase()}ed successfully.`,
+      });
+      setSelectedAction("");
+    }
   };
 
   if (!claim) {
@@ -163,10 +175,27 @@ const ClaimDetails = () => {
               </div>
               <div className="col-span-2">
                 <span className="text-muted-foreground">Action</span>
-                <div className="font-semibold">
-                  <Button variant="link" className="h-auto p-0 text-primary">
-                    Find items
-                  </Button>
+                <div className="flex items-center gap-2 mt-1">
+                  <Select value={selectedAction} onValueChange={setSelectedAction}>
+                    <SelectTrigger className="w-32 h-8 text-xs bg-blue-50 border-blue-200 hover:bg-blue-100">
+                      <SelectValue placeholder="Find items" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pay">Pay</SelectItem>
+                      <SelectItem value="deny">Deny</SelectItem>
+                      <SelectItem value="pend">Pend</SelectItem>
+                      <SelectItem value="route">Route</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {selectedAction && (
+                    <Button
+                      size="sm"
+                      onClick={handleActionSubmit}
+                      className="h-8 px-3 text-xs bg-green-600 hover:bg-green-700"
+                    >
+                      Submit
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
