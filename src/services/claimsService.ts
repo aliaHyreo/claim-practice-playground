@@ -19,6 +19,23 @@ export interface Claim {
 // Mock data for claims
 const mockClaims: Claim[] = [
   {
+    dcn: "DCN-00012345",
+    title: "John",
+    lastName: "Doe",
+    dob: "5/1/1980",
+    sex: "M",
+    memberCode: "MC-987654",
+    contractType: "PPO",
+    relationship: "Self",
+    pcp: "Dr. Smith",
+    erisa: "N",
+    billed: 300,
+    allowed: 100,
+    paid: 0,
+    edits: ["SPS", "PLP", "RNB", "334", "REL", "IAF", "507"],
+    actionCode: "-"
+  },
+  {
     dcn: "25048AA1000",
     title: "John",
     lastName: "Wick",
