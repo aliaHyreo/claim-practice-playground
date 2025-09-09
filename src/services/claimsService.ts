@@ -103,6 +103,41 @@ export interface PaymentInfo {
   };
 }
 
+export interface ClaimHeaderInfo {
+  generalClaimData: {
+    serviceFromDate: string;
+    serviceToDate: string;
+    assignmentOfBenefits: string;
+    providerParticipation: string;
+    providerContract: string;
+    treatmentAuth: string;
+    patientAccount: string;
+    emergency: string;
+    employment: string;
+    coveredZipRadius: string;
+    frequency: string;
+    bbiIndicator: string;
+    pciIndicator: string;
+    fsbInd: string;
+    fsbExclusion: string;
+  };
+  benefitIndicators: {
+    cob: string;
+    cobRule: string;
+    medInd: string;
+    medicareAdvantage: string;
+    cdhp: string;
+    planPayer: string;
+    cobPercentage: string;
+  };
+  diagnosisCodes: {
+    dx1: string;
+    dx2: string;
+    dx3: string;
+    medRule: string;
+  };
+}
+
 export interface Claim {
   dcn: string;
   title: string;
@@ -122,6 +157,7 @@ export interface Claim {
   memberInfo?: MemberInfo;
   providerInfo?: ProviderInfo;
   paymentInfo?: PaymentInfo;
+  claimHeaderInfo?: ClaimHeaderInfo;
 }
 
 // Edit descriptions and statuses
@@ -248,6 +284,40 @@ const mockClaims: Claim[] = [
         eftCheckDate: "",
         priced: ""
       }
+    },
+    claimHeaderInfo: {
+      generalClaimData: {
+        serviceFromDate: "08/03/2023",
+        serviceToDate: "08/03/2023",
+        assignmentOfBenefits: "Y",
+        providerParticipation: "PAR",
+        providerContract: "CEPMS0",
+        treatmentAuth: "-",
+        patientAccount: "N41127.23297",
+        emergency: "No",
+        employment: "No",
+        coveredZipRadius: "-",
+        frequency: "-",
+        bbiIndicator: "-",
+        pciIndicator: "-",
+        fsbInd: "None",
+        fsbExclusion: "X",
+      },
+      benefitIndicators: {
+        cob: "No",
+        cobRule: "-",
+        medInd: "No",
+        medicareAdvantage: "Yes",
+        cdhp: "N",
+        planPayer: "N",
+        cobPercentage: "0",
+      },
+      diagnosisCodes: {
+        dx1: "G800",
+        dx2: "0",
+        dx3: "0",
+        medRule: "-",
+      },
     }
   },
   {

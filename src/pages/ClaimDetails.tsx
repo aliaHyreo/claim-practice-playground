@@ -11,6 +11,7 @@ import EventResolution from "@/components/EventResolution";
 import MemberInformation from "@/components/MemberInformation";
 import ProviderInformation from "@/components/ProviderInformation";
 import PaymentInformation from "@/components/PaymentInformation";
+import ClaimHeaderInformation from "@/components/ClaimHeaderInformation";
 
 const ClaimDetails = () => {
   const { dcn } = useParams<{ dcn: string }>();
@@ -248,8 +249,20 @@ const ClaimDetails = () => {
                 </Card>
               </TabsContent>
 
+              <TabsContent value="claim-header">
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold mb-4">Claim Header</h3>
+                    {claim.claimHeaderInfo ? (
+                      <ClaimHeaderInformation claimHeaderInfo={claim.claimHeaderInfo} />
+                    ) : (
+                      <div className="text-muted-foreground">No claim header information available.</div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
               {[
-                { value: "claim-header", title: "Claim Header" },
                 { value: "claim-lines", title: "Claim Lines" },
                 { value: "claim-data", title: "Claim Data" },
                 { value: "search", title: "Search" },
