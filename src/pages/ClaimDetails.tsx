@@ -14,6 +14,7 @@ import PaymentInformation from "@/components/PaymentInformation";
 import ClaimHeaderInformation from "@/components/ClaimHeaderInformation";
 import ClaimLines from "@/components/ClaimLines";
 import ClaimData from "@/components/ClaimData";
+import SearchTabs from "@/components/SearchTabs";
 
 const ClaimDetails = () => {
   const { dcn } = useParams<{ dcn: string }>();
@@ -273,14 +274,7 @@ const ClaimDetails = () => {
               </TabsContent>
 
               <TabsContent value="search">
-                <Card>
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-semibold mb-4">Search</h3>
-                    <div className="text-muted-foreground">
-                      Tab content will be added later. This is a placeholder for the search functionality.
-                    </div>
-                  </CardContent>
-                </Card>
+                <SearchTabs searchData={claim.searchData} />
               </TabsContent>
             </Tabs>
           </CardContent>

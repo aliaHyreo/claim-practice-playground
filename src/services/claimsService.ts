@@ -138,6 +138,23 @@ export interface ClaimHeaderInfo {
   };
 }
 
+export interface ClaimImageData {
+  patientName: string;
+  dob: string;
+  zip: string;
+  serviceDates: {
+    from: string;
+    to: string;
+  };
+  claimLineCodeSystem: string;
+  claimLineCodeImage: string;
+  eligibilityValidation: string[];
+}
+
+export interface SearchData {
+  claimImage: ClaimImageData;
+}
+
 export interface ClaimData {
   originalClaim: {
     lineNo: number;
@@ -191,6 +208,7 @@ export interface Claim {
   claimHeaderInfo?: ClaimHeaderInfo;
   claimLines?: ClaimLine[];
   claimData?: ClaimData;
+  searchData?: SearchData;
 }
 
 // Edit descriptions and statuses
@@ -382,6 +400,27 @@ const mockClaims: Claim[] = [
         units: 1,
         payPercent: 50
       }
+    },
+    searchData: {
+      claimImage: {
+        patientName: "John Wick",
+        dob: "1982-08-18",
+        zip: "41701",
+        serviceDates: {
+          from: "2023-08-03",
+          to: "2023-08-03"
+        },
+        claimLineCodeSystem: "84284",
+        claimLineCodeImage: "E9973",
+        eligibilityValidation: [
+          "Confirm patient name",
+          "Confirm DOB",
+          "Confirm contact information",
+          "Ensure eligibility dates match claim line",
+          "Update claim line if mismatch detected",
+          "Run member search with Member ID to confirm eligibility"
+        ]
+      }
     }
   },
   {
@@ -559,6 +598,27 @@ const mockClaims: Claim[] = [
         modifiers: "NU,EU, KX",
         units: 1,
         payPercent: 50
+      }
+    },
+    searchData: {
+      claimImage: {
+        patientName: "John Wick",
+        dob: "1982-08-18",
+        zip: "41701",
+        serviceDates: {
+          from: "2023-08-03",
+          to: "2023-08-03"
+        },
+        claimLineCodeSystem: "84284",
+        claimLineCodeImage: "E9973",
+        eligibilityValidation: [
+          "Confirm patient name",
+          "Confirm DOB",
+          "Confirm contact information",
+          "Ensure eligibility dates match claim line",
+          "Update claim line if mismatch detected",
+          "Run member search with Member ID to confirm eligibility"
+        ]
       }
     }
   },

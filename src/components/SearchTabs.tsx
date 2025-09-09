@@ -1,0 +1,66 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ClaimImage from "./ClaimImage";
+import { SearchData } from "@/services/claimsService";
+
+interface SearchTabsProps {
+  searchData?: SearchData;
+}
+
+const SearchTabs = ({ searchData }: SearchTabsProps) => {
+  if (!searchData) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="text-muted-foreground">No search data available.</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardContent className="p-6">
+        <Tabs defaultValue="claim-image" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="claim-image" className="text-sm">
+              Claim Image
+            </TabsTrigger>
+            <TabsTrigger value="member" className="text-sm">
+              Member
+            </TabsTrigger>
+            <TabsTrigger value="pricing" className="text-sm">
+              Pricing
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="claim-image">
+            <ClaimImage claimImageData={searchData.claimImage} />
+          </TabsContent>
+
+          <TabsContent value="member">
+            <Card>
+              <CardContent className="p-6">
+                <div className="text-muted-foreground">
+                  Member sub-tab content will be added in the next phase.
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="pricing">
+            <Card>
+              <CardContent className="p-6">
+                <div className="text-muted-foreground">
+                  Pricing sub-tab content will be added in the next phase.
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default SearchTabs;
