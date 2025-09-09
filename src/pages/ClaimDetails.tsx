@@ -8,6 +8,8 @@ import { ArrowLeft, RefreshCw } from "lucide-react";
 import { ClaimsService, type Claim } from "@/services/claimsService";
 import { useToast } from "@/hooks/use-toast";
 import EventResolution from "@/components/EventResolution";
+import MemberInformation from "@/components/MemberInformation";
+import ProviderInformation from "@/components/ProviderInformation";
 
 const ClaimDetails = () => {
   const { dcn } = useParams<{ dcn: string }>();
@@ -206,9 +208,33 @@ const ClaimDetails = () => {
                 </Card>
               </TabsContent>
 
+              <TabsContent value="member-info">
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold mb-4">Member Information</h3>
+                    {claim.memberInfo ? (
+                      <MemberInformation memberInfo={claim.memberInfo} />
+                    ) : (
+                      <div className="text-muted-foreground">No member information available.</div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="provider-info">
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold mb-4">Provider Information</h3>
+                    {claim.providerInfo ? (
+                      <ProviderInformation providerInfo={claim.providerInfo} />
+                    ) : (
+                      <div className="text-muted-foreground">No provider information available.</div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
               {[
-                { value: "member-info", title: "Member Information" },
-                { value: "provider-info", title: "Provider Information" },
                 { value: "payment-info", title: "Payment Information" },
                 { value: "claim-header", title: "Claim Header" },
                 { value: "claim-lines", title: "Claim Lines" },

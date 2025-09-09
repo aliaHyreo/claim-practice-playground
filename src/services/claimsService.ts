@@ -4,6 +4,67 @@ export interface EditDetail {
   status: 'soft' | 'critical';
 }
 
+export interface MemberInfo {
+  prefix: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  dob: string;
+  sex: string;
+  memberPrefix: string;
+  hcid: string;
+  relationship: string;
+  memberCode: string;
+  contractType: string;
+  erisa: string;
+  pcp: string;
+  pcpState: string;
+  pcpRelationship: string;
+  programCode: string;
+  subscriberId: string;
+  groupName: string;
+  groupId: string;
+  groupContract: string;
+  detailContractCode: string;
+  product: string;
+  networkId: string;
+  networkName: string;
+}
+
+export interface ProviderInfo {
+  renderingNPI: string;
+  renderingName: string;
+  renderingAddress: string;
+  pricingState: string;
+  pricingZIP: string;
+  providerSPS: string;
+  providerEPIN: string;
+  licenseNumber: string;
+  networkOption: string;
+  specialty: string;
+  taxonomy: string;
+  emergencyPricingInd: string;
+  billingTaxId: string;
+  billingNPI: string;
+  billingName2: string;
+  facilityType: string;
+  providerSPS3: string;
+  providerEPIN4: string;
+  medicareId: string;
+  address5: string;
+  nationalState: string;
+  locationCode: string;
+  bhaProviderIndicator: string;
+  taxonomy6: string;
+  referringPhysician: string;
+  referringNPI7: string;
+  serviceProvider: string;
+  serviceFacilityTier: string;
+  npi8: string;
+  nsbIndicator: string;
+  alternateFacilityNPI: string;
+}
+
 export interface Claim {
   dcn: string;
   title: string;
@@ -20,6 +81,8 @@ export interface Claim {
   paid: number;
   edits: string[];
   actionCode?: string;
+  memberInfo?: MemberInfo;
+  providerInfo?: ProviderInfo;
 }
 
 // Edit descriptions and statuses
@@ -50,7 +113,66 @@ const mockClaims: Claim[] = [
     allowed: 100,
     paid: 0,
     edits: ["SPS", "PLP", "RNB", "334", "REL", "IAF", "507"],
-    actionCode: "-"
+    actionCode: "-",
+    memberInfo: {
+      prefix: "Mr.",
+      firstName: "John",
+      middleName: "",
+      lastName: "Doe",
+      dob: "Wed, May 01, 1980",
+      sex: "M",
+      memberPrefix: "EMN",
+      hcid: "23456789",
+      relationship: "Self",
+      memberCode: "MC-987654",
+      contractType: "PPO",
+      erisa: "N",
+      pcp: "Dr. Smith",
+      pcpState: "-",
+      pcpRelationship: "-",
+      programCode: "-",
+      subscriberId: "123456789",
+      groupName: "ABC Group",
+      groupId: "200000M001",
+      groupContract: "0AA",
+      detailContractCode: "500L",
+      product: "LOCAL",
+      networkId: "-",
+      networkName: "-"
+    },
+    providerInfo: {
+      renderingNPI: "67926782",
+      renderingName: "James Clinic",
+      renderingAddress: "2426 BERKSHIRE AV Fox Cities.",
+      pricingState: "WI",
+      pricingZIP: "44011",
+      providerSPS: "-",
+      providerEPIN: "-",
+      licenseNumber: "-",
+      networkOption: "N/Y",
+      specialty: "V01",
+      taxonomy: "2345678232",
+      emergencyPricingInd: "-",
+      billingTaxId: "1234567B",
+      billingNPI: "1234567",
+      billingName2: "MILLERS RENTAL",
+      facilityType: "-",
+      providerSPS3: "5987543",
+      providerEPIN4: "-",
+      medicareId: "-",
+      address5: "203 ROMIG RD 0954642",
+      nationalState: "NY",
+      locationCode: "-",
+      bhaProviderIndicator: "YA",
+      taxonomy6: "-",
+      referringPhysician: "Kim Konch",
+      referringNPI7: "5974200",
+      serviceProvider: "James Clinic",
+      serviceFacilityTier: "-",
+      npi8: "-",
+      nsbIndicator: "None",
+      alternateFacilityNPI: "-"
+    }
   },
   {
     dcn: "25048AA1000",
@@ -67,7 +189,66 @@ const mockClaims: Claim[] = [
     allowed: 100,
     paid: 0,
     edits: ["SPS", "PLP", "RNB", "334", "REL", "IAF", "507"],
-    actionCode: "-"
+    actionCode: "-",
+    memberInfo: {
+      prefix: "Mr.",
+      firstName: "John",
+      middleName: "",
+      lastName: "Wick",
+      dob: "Wed, Aug 18, 1982",
+      sex: "M",
+      memberPrefix: "EMN",
+      hcid: "23456789",
+      relationship: "Spouse",
+      memberCode: "20",
+      contractType: "H",
+      erisa: "Y",
+      pcp: "-",
+      pcpState: "-",
+      pcpRelationship: "-",
+      programCode: "-",
+      subscriberId: "123456789",
+      groupName: "ABC Group",
+      groupId: "200000M001",
+      groupContract: "0AA",
+      detailContractCode: "500L",
+      product: "LOCAL",
+      networkId: "-",
+      networkName: "-"
+    },
+    providerInfo: {
+      renderingNPI: "67926782",
+      renderingName: "James Clinic",
+      renderingAddress: "2426 BERKSHIRE AV Fox Cities.",
+      pricingState: "WI",
+      pricingZIP: "44011",
+      providerSPS: "-",
+      providerEPIN: "-",
+      licenseNumber: "-",
+      networkOption: "N/Y",
+      specialty: "V01",
+      taxonomy: "2345678232",
+      emergencyPricingInd: "-",
+      billingTaxId: "1234567B",
+      billingNPI: "1234567",
+      billingName2: "MILLERS RENTAL",
+      facilityType: "-",
+      providerSPS3: "5987543",
+      providerEPIN4: "-",
+      medicareId: "-",
+      address5: "203 ROMIG RD 0954642",
+      nationalState: "NY",
+      locationCode: "-",
+      bhaProviderIndicator: "YA",
+      taxonomy6: "-",
+      referringPhysician: "Kim Konch",
+      referringNPI7: "5974200",
+      serviceProvider: "James Clinic",
+      serviceFacilityTier: "-",
+      npi8: "-",
+      nsbIndicator: "None",
+      alternateFacilityNPI: "-"
+    }
   },
   {
     dcn: "25048AA2000",
