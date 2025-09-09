@@ -138,6 +138,13 @@ export interface ClaimHeaderInfo {
   };
 }
 
+export interface ClaimData {
+  billed: number;
+  allowed: number;
+  finalContractAmount: number;
+  explanation: string[];
+}
+
 export interface ClaimLine {
   lineNo: number;
   serviceFromDate: string;
@@ -172,6 +179,7 @@ export interface Claim {
   paymentInfo?: PaymentInfo;
   claimHeaderInfo?: ClaimHeaderInfo;
   claimLines?: ClaimLine[];
+  claimData?: ClaimData;
 }
 
 // Edit descriptions and statuses
@@ -346,7 +354,17 @@ const mockClaims: Claim[] = [
         diagnosis: "G800",
         billed: 300
       }
-    ]
+    ],
+    claimData: {
+      billed: 300,
+      allowed: 100,
+      finalContractAmount: 0,
+      explanation: [
+        "Provider billed $300 for this claim.",
+        "System adjudication rules allowed $100.",
+        "Based on contract agreements and claim edits, final payable amount is $0."
+      ]
+    }
   },
   {
     dcn: "25048AA1000",
@@ -507,7 +525,17 @@ const mockClaims: Claim[] = [
         diagnosis: "G800",
         billed: 300
       }
-    ]
+    ],
+    claimData: {
+      billed: 300,
+      allowed: 100,
+      finalContractAmount: 0,
+      explanation: [
+        "Provider billed $300 for this claim.",
+        "System adjudication rules allowed $100.",
+        "Based on contract agreements and claim edits, final payable amount is $0."
+      ]
+    }
   },
   {
     dcn: "25048AA2000",

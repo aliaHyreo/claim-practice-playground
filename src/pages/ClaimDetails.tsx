@@ -13,6 +13,7 @@ import ProviderInformation from "@/components/ProviderInformation";
 import PaymentInformation from "@/components/PaymentInformation";
 import ClaimHeaderInformation from "@/components/ClaimHeaderInformation";
 import ClaimLines from "@/components/ClaimLines";
+import ClaimData from "@/components/ClaimData";
 
 const ClaimDetails = () => {
   const { dcn } = useParams<{ dcn: string }>();
@@ -267,21 +268,20 @@ const ClaimDetails = () => {
                 <ClaimLines claimLines={claim.claimLines} />
               </TabsContent>
 
-              {[
-                { value: "claim-data", title: "Claim Data" },
-                { value: "search", title: "Search" },
-              ].map((tab) => (
-                <TabsContent key={tab.value} value={tab.value}>
-                  <Card>
-                    <CardContent className="p-6">
-                      <h3 className="text-lg font-semibold mb-4">{tab.title}</h3>
-                      <div className="text-muted-foreground">
-                        Tab content will be added later. This is a placeholder for the {tab.title.toLowerCase()} functionality.
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              ))}
+              <TabsContent value="claim-data">
+                <ClaimData claimData={claim.claimData} />
+              </TabsContent>
+
+              <TabsContent value="search">
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold mb-4">Search</h3>
+                    <div className="text-muted-foreground">
+                      Tab content will be added later. This is a placeholder for the search functionality.
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
             </Tabs>
           </CardContent>
         </Card>
