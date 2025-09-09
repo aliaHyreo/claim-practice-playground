@@ -138,6 +138,19 @@ export interface ClaimHeaderInfo {
   };
 }
 
+export interface ClaimLine {
+  lineNo: number;
+  serviceFromDate: string;
+  serviceToDate: string;
+  pos: string;
+  service: string;
+  procedureCode: string;
+  modifiers: string[];
+  units: number;
+  diagnosis: string;
+  billed: number;
+}
+
 export interface Claim {
   dcn: string;
   title: string;
@@ -158,6 +171,7 @@ export interface Claim {
   providerInfo?: ProviderInfo;
   paymentInfo?: PaymentInfo;
   claimHeaderInfo?: ClaimHeaderInfo;
+  claimLines?: ClaimLine[];
 }
 
 // Edit descriptions and statuses
@@ -318,7 +332,21 @@ const mockClaims: Claim[] = [
         dx3: "0",
         medRule: "-",
       },
-    }
+    },
+    claimLines: [
+      {
+        lineNo: 1,
+        serviceFromDate: "8/4/2023",
+        serviceToDate: "8/4/2023",
+        pos: "12",
+        service: "DME",
+        procedureCode: "E9973",
+        modifiers: ["NU EU, KX"],
+        units: 1,
+        diagnosis: "G800",
+        billed: 300
+      }
+    ]
   },
   {
     dcn: "25048AA1000",
@@ -465,7 +493,21 @@ const mockClaims: Claim[] = [
         dx3: "0",
         medRule: "-",
       },
-    }
+    },
+    claimLines: [
+      {
+        lineNo: 1,
+        serviceFromDate: "8/4/2023",
+        serviceToDate: "8/4/2023",
+        pos: "12",
+        service: "DME",
+        procedureCode: "E9973",
+        modifiers: ["NU EU, KX"],
+        units: 1,
+        diagnosis: "G800",
+        billed: 300
+      }
+    ]
   },
   {
     dcn: "25048AA2000",

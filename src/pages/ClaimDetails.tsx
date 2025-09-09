@@ -12,6 +12,7 @@ import MemberInformation from "@/components/MemberInformation";
 import ProviderInformation from "@/components/ProviderInformation";
 import PaymentInformation from "@/components/PaymentInformation";
 import ClaimHeaderInformation from "@/components/ClaimHeaderInformation";
+import ClaimLines from "@/components/ClaimLines";
 
 const ClaimDetails = () => {
   const { dcn } = useParams<{ dcn: string }>();
@@ -262,8 +263,11 @@ const ClaimDetails = () => {
                 </Card>
               </TabsContent>
 
+              <TabsContent value="claim-lines">
+                <ClaimLines claimLines={claim.claimLines} />
+              </TabsContent>
+
               {[
-                { value: "claim-lines", title: "Claim Lines" },
                 { value: "claim-data", title: "Claim Data" },
                 { value: "search", title: "Search" },
               ].map((tab) => (
