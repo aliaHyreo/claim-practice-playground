@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, RefreshCw } from "lucide-react";
 import { ClaimsService, type Claim } from "@/services/claimsService";
 import { useToast } from "@/hooks/use-toast";
+import EventResolution from "@/components/EventResolution";
 
 const ClaimDetails = () => {
   const { dcn } = useParams<{ dcn: string }>();
@@ -196,8 +197,16 @@ const ClaimDetails = () => {
                 </TabsTrigger>
               </TabsList>
 
+              <TabsContent value="event-resolution">
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold mb-4">Event Resolution</h3>
+                    <EventResolution edits={claim.edits} />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
               {[
-                { value: "event-resolution", title: "Event Resolution" },
                 { value: "member-info", title: "Member Information" },
                 { value: "provider-info", title: "Provider Information" },
                 { value: "payment-info", title: "Payment Information" },

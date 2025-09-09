@@ -1,3 +1,9 @@
+export interface EditDetail {
+  code: string;
+  description: string;
+  status: 'soft' | 'critical';
+}
+
 export interface Claim {
   dcn: string;
   title: string;
@@ -15,6 +21,17 @@ export interface Claim {
   edits: string[];
   actionCode?: string;
 }
+
+// Edit descriptions and statuses
+const editDetails: Record<string, EditDetail> = {
+  "SPS": { code: "SPS", description: "USE PA MENU OPTION TO VIEW PRV", status: "soft" },
+  "PLP": { code: "PLP", description: "PROVIDER PER ADDRESS SELECTED", status: "soft" },
+  "RNB": { code: "RNB", description: "RENDERING NPI IS BLANK", status: "soft" },
+  "334": { code: "334", description: "FIRST 2 CHAR REQ IN PRVDR SEC NIM", status: "soft" },
+  "REL": { code: "REL", description: "RELATED CLAIM IN HISTORY", status: "soft" },
+  "IAF": { code: "IAF", description: "IMAGE ADJUDICATION FAILURE", status: "soft" },
+  "507": { code: "507", description: "ELIGIBILITY FOUND IS PARTIAL", status: "critical" }
+};
 
 // Mock data for claims
 const mockClaims: Claim[] = [
@@ -110,6 +127,17 @@ export class ClaimsService {
   // Get all claims
   static getAllClaims(): Claim[] {
     return mockClaims;
+  }
+
+  // Get edit details for a claim
+  static getEditDetails(edits: string[]): EditDetail[] {
+    return edits.map(editCode => 
+      editDetails[editCode] || { 
+        code: editCode, 
+        description: "Unknown edit code", 
+        status: "soft" as const 
+      }
+    );
   }
 
   // Simulate refreshing claim data
