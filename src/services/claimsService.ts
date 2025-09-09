@@ -65,6 +65,44 @@ export interface ProviderInfo {
   alternateFacilityNPI: string;
 }
 
+export interface PaymentInfo {
+  claim: {
+    deductible: number;
+    copay: number;
+    coins: number;
+    patientLiability: number;
+    memberSurcharge: number;
+    nonEligible: number;
+    hraPaid: number;
+    claimPaid: number;
+    pricingAllowedAmount: number;
+    totalCharge: number;
+    finalizationCode: string;
+  };
+  provider: {
+    providerDiscount: number;
+    providerLiability: number;
+    providerRiskWithhold: number;
+    providerSurcharge: number;
+    interest: number;
+    penalty: number;
+    lrIndicator: string;
+    systemInterest: number;
+  };
+  drg: {
+    amount: number;
+    checkNumber: string;
+    checkDate: string;
+    paymentSystem: string;
+    checkStatus: string;
+    checkStatusDate: string;
+    paidTo: string;
+    accountNumber: string;
+    eftCheckDate: string;
+    priced: string;
+  };
+}
+
 export interface Claim {
   dcn: string;
   title: string;
@@ -83,6 +121,7 @@ export interface Claim {
   actionCode?: string;
   memberInfo?: MemberInfo;
   providerInfo?: ProviderInfo;
+  paymentInfo?: PaymentInfo;
 }
 
 // Edit descriptions and statuses
@@ -172,6 +211,43 @@ const mockClaims: Claim[] = [
       npi8: "-",
       nsbIndicator: "None",
       alternateFacilityNPI: "-"
+    },
+    paymentInfo: {
+      claim: {
+        deductible: 0,
+        copay: 0,
+        coins: 0,
+        patientLiability: 0,
+        memberSurcharge: 0,
+        nonEligible: 0,
+        hraPaid: 0,
+        claimPaid: 0,
+        pricingAllowedAmount: 100,
+        totalCharge: 300,
+        finalizationCode: "-"
+      },
+      provider: {
+        providerDiscount: 0,
+        providerLiability: 0,
+        providerRiskWithhold: 0,
+        providerSurcharge: 0,
+        interest: 0,
+        penalty: 0,
+        lrIndicator: "-",
+        systemInterest: 0
+      },
+      drg: {
+        amount: 0,
+        checkNumber: "-",
+        checkDate: "-",
+        paymentSystem: "D",
+        checkStatus: "Check not Found",
+        checkStatusDate: "Sun, Jun 1, 2025",
+        paidTo: "MEDICAL GROUP LLC",
+        accountNumber: "-",
+        eftCheckDate: "",
+        priced: ""
+      }
     }
   },
   {
@@ -248,6 +324,43 @@ const mockClaims: Claim[] = [
       npi8: "-",
       nsbIndicator: "None",
       alternateFacilityNPI: "-"
+    },
+    paymentInfo: {
+      claim: {
+        deductible: 0,
+        copay: 0,
+        coins: 0,
+        patientLiability: 0,
+        memberSurcharge: 0,
+        nonEligible: 0,
+        hraPaid: 0,
+        claimPaid: 0,
+        pricingAllowedAmount: 100,
+        totalCharge: 300,
+        finalizationCode: "-"
+      },
+      provider: {
+        providerDiscount: 0,
+        providerLiability: 0,
+        providerRiskWithhold: 0,
+        providerSurcharge: 0,
+        interest: 0,
+        penalty: 0,
+        lrIndicator: "-",
+        systemInterest: 0
+      },
+      drg: {
+        amount: 0,
+        checkNumber: "-",
+        checkDate: "-",
+        paymentSystem: "D",
+        checkStatus: "Check not Found",
+        checkStatusDate: "Sun, Jun 1, 2025",
+        paidTo: "MEDICAL GROUP LLC",
+        accountNumber: "-",
+        eftCheckDate: "",
+        priced: ""
+      }
     }
   },
   {

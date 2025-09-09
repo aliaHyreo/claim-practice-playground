@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import EventResolution from "@/components/EventResolution";
 import MemberInformation from "@/components/MemberInformation";
 import ProviderInformation from "@/components/ProviderInformation";
+import PaymentInformation from "@/components/PaymentInformation";
 
 const ClaimDetails = () => {
   const { dcn } = useParams<{ dcn: string }>();
@@ -234,8 +235,20 @@ const ClaimDetails = () => {
                 </Card>
               </TabsContent>
 
+              <TabsContent value="payment-info">
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold mb-4">Payment Information</h3>
+                    {claim.paymentInfo ? (
+                      <PaymentInformation paymentInfo={claim.paymentInfo} />
+                    ) : (
+                      <div className="text-muted-foreground">No payment information available.</div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
               {[
-                { value: "payment-info", title: "Payment Information" },
                 { value: "claim-header", title: "Claim Header" },
                 { value: "claim-lines", title: "Claim Lines" },
                 { value: "claim-data", title: "Claim Data" },
