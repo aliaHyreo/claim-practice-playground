@@ -139,10 +139,21 @@ export interface ClaimHeaderInfo {
 }
 
 export interface ClaimData {
-  billed: number;
-  allowed: number;
-  finalContractAmount: number;
-  explanation: string[];
+  originalClaim: {
+    lineNo: number;
+    from: string;
+    procedure: string;
+    modifiers: string;
+    units: number;
+    billed: number;
+  };
+  claimsXten: {
+    billed: number;
+    procedure: string;
+    modifiers: string;
+    units: number;
+    payPercent: number;
+  };
 }
 
 export interface ClaimLine {
@@ -356,14 +367,21 @@ const mockClaims: Claim[] = [
       }
     ],
     claimData: {
-      billed: 300,
-      allowed: 100,
-      finalContractAmount: 0,
-      explanation: [
-        "Provider billed $300 for this claim.",
-        "System adjudication rules allowed $100.",
-        "Based on contract agreements and claim edits, final payable amount is $0."
-      ]
+      originalClaim: {
+        lineNo: 1,
+        from: "8/4/2023...",
+        procedure: "E9973",
+        modifiers: "NU,EU, KX",
+        units: 1,
+        billed: 300
+      },
+      claimsXten: {
+        billed: 300,
+        procedure: "E9973",
+        modifiers: "NU,EU, KX",
+        units: 1,
+        payPercent: 50
+      }
     }
   },
   {
@@ -527,14 +545,21 @@ const mockClaims: Claim[] = [
       }
     ],
     claimData: {
-      billed: 300,
-      allowed: 100,
-      finalContractAmount: 0,
-      explanation: [
-        "Provider billed $300 for this claim.",
-        "System adjudication rules allowed $100.",
-        "Based on contract agreements and claim edits, final payable amount is $0."
-      ]
+      originalClaim: {
+        lineNo: 1,
+        from: "8/4/2023...",
+        procedure: "E9973",
+        modifiers: "NU,EU, KX",
+        units: 1,
+        billed: 300
+      },
+      claimsXten: {
+        billed: 300,
+        procedure: "E9973",
+        modifiers: "NU,EU, KX",
+        units: 1,
+        payPercent: 50
+      }
     }
   },
   {
