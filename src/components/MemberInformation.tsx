@@ -15,7 +15,7 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const EditableField = ({ label, field }: { label: string; field: keyof MemberInfo }) => (
+  const EditableField = ({ label, field, readonly = false }: { label: string; field: keyof MemberInfo; readonly?: boolean }) => (
     <div className="space-y-2">
       <Label htmlFor={field} className="text-sm text-muted-foreground">
         {label}
@@ -25,6 +25,7 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
         value={formData[field] || ''}
         onChange={(e) => handleInputChange(field, e.target.value)}
         className="h-10"
+        readOnly={readonly}
       />
     </div>
   );
@@ -40,27 +41,27 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <EditableField label="First Name" field="firstName" />
-            <EditableField label="Middle name" field="middleName" />
-            <EditableField label="Last name" field="lastName" />
+            <EditableField label="First Name" field="firstName" readonly />
+            <EditableField label="Middle name" field="middleName" readonly />
+            <EditableField label="Last name" field="lastName" readonly />
             <EditableField label="HCID" field="hcid" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <EditableField label="DOB" field="dob" />
-            <EditableField label="Sex" field="sex" />
-            <EditableField label="Member prefix" field="memberPrefix" />
-            <EditableField label="Program Code" field="programCode" />
+            <EditableField label="DOB" field="dob" readonly />
+            <EditableField label="Sex" field="sex" readonly />
+            <EditableField label="Member prefix" field="memberPrefix" readonly />
+            <EditableField label="Program Code" field="programCode" readonly />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <EditableField label="Relationship" field="relationship" />
-            <EditableField label="Member code" field="memberCode" />
-            <EditableField label="Contract type" field="contractType" />
-            <EditableField label="ERISA" field="erisa" />
+            <EditableField label="Relationship" field="relationship" readonly />
+            <EditableField label="Member code" field="memberCode" readonly />
+            <EditableField label="Contract type" field="contractType" readonly />
+            <EditableField label="ERISA" field="erisa" readonly />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <EditableField label="PCP" field="pcp" />
-            <EditableField label="PCP state" field="pcpState" />
-            <EditableField label="PCP relationship" field="pcpRelationship" />
+            <EditableField label="PCP" field="pcp" readonly />
+            <EditableField label="PCP state" field="pcpState" readonly />
+            <EditableField label="PCP relationship" field="pcpRelationship" readonly />
             <div></div>
           </div>
         </CardContent>
@@ -89,15 +90,15 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <EditableField label="Group name" field="groupName" />
-            <EditableField label="Group contract #" field="groupContract" />
-            <EditableField label="Detail contract code" field="detailContractCode" />
-            <EditableField label="Product" field="product" />
+            <EditableField label="Group name" field="groupName" readonly />
+            <EditableField label="Group contract #" field="groupContract" readonly />
+            <EditableField label="Detail contract code" field="detailContractCode" readonly />
+            <EditableField label="Product" field="product" readonly />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <EditableField label="Group ID" field="groupId" />
-            <EditableField label="Network name" field="networkName" />
-            <EditableField label="Network ID" field="networkId" />
+            <EditableField label="Group ID" field="groupId" readonly />
+            <EditableField label="Network name" field="networkName" readonly />
+            <EditableField label="Network ID" field="networkId" readonly />
             <div></div>
           </div>
         </CardContent>
