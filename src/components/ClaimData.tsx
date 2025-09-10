@@ -2,6 +2,7 @@ import React from 'react';
 import { ClaimData as ClaimDataType } from '@/services/claimsService';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 
 interface ClaimDataProps {
   claimData?: ClaimDataType;
@@ -49,12 +50,24 @@ const ClaimData: React.FC<ClaimDataProps> = ({ claimData }) => {
               </thead>
               <tbody>
                 <tr className="border-t">
-                  <td className="px-3 py-2 text-gray-800">{claimData.originalClaim.lineNo}</td>
-                  <td className="px-3 py-2 text-gray-800">{claimData.originalClaim.from}</td>
-                  <td className="px-3 py-2 text-gray-800">{claimData.originalClaim.procedure}</td>
-                  <td className="px-3 py-2 text-gray-800">{claimData.originalClaim.modifiers}</td>
-                  <td className="px-3 py-2 text-gray-800">{claimData.originalClaim.units}</td>
-                  <td className="px-3 py-2 text-gray-800">{claimData.originalClaim.billed}</td>
+                  <td className="px-2 py-2">
+                    <Input defaultValue={claimData.originalClaim.lineNo} className="text-sm h-8" />
+                  </td>
+                  <td className="px-2 py-2">
+                    <Input defaultValue={claimData.originalClaim.from} className="text-sm h-8" />
+                  </td>
+                  <td className="px-2 py-2">
+                    <Input defaultValue={claimData.originalClaim.procedure} className="text-sm h-8" />
+                  </td>
+                  <td className="px-2 py-2">
+                    <Input defaultValue={claimData.originalClaim.modifiers} className="text-sm h-8" />
+                  </td>
+                  <td className="px-2 py-2">
+                    <Input defaultValue={claimData.originalClaim.units} className="text-sm h-8" />
+                  </td>
+                  <td className="px-2 py-2">
+                    <Input defaultValue={claimData.originalClaim.billed} className="text-sm h-8" />
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -82,11 +95,21 @@ const ClaimData: React.FC<ClaimDataProps> = ({ claimData }) => {
               </thead>
               <tbody>
                 <tr className="border-t">
-                  <td className="px-3 py-2 text-gray-800">{claimData.claimsXten.billed}</td>
-                  <td className="px-3 py-2 text-gray-800">{claimData.claimsXten.procedure}</td>
-                  <td className="px-3 py-2 text-gray-800">{claimData.claimsXten.modifiers}</td>
-                  <td className="px-3 py-2 text-gray-800">{claimData.claimsXten.units}</td>
-                  <td className="px-3 py-2 text-gray-800">{claimData.claimsXten.payPercent}%</td>
+                  <td className="px-2 py-2">
+                    <Input defaultValue={claimData.claimsXten.billed} className="text-sm h-8" />
+                  </td>
+                  <td className="px-2 py-2">
+                    <Input defaultValue={claimData.claimsXten.procedure} className="text-sm h-8" />
+                  </td>
+                  <td className="px-2 py-2">
+                    <Input defaultValue={claimData.claimsXten.modifiers} className="text-sm h-8" />
+                  </td>
+                  <td className="px-2 py-2">
+                    <Input defaultValue={claimData.claimsXten.units} className="text-sm h-8" />
+                  </td>
+                  <td className="px-2 py-2">
+                    <Input defaultValue={`${claimData.claimsXten.payPercent}%`} className="text-sm h-8" />
+                  </td>
                 </tr>
               </tbody>
             </table>
