@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { type ProviderInfo } from "@/services/claimsService";
 
 interface ProviderInformationProps {
@@ -6,10 +9,23 @@ interface ProviderInformationProps {
 }
 
 const ProviderInformation = ({ providerInfo }: ProviderInformationProps) => {
-  const InfoField = ({ label, value }: { label: string; value: string }) => (
-    <div className="space-y-1">
-      <span className="text-sm text-muted-foreground">{label}</span>
-      <div className="font-medium text-foreground">{value || '-'}</div>
+  const [formData, setFormData] = useState(providerInfo);
+
+  const handleInputChange = (field: keyof ProviderInfo, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const EditableField = ({ label, field }: { label: string; field: keyof ProviderInfo }) => (
+    <div className="space-y-2">
+      <Label htmlFor={field} className="text-sm text-muted-foreground">
+        {label}
+      </Label>
+      <Input
+        id={field}
+        value={formData[field] || ''}
+        onChange={(e) => handleInputChange(field, e.target.value)}
+        className="h-10"
+      />
     </div>
   );
 
@@ -24,22 +40,22 @@ const ProviderInformation = ({ providerInfo }: ProviderInformationProps) => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="Rendering NPI" value={providerInfo.renderingNPI} />
-            <InfoField label="Name" value={providerInfo.renderingName} />
-            <InfoField label="Address" value={providerInfo.renderingAddress} />
-            <InfoField label="Pricing state" value={providerInfo.pricingState} />
+            <EditableField label="Rendering NPI" field="renderingNPI" />
+            <EditableField label="Name" field="renderingName" />
+            <EditableField label="Address" field="renderingAddress" />
+            <EditableField label="Pricing state" field="pricingState" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="Pricing ZIP" value={providerInfo.pricingZIP} />
-            <InfoField label="Provider SPS" value={providerInfo.providerSPS} />
-            <InfoField label="Provider EPIN" value={providerInfo.providerEPIN} />
-            <InfoField label="License #" value={providerInfo.licenseNumber} />
+            <EditableField label="Pricing ZIP" field="pricingZIP" />
+            <EditableField label="Provider SPS" field="providerSPS" />
+            <EditableField label="Provider EPIN" field="providerEPIN" />
+            <EditableField label="License #" field="licenseNumber" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="Network option" value={providerInfo.networkOption} />
-            <InfoField label="Specialty" value={providerInfo.specialty} />
-            <InfoField label="Taxonomy" value={providerInfo.taxonomy} />
-            <InfoField label="Emergency Pricing ind" value={providerInfo.emergencyPricingInd} />
+            <EditableField label="Network option" field="networkOption" />
+            <EditableField label="Specialty" field="specialty" />
+            <EditableField label="Taxonomy" field="taxonomy" />
+            <EditableField label="Emergency Pricing ind" field="emergencyPricingInd" />
           </div>
         </CardContent>
       </Card>
@@ -53,22 +69,22 @@ const ProviderInformation = ({ providerInfo }: ProviderInformationProps) => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="Billing Tax id" value={providerInfo.billingTaxId} />
-            <InfoField label="NPI" value={providerInfo.billingNPI} />
-            <InfoField label="Name2" value={providerInfo.billingName2} />
-            <InfoField label="Facility type" value={providerInfo.facilityType} />
+            <EditableField label="Billing Tax id" field="billingTaxId" />
+            <EditableField label="NPI" field="billingNPI" />
+            <EditableField label="Name2" field="billingName2" />
+            <EditableField label="Facility type" field="facilityType" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="Provider SPS3" value={providerInfo.providerSPS3} />
-            <InfoField label="Provider EPIN4" value={providerInfo.providerEPIN4} />
-            <InfoField label="Medicare ID" value={providerInfo.medicareId} />
-            <InfoField label="Address5" value={providerInfo.address5} />
+            <EditableField label="Provider SPS3" field="providerSPS3" />
+            <EditableField label="Provider EPIN4" field="providerEPIN4" />
+            <EditableField label="Medicare ID" field="medicareId" />
+            <EditableField label="Address5" field="address5" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="National state" value={providerInfo.nationalState} />
-            <InfoField label="Location code" value={providerInfo.locationCode} />
-            <InfoField label="BHA provider indicator" value={providerInfo.bhaProviderIndicator} />
-            <InfoField label="Taxonomy6" value={providerInfo.taxonomy6} />
+            <EditableField label="National state" field="nationalState" />
+            <EditableField label="Location code" field="locationCode" />
+            <EditableField label="BHA provider indicator" field="bhaProviderIndicator" />
+            <EditableField label="Taxonomy6" field="taxonomy6" />
           </div>
         </CardContent>
       </Card>
@@ -82,8 +98,8 @@ const ProviderInformation = ({ providerInfo }: ProviderInformationProps) => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="Referring Referring physician" value={providerInfo.referringPhysician} />
-            <InfoField label="NPI7" value={providerInfo.referringNPI7} />
+            <EditableField label="Referring Referring physician" field="referringPhysician" />
+            <EditableField label="NPI7" field="referringNPI7" />
           </div>
         </CardContent>
       </Card>
@@ -97,8 +113,8 @@ const ProviderInformation = ({ providerInfo }: ProviderInformationProps) => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="provider" value={providerInfo.serviceProvider} />
-            <InfoField label="Service facility/facility tier" value={providerInfo.serviceFacilityTier} />
+            <EditableField label="provider" field="serviceProvider" />
+            <EditableField label="Service facility/facility tier" field="serviceFacilityTier" />
           </div>
         </CardContent>
       </Card>
@@ -112,9 +128,9 @@ const ProviderInformation = ({ providerInfo }: ProviderInformationProps) => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="NPI8" value={providerInfo.npi8} />
-            <InfoField label="NSB Indicator" value={providerInfo.nsbIndicator} />
-            <InfoField label="Alternate Facility NPI" value={providerInfo.alternateFacilityNPI} />
+            <EditableField label="NPI8" field="npi8" />
+            <EditableField label="NSB Indicator" field="nsbIndicator" />
+            <EditableField label="Alternate Facility NPI" field="alternateFacilityNPI" />
           </div>
         </CardContent>
       </Card>
