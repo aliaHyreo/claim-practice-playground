@@ -24,6 +24,7 @@ const ClaimDetails = () => {
   const [claim, setClaim] = useState<Claim | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedAction, setSelectedAction] = useState<string>("");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     if (dcn) {
@@ -50,6 +51,7 @@ const ClaimDetails = () => {
       const refreshedClaim = ClaimsService.refreshClaimData(dcn);
       if (refreshedClaim) {
         setClaim(refreshedClaim);
+        setRefreshKey(prev => prev + 1); // Force re-render of all child components
         toast({
           title: "Data refreshed",
           description: "Claim data has been updated with latest information.",
@@ -256,7 +258,7 @@ const ClaimDetails = () => {
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold mb-4">Member Information</h3>
                     {claim.memberInfo ? (
-                      <MemberInformation memberInfo={claim.memberInfo} />
+                      <MemberInformation key={`member-${refreshKey}`} memberInfo={claim.memberInfo} />
                     ) : (
                       <div className="text-muted-foreground">No member information available.</div>
                     )}
@@ -304,15 +306,15 @@ const ClaimDetails = () => {
               </TabsContent>
 
               <TabsContent value="claim-lines">
-                <ClaimLines claimLines={claim.claimLines} />
+                <ClaimLines key={`lines-${refreshKey}`} claimLines={claim.claimLines} />
               </TabsContent>
 
               <TabsContent value="claim-data">
-                <ClaimData claimData={claim.claimData} />
+                <ClaimData key={`data-${refreshKey}`} claimData={claim.claimData} />
               </TabsContent>
 
               <TabsContent value="search">
-                <SearchTabs searchData={claim.searchData} />
+                <SearchTabs key={`search-${refreshKey}`} searchData={claim.searchData} />
               </TabsContent>
             </Tabs>
           </CardContent>
