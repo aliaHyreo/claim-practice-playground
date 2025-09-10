@@ -24,8 +24,9 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
         id={field}
         value={formData[field] || ''}
         onChange={(e) => handleInputChange(field, e.target.value)}
-        className="h-10"
+        className={`h-10 ${readonly ? 'focus:ring-0 focus:ring-offset-0 focus:border-input cursor-default' : ''}`}
         readOnly={readonly}
+        tabIndex={readonly ? -1 : 0}
       />
     </div>
   );
