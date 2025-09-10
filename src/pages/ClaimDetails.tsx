@@ -122,23 +122,29 @@ const ClaimDetails = () => {
         <Card className="mb-6">
           <CardContent className="p-6">
             {/* Main header row */}
-            <div className="flex flex-wrap items-center gap-4 mb-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">DCN</span>
-                <span className="font-bold text-lg">{claim.dcn}</span>
+            <div className="flex flex-wrap items-center gap-6 mb-4">
+              {/* DCN Section */}
+              <div className="flex items-center gap-3">
+                <div className="bg-blue-50 border border-blue-200 rounded-full px-4 py-2">
+                  <div className="text-xs text-blue-600 font-medium mb-1">DCN</div>
+                  <div className="font-bold text-sm text-blue-900">{claim.dcn}</div>
+                </div>
               </div>
               
-              {/* Edits badges */}
-              <div className="flex flex-wrap gap-1">
-                {claim.edits.map((edit) => (
-                  <Badge 
-                    key={edit} 
-                    variant={getEditBadgeVariant(edit)}
-                    className="text-xs px-2 py-1"
-                  >
-                    {edit}
-                  </Badge>
-                ))}
+              {/* Edits Section */}
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-blue-600">EDITS</span>
+                <div className="flex flex-wrap gap-2">
+                  {claim.edits.map((edit) => (
+                    <Badge 
+                      key={edit} 
+                      variant={getEditBadgeVariant(edit)}
+                      className="text-xs px-2 py-1 font-medium"
+                    >
+                      {edit}
+                    </Badge>
+                  ))}
+                </div>
               </div>
               
               <div className="ml-auto">
