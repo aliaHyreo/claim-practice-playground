@@ -1,6 +1,7 @@
 import React from 'react';
 import { ClaimLine } from '@/services/claimsService';
 import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 interface ClaimLinesProps {
   claimLines?: ClaimLine[];
@@ -56,37 +57,65 @@ const ClaimLines: React.FC<ClaimLinesProps> = ({ claimLines }) => {
           <tbody>
             {claimLines.map((line, index) => (
               <tr key={index} className="border-b">
-                <td className="py-3 px-4 text-gray-800 text-sm">
-                  {line.lineNo}
+                <td className="py-2 px-2">
+                  <Input
+                    defaultValue={line.lineNo}
+                    className="text-sm min-w-[80px]"
+                  />
                 </td>
-                <td className="py-3 px-4 text-gray-800 text-sm">
-                  {line.serviceFromDate}
+                <td className="py-2 px-2">
+                  <Input
+                    defaultValue={line.serviceFromDate}
+                    className="text-sm min-w-[120px]"
+                  />
                 </td>
-                <td className="py-3 px-4 text-gray-800 text-sm">
-                  {line.serviceToDate}
+                <td className="py-2 px-2">
+                  <Input
+                    defaultValue={line.serviceToDate}
+                    className="text-sm min-w-[120px]"
+                  />
                 </td>
-                <td className="py-3 px-4 text-gray-800 text-sm">
-                  {line.pos}
+                <td className="py-2 px-2">
+                  <Input
+                    defaultValue={line.pos}
+                    className="text-sm min-w-[80px]"
+                  />
                 </td>
-                <td className="py-3 px-4 text-gray-800 text-sm">
-                  {line.service}
+                <td className="py-2 px-2">
+                  <Input
+                    defaultValue={line.service}
+                    className="text-sm min-w-[100px]"
+                  />
                 </td>
-                <td className="py-3 px-4 text-gray-800 text-sm">
-                  {line.procedureCode}
+                <td className="py-2 px-2">
+                  <Input
+                    defaultValue={line.procedureCode}
+                    className="text-sm min-w-[100px]"
+                  />
                 </td>
-                <td className="py-3 px-4 text-gray-800 text-sm">
-                  {line.modifiers.join(', ')}
+                <td className="py-2 px-2">
+                  <Input
+                    defaultValue={line.modifiers.join(', ')}
+                    className="text-sm min-w-[120px]"
+                  />
                 </td>
-                <td className="py-3 px-4 text-gray-800 text-sm">
-                  {line.units}
+                <td className="py-2 px-2">
+                  <Input
+                    defaultValue={line.units}
+                    className="text-sm min-w-[80px]"
+                  />
                 </td>
-                <td className="py-3 px-4 text-gray-800 text-sm">
-                  {line.diagnosis}
+                <td className="py-2 px-2">
+                  <Input
+                    defaultValue={line.diagnosis}
+                    className="text-sm min-w-[100px]"
+                  />
                 </td>
-                <td className="py-3 px-4 text-gray-800 text-sm">
-                  <span className="bg-gray-50 px-2 py-1 rounded text-xs font-medium">
-                    ${line.billed}
-                  </span>
+                <td className="py-2 px-2">
+                  <Input
+                    defaultValue={line.billed}
+                    className="text-sm min-w-[100px]"
+                  />
                 </td>
               </tr>
             ))}
