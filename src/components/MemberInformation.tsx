@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { type MemberInfo } from "@/services/claimsService";
 
 interface MemberInformationProps {
@@ -6,10 +9,23 @@ interface MemberInformationProps {
 }
 
 const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
-  const InfoField = ({ label, value }: { label: string; value: string }) => (
-    <div className="space-y-1">
-      <span className="text-sm text-muted-foreground">{label}</span>
-      <div className="font-medium text-foreground">{value || '-'}</div>
+  const [formData, setFormData] = useState(memberInfo);
+
+  const handleInputChange = (field: keyof MemberInfo, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const EditableField = ({ label, field }: { label: string; field: keyof MemberInfo }) => (
+    <div className="space-y-2">
+      <Label htmlFor={field} className="text-sm text-muted-foreground">
+        {label}
+      </Label>
+      <Input
+        id={field}
+        value={formData[field] || ''}
+        onChange={(e) => handleInputChange(field, e.target.value)}
+        className="h-10"
+      />
     </div>
   );
 
@@ -24,27 +40,27 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="First Name" value={memberInfo.firstName} />
-            <InfoField label="Middle name" value={memberInfo.middleName} />
-            <InfoField label="Last name" value={memberInfo.lastName} />
-            <InfoField label="HCID" value={memberInfo.hcid} />
+            <EditableField label="First Name" field="firstName" />
+            <EditableField label="Middle name" field="middleName" />
+            <EditableField label="Last name" field="lastName" />
+            <EditableField label="HCID" field="hcid" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="DOB" value={memberInfo.dob} />
-            <InfoField label="Sex" value={memberInfo.sex} />
-            <InfoField label="Member prefix" value={memberInfo.memberPrefix} />
-            <InfoField label="Program Code" value={memberInfo.programCode} />
+            <EditableField label="DOB" field="dob" />
+            <EditableField label="Sex" field="sex" />
+            <EditableField label="Member prefix" field="memberPrefix" />
+            <EditableField label="Program Code" field="programCode" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="Relationship" value={memberInfo.relationship} />
-            <InfoField label="Member code" value={memberInfo.memberCode} />
-            <InfoField label="Contract type" value={memberInfo.contractType} />
-            <InfoField label="ERISA" value={memberInfo.erisa} />
+            <EditableField label="Relationship" field="relationship" />
+            <EditableField label="Member code" field="memberCode" />
+            <EditableField label="Contract type" field="contractType" />
+            <EditableField label="ERISA" field="erisa" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="PCP" value={memberInfo.pcp} />
-            <InfoField label="PCP state" value={memberInfo.pcpState} />
-            <InfoField label="PCP relationship" value={memberInfo.pcpRelationship} />
+            <EditableField label="PCP" field="pcp" />
+            <EditableField label="PCP state" field="pcpState" />
+            <EditableField label="PCP relationship" field="pcpRelationship" />
             <div></div>
           </div>
         </CardContent>
@@ -59,7 +75,7 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="Subscriber ID" value={memberInfo.subscriberId} />
+            <EditableField label="Subscriber ID" field="subscriberId" />
           </div>
         </CardContent>
       </Card>
@@ -73,15 +89,15 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="Group name" value={memberInfo.groupName} />
-            <InfoField label="Group contract #" value={memberInfo.groupContract} />
-            <InfoField label="Detail contract code" value={memberInfo.detailContractCode} />
-            <InfoField label="Product" value={memberInfo.product} />
+            <EditableField label="Group name" field="groupName" />
+            <EditableField label="Group contract #" field="groupContract" />
+            <EditableField label="Detail contract code" field="detailContractCode" />
+            <EditableField label="Product" field="product" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <InfoField label="Group ID" value={memberInfo.groupId} />
-            <InfoField label="Network name" value={memberInfo.networkName} />
-            <InfoField label="Network ID" value={memberInfo.networkId} />
+            <EditableField label="Group ID" field="groupId" />
+            <EditableField label="Network name" field="networkName" />
+            <EditableField label="Network ID" field="networkId" />
             <div></div>
           </div>
         </CardContent>
