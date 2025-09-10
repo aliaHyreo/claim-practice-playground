@@ -122,87 +122,87 @@ const ClaimDetails = () => {
         <Card className="mb-6">
           <CardContent className="p-6">
             {/* Main header row */}
-            <div className="flex flex-wrap items-center gap-6 mb-4">
+            <div className="flex items-center gap-6">
               {/* DCN Section */}
-              <div className="flex items-center gap-3">
-                <div className="bg-blue-50 border border-blue-200 rounded-full px-4 py-2">
-                  <div className="text-xs text-blue-600 font-medium mb-1">DCN</div>
-                  <div className="font-bold text-sm text-blue-900">{claim.dcn}</div>
-                </div>
+              <div className="bg-blue-50 border border-blue-200 rounded-full px-4 py-2">
+                <div className="text-xs text-blue-600 font-medium mb-1">DCN</div>
+                <div className="font-bold text-sm text-blue-900">{claim.dcn}</div>
               </div>
               
               {/* Edits Section */}
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-blue-600">EDITS</span>
-                <div className="flex flex-wrap gap-2">
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2 flex items-center gap-3">
+                <span className="text-sm font-medium text-gray-600">EDITS</span>
+                <div className="flex gap-1">
                   {claim.edits.map((edit) => (
                     <Badge 
                       key={edit} 
                       variant={getEditBadgeVariant(edit)}
-                      className="text-xs px-2 py-1 font-medium"
+                      className="text-xs px-2 py-1 font-medium rounded"
                     >
                       {edit}
                     </Badge>
                   ))}
                 </div>
               </div>
-              
-              <div className="ml-auto">
+
+              {/* Financial Information */}
+              <div className="flex items-center gap-6 ml-auto">
+                <div className="flex items-center gap-4">
+                  <div className="text-center">
+                    <div className="text-xs text-blue-600 font-medium">Billed</div>
+                    <div className="font-bold text-sm">${claim.billed}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-blue-600 font-medium">Claim Allowed</div>
+                    <div className="font-bold text-sm">{claim.allowed}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-blue-600 font-medium">Paid</div>
+                    <div className="font-bold text-sm">${claim.paid}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-blue-600 font-medium">Action Code</div>
+                    <div className="font-bold text-sm">{claim.actionCode || '-'}</div>
+                  </div>
+                </div>
+
+                {/* Action Section */}
+                <div className="bg-red-100 border border-red-200 rounded-2xl px-4 py-2 flex items-center gap-3">
+                  <span className="text-sm font-medium text-red-700">Action</span>
+                  <div className="flex items-center gap-2">
+                    <Select value={selectedAction} onValueChange={setSelectedAction}>
+                      <SelectTrigger className="w-32 h-8 text-xs bg-white border-gray-300 hover:bg-gray-50">
+                        <SelectValue placeholder="Find items" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                        <SelectItem value="pay">Pay</SelectItem>
+                        <SelectItem value="deny">Deny</SelectItem>
+                        <SelectItem value="pend">Pend</SelectItem>
+                        <SelectItem value="route">Route</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {selectedAction && (
+                      <Button
+                        size="sm"
+                        onClick={handleActionSubmit}
+                        className="h-8 px-3 text-xs bg-green-600 hover:bg-green-700"
+                      >
+                        Submit
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Refresh Button */}
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onClick={handleRefresh}
                   disabled={isRefreshing}
-                  className="rounded-lg"
+                  className="p-2"
                 >
-                  <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                  Refresh
+                  <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                 </Button>
-              </div>
-            </div>
-
-            {/* Financial info row */}
-            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm">
-              <div>
-                <span className="text-muted-foreground">Billed</span>
-                <div className="font-semibold">${claim.billed}</div>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Claim Allowed</span>
-                <div className="font-semibold">${claim.allowed}</div>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Paid</span>
-                <div className="font-semibold">${claim.paid}</div>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Action Code</span>
-                <div className="font-semibold">{claim.actionCode || '-'}</div>
-              </div>
-              <div className="col-span-2">
-                <span className="text-muted-foreground">Action</span>
-                <div className="flex items-center gap-2 mt-1">
-                  <Select value={selectedAction} onValueChange={setSelectedAction}>
-                    <SelectTrigger className="w-32 h-8 text-xs bg-blue-50 border-blue-200 hover:bg-blue-100">
-                      <SelectValue placeholder="Find items" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="pay">Pay</SelectItem>
-                      <SelectItem value="deny">Deny</SelectItem>
-                      <SelectItem value="pend">Pend</SelectItem>
-                      <SelectItem value="route">Route</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {selectedAction && (
-                    <Button
-                      size="sm"
-                      onClick={handleActionSubmit}
-                      className="h-8 px-3 text-xs bg-green-600 hover:bg-green-700"
-                    >
-                      Submit
-                    </Button>
-                  )}
-                </div>
               </div>
             </div>
           </CardContent>
