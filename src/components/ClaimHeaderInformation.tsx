@@ -10,18 +10,34 @@ interface ClaimHeaderInformationProps {
 const ClaimHeaderInformation = ({ claimHeaderInfo }: ClaimHeaderInformationProps) => {
   const { generalClaimData, benefitIndicators, diagnosisCodes } = claimHeaderInfo;
 
-  const EditableField = ({ label, value }: { label: string; value: string }) => (
-    <div className="space-y-2">
-      <Label htmlFor={label.replace(/\s+/g, '-').toLowerCase()} className="text-sm font-medium text-foreground">
-        {label}
-      </Label>
-      <Input
-        id={label.replace(/\s+/g, '-').toLowerCase()}
-        defaultValue={value}
-        className="text-sm"
-      />
-    </div>
-  );
+  const editableFields = ["ServiceFromDate", "ServiceToDate", "Dx 1", "Dx 2", "Dx 3", "Patient account #"];
+  
+  const EditableField = ({ label, value }: { label: string; value: string }) => {
+    const isEditable = editableFields.includes(label);
+    
+    return (
+      <div className="space-y-2">
+        <Label htmlFor={label.replace(/\s+/g, '-').toLowerCase()} className="text-sm font-medium text-foreground">
+          {label}
+        </Label>
+        <Input
+          id={label.replace(/\s+/g, '-').toLowerCase()}
+          defaultValue={value}
+          className="text-sm"
+          readOnly={!isEditable}
+          tabIndex={isEditable ? 0 : -1}
+          style={!isEditable ? { 
+            cursor: 'default',
+            backgroundColor: 'transparent',
+            border: '1px solid hsl(var(--border))',
+            outline: 'none',
+            boxShadow: 'none'
+          } : {}}
+          onFocus={!isEditable ? (e) => e.target.blur() : undefined}
+        />
+      </div>
+    );
+  };
 
   const SectionHeader = ({ title }: { title: string }) => (
     <div className="col-span-full">
