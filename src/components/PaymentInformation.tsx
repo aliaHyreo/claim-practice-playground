@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { PaymentInfo } from "@/services/claimsService";
 
 interface PaymentInformationProps {
@@ -6,28 +9,68 @@ interface PaymentInformationProps {
 }
 
 const PaymentInformation = ({ paymentInfo }: PaymentInformationProps) => {
-  const formatValue = (value: number | string | null) => {
-    if (value === null || value === undefined || value === "") return "-";
-    if (typeof value === "number" && value === 0) return "0";
-    return value.toString();
+  const [formData, setFormData] = useState(paymentInfo);
+
+  const handleClaimInputChange = (field: keyof typeof paymentInfo.claim, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      claim: { ...prev.claim, [field]: value }
+    }));
   };
 
-  const Field = ({ 
-    label, 
-    value, 
-    isGrayed = false 
-  }: { 
-    label: string; 
-    value: string | number | null; 
-    isGrayed?: boolean;
-  }) => (
-    <div className="flex flex-col space-y-1">
-      <span className={`text-sm ${isGrayed ? 'text-muted-foreground' : 'text-muted-foreground'}`}>
+  const handleProviderInputChange = (field: keyof typeof paymentInfo.provider, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      provider: { ...prev.provider, [field]: value }
+    }));
+  };
+
+  const handleDrgInputChange = (field: keyof typeof paymentInfo.drg, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      drg: { ...prev.drg, [field]: value }
+    }));
+  };
+
+  const EditableClaimField = ({ label, field }: { label: string; field: keyof typeof paymentInfo.claim }) => (
+    <div className="space-y-2">
+      <Label htmlFor={field} className="text-sm text-muted-foreground">
         {label}
-      </span>
-      <span className={`font-medium ${isGrayed ? 'text-muted-foreground italic' : 'text-foreground'}`}>
-        {formatValue(value)}
-      </span>
+      </Label>
+      <Input
+        id={field}
+        value={formData.claim[field]?.toString() || ''}
+        onChange={(e) => handleClaimInputChange(field, e.target.value)}
+        className="h-10"
+      />
+    </div>
+  );
+
+  const EditableProviderField = ({ label, field }: { label: string; field: keyof typeof paymentInfo.provider }) => (
+    <div className="space-y-2">
+      <Label htmlFor={field} className="text-sm text-muted-foreground">
+        {label}
+      </Label>
+      <Input
+        id={field}
+        value={formData.provider[field]?.toString() || ''}
+        onChange={(e) => handleProviderInputChange(field, e.target.value)}
+        className="h-10"
+      />
+    </div>
+  );
+
+  const EditableDrgField = ({ label, field }: { label: string; field: keyof typeof paymentInfo.drg }) => (
+    <div className="space-y-2">
+      <Label htmlFor={field} className="text-sm text-muted-foreground">
+        {label}
+      </Label>
+      <Input
+        id={field}
+        value={formData.drg[field]?.toString() || ''}
+        onChange={(e) => handleDrgInputChange(field, e.target.value)}
+        className="h-10"
+      />
     </div>
   );
 
@@ -44,17 +87,17 @@ const PaymentInformation = ({ paymentInfo }: PaymentInformationProps) => {
         <SectionHeader title="Claim" />
         <CardContent className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Field label="Deduct" value={paymentInfo.claim.deductible} />
-            <Field label="Copay" value={paymentInfo.claim.copay} />
-            <Field label="Coins" value={paymentInfo.claim.coins} />
-            <Field label="Patient liab" value={paymentInfo.claim.patientLiability} />
-            <Field label="Member sur" value={paymentInfo.claim.memberSurcharge} />
-            <Field label="Non-elg" value={paymentInfo.claim.nonEligible} />
-            <Field label="HRA paid" value={paymentInfo.claim.hraPaid} />
-            <Field label="Claim paid" value={paymentInfo.claim.claimPaid} />
-            <Field label="Pricing allowed amount" value={paymentInfo.claim.pricingAllowedAmount} />
-            <Field label="Total charge" value={paymentInfo.claim.totalCharge} />
-            <Field label="Finalization code" value={paymentInfo.claim.finalizationCode} />
+            <EditableClaimField label="Deduct" field="deductible" />
+            <EditableClaimField label="Copay" field="copay" />
+            <EditableClaimField label="Coins" field="coins" />
+            <EditableClaimField label="Patient liab" field="patientLiability" />
+            <EditableClaimField label="Member sur" field="memberSurcharge" />
+            <EditableClaimField label="Non-elg" field="nonEligible" />
+            <EditableClaimField label="HRA paid" field="hraPaid" />
+            <EditableClaimField label="Claim paid" field="claimPaid" />
+            <EditableClaimField label="Pricing allowed amount" field="pricingAllowedAmount" />
+            <EditableClaimField label="Total charge" field="totalCharge" />
+            <EditableClaimField label="Finalization code" field="finalizationCode" />
           </div>
         </CardContent>
       </Card>
@@ -64,14 +107,14 @@ const PaymentInformation = ({ paymentInfo }: PaymentInformationProps) => {
         <SectionHeader title="Provider" />
         <CardContent className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Field label="Provider disc" value={paymentInfo.provider.providerDiscount} />
-            <Field label="Provider liab" value={paymentInfo.provider.providerLiability} />
-            <Field label="Provider risk withhold" value={paymentInfo.provider.providerRiskWithhold} />
-            <Field label="Provider sur" value={paymentInfo.provider.providerSurcharge} />
-            <Field label="Interest" value={paymentInfo.provider.interest} />
-            <Field label="Penalty" value={paymentInfo.provider.penalty} />
-            <Field label="L/R Ind" value={paymentInfo.provider.lrIndicator} />
-            <Field label="System Interest" value={paymentInfo.provider.systemInterest} />
+            <EditableProviderField label="Provider disc" field="providerDiscount" />
+            <EditableProviderField label="Provider liab" field="providerLiability" />
+            <EditableProviderField label="Provider risk withhold" field="providerRiskWithhold" />
+            <EditableProviderField label="Provider sur" field="providerSurcharge" />
+            <EditableProviderField label="Interest" field="interest" />
+            <EditableProviderField label="Penalty" field="penalty" />
+            <EditableProviderField label="L/R Ind" field="lrIndicator" />
+            <EditableProviderField label="System Interest" field="systemInterest" />
           </div>
         </CardContent>
       </Card>
@@ -81,16 +124,16 @@ const PaymentInformation = ({ paymentInfo }: PaymentInformationProps) => {
         <SectionHeader title="DRG" />
         <CardContent className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Field label="Amount" value={paymentInfo.drg.amount} />
-            <Field label="Check #" value={paymentInfo.drg.checkNumber} />
-            <Field label="Check date" value={paymentInfo.drg.checkDate} />
-            <Field label="Payment system" value={paymentInfo.drg.paymentSystem} />
-            <Field label="Check status" value={paymentInfo.drg.checkStatus} />
-            <Field label="Check status date" value={paymentInfo.drg.checkStatusDate} />
-            <Field label="Paid to" value={paymentInfo.drg.paidTo} />
-            <Field label="Account #" value={paymentInfo.drg.accountNumber} />
-            <Field label="EFT check date" value={paymentInfo.drg.eftCheckDate} />
-            <Field label="Priced" value={paymentInfo.drg.priced} />
+            <EditableDrgField label="Amount" field="amount" />
+            <EditableDrgField label="Check #" field="checkNumber" />
+            <EditableDrgField label="Check date" field="checkDate" />
+            <EditableDrgField label="Payment system" field="paymentSystem" />
+            <EditableDrgField label="Check status" field="checkStatus" />
+            <EditableDrgField label="Check status date" field="checkStatusDate" />
+            <EditableDrgField label="Paid to" field="paidTo" />
+            <EditableDrgField label="Account #" field="accountNumber" />
+            <EditableDrgField label="EFT check date" field="eftCheckDate" />
+            <EditableDrgField label="Priced" field="priced" />
           </div>
         </CardContent>
       </Card>
