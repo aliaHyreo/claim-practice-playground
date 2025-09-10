@@ -136,8 +136,7 @@ const ClaimDetails = () => {
                   {claim.edits.map((edit) => (
                     <Badge 
                       key={edit} 
-                      variant={getEditBadgeVariant(edit)}
-                      className="text-xs px-2 py-1 font-medium rounded"
+                      className="text-xs px-2 py-1 font-medium rounded bg-blue-100 text-blue-800 border-blue-200"
                     >
                       {edit}
                     </Badge>
