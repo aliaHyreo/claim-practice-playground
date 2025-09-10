@@ -136,7 +136,11 @@ const ClaimDetails = () => {
                   {claim.edits.map((edit) => (
                     <Badge 
                       key={edit} 
-                      className="text-xs px-2 py-1 font-medium rounded bg-blue-100 text-blue-800 border-blue-200"
+                      className={`text-xs px-2 py-1 font-medium rounded ${
+                        edit === "507" 
+                          ? "bg-red-100 text-red-800 border-red-200" 
+                          : "bg-blue-100 text-blue-800 border-blue-200"
+                      }`}
                     >
                       {edit}
                     </Badge>
