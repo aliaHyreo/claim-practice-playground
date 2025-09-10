@@ -124,14 +124,14 @@ const ClaimDetails = () => {
             {/* Main header row */}
             <div className="flex items-center gap-6">
               {/* DCN Section */}
-              <div className="bg-blue-50 border border-blue-200 rounded-full px-4 py-2">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
                 <div className="text-xs text-blue-600 font-medium mb-1">DCN</div>
                 <div className="font-bold text-sm text-blue-900">{claim.dcn}</div>
               </div>
               
               {/* Edits Section */}
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2">
-                <span className="text-xs text-blue-600 font-medium mb-1">EDITS</span>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                <span className="text-xs text-blue-600 font-medium mb-1">Edits</span>
                 <div className="flex gap-1">
                   {claim.edits.map((edit) => (
                     <Badge 
@@ -167,8 +167,8 @@ const ClaimDetails = () => {
                 </div>
 
                 {/* Action Section */}
-                <div className="bg-red-100 border border-red-200 rounded-2xl px-4 py-2 flex items-center gap-3">
-                  <span className="text-sm font-medium text-red-700">Action</span>
+                <div className="bg-red-100 border border-red-200 rounded-2xl px-4 py-2">
+                  <span className="text-xs text-blue-600 font-medium mb-1">Action</span>
                   <div className="flex items-center gap-2">
                     <Select value={selectedAction} onValueChange={setSelectedAction}>
                       <SelectTrigger className="w-32 h-8 text-xs bg-white border-gray-300 hover:bg-gray-50">
