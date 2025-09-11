@@ -875,8 +875,8 @@ const ClaimImage = ({ claimImageData }: ClaimImageProps) => {
       </Card>
 
       {/* Validation Alerts */}
-      /* {hasCodeMismatch && (
-        <Card className="bg-red-50 border border-red-200">
+      {hasCodeMismatch && (
+        /* <Card className="bg-red-50 border border-red-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 text-red-800 text-sm font-medium mb-2">
               <XCircle className="w-4 h-4" />
@@ -886,8 +886,8 @@ const ClaimImage = ({ claimImageData }: ClaimImageProps) => {
               System code ({claimImageData.claimLineCodeSystem}) differs from claim image code ({claimImageData.claimLineCodeImage})
             </div>
           </CardContent>
-        </Card>
-      )} */
+        </Card> */
+      )} 
 
       {/* Eligibility Validation Section */}
       {/* <Card className="bg-yellow-50 border border-yellow-200">
