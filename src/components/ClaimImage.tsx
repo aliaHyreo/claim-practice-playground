@@ -620,14 +620,14 @@ const ClaimImage = ({ claimImageData }: ClaimImageProps) => {
               <div className="p-1 border-r border-gray-800 text-center font-bold">1</div>
               <div className="p-1 border-r border-gray-800">
                 <div className="grid grid-cols-3 gap-1 text-xs">
-                  <Input defaultValue="08" className="text-center h-5 border-none" />
-                  <Input defaultValue="03" className="text-center h-5 border-none" />
-                  <Input defaultValue="23" className="text-center h-5 border-none" />
+                  <Input defaultValue="08" className="text-center h-5 border-none px-0" />
+                  <Input defaultValue="03" className="text-center h-5 border-none px-0" />
+                  <Input defaultValue="23" className="text-center h-5 border-none px-0" />
                 </div>
                 <div className="grid grid-cols-3 gap-1 text-xs mt-1">
-                  <Input defaultValue="08" className="text-center h-5 border-none" />
-                  <Input defaultValue="03" className="text-center h-5 border-none" />
-                  <Input defaultValue="23" className="text-center h-5 border-none" />
+                  <Input defaultValue="08" className="text-center h-5 border-none px-0" />
+                  <Input defaultValue="03" className="text-center h-5 border-none px-0" />
+                  <Input defaultValue="23" className="text-center h-5 border-none px-0" />
                 </div>
               </div>
               <div className="p-1 border-r border-gray-800 text-center">
