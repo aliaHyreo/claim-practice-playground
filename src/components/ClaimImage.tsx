@@ -875,7 +875,7 @@ const ClaimImage = ({ claimImageData }: ClaimImageProps) => {
       </Card>
 
       {/* Validation Alerts */}
-      {hasCodeMismatch && (
+      /* {hasCodeMismatch && (
         <Card className="bg-red-50 border border-red-200">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 text-red-800 text-sm font-medium mb-2">
@@ -887,10 +887,10 @@ const ClaimImage = ({ claimImageData }: ClaimImageProps) => {
             </div>
           </CardContent>
         </Card>
-      )}
+      )} */
 
       {/* Eligibility Validation Section */}
-      <Card className="bg-yellow-50 border border-yellow-200">
+      {/* <Card className="bg-yellow-50 border border-yellow-200">
         <CardHeader className="pb-3">
           <CardTitle className="text-yellow-800 font-semibold text-sm flex items-center gap-2">
             <AlertTriangle className="w-4 h-4" />
@@ -910,7 +910,7 @@ const ClaimImage = ({ claimImageData }: ClaimImageProps) => {
             ))}
           </ul>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 };
