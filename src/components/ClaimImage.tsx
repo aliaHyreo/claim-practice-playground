@@ -886,8 +886,8 @@ const ClaimImage = ({ claimImageData }: ClaimImageProps) => {
               System code ({claimImageData.claimLineCodeSystem}) differs from claim image code ({claimImageData.claimLineCodeImage})
             </div>
           </CardContent>
-        </Card> */
-      )} 
+        </Card>
+      )*/} 
 
       {/* Eligibility Validation Section */}
       {/* <Card className="bg-yellow-50 border border-yellow-200">
