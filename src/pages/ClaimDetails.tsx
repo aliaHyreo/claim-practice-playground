@@ -69,6 +69,7 @@ const ClaimDetails = () => {
   };
 
   const handleActionSubmit = () => {
+    // Scenario 1: Basic data validation
     if (selectedAction === "pay" && dcn === "25048AA1000") {
       // Validate scenario 1 - check if corrected member data matches expected claim form data from claim image
       const expectedClaimFormData = {
@@ -145,6 +146,79 @@ const ClaimDetails = () => {
         toast({
           title: "❌ DATA MISMATCH ERROR - SCENARIO 1 FAIL",
           description: `Member information does not match claim form data. Mismatches: ${mismatches.join(", ")}. Please correct the member information.`,
+          variant: "destructive",
+          duration: 10000,
+          className: "border-2 border-red-500 bg-red-50 text-red-900"
+        });
+      }
+    } 
+    // Scenario 2: Contract validation
+    else if (selectedAction === "pay" && dcn === "25048AA1001") {
+      const currentMemberData = currentMemberInfo || claim?.memberInfo;
+      
+      if (!currentMemberData) {
+        toast({
+          title: "❌ DATA VALIDATION ERROR",
+          description: "No member information available for validation. Please search and select the correct member first.",
+          variant: "destructive",
+          duration: 7000,
+          className: "border-2 border-red-500 bg-red-50 text-red-900"
+        });
+        setSelectedAction("");
+        return;
+      }
+
+      // Get service dates from claim lines for validation
+      const serviceDateFrom = claim?.claimLines?.[0]?.serviceFromDate; // Should be "2023-08-04"
+      const serviceDateTo = claim?.claimLines?.[0]?.serviceToDate; // Should be "2023-08-04"
+      
+      if (!serviceDateFrom || !serviceDateTo) {
+        toast({
+          title: "❌ SERVICE DATE ERROR",
+          description: "Service dates not found in claim lines. Cannot validate contract coverage.",
+          variant: "destructive",
+          duration: 7000,
+          className: "border-2 border-red-500 bg-red-50 text-red-900"
+        });
+        setSelectedAction("");
+        return;
+      }
+
+      // Check if contract dates are available (should be populated after applying correct contract)
+      const effectiveDate = currentMemberData.effectiveDate;
+      const endDate = currentMemberData.endDate;
+      
+      if (!effectiveDate || !endDate) {
+        toast({
+          title: "❌ CONTRACT VALIDATION ERROR - SCENARIO 2 FAIL",
+          description: `Group information is incorrect. Current Group# ${currentMemberData.groupId || currentMemberData.groupContract} has expired contract dates. Please search by HCID "${currentMemberData.hcid}" in Member tab under Search to find the correct active contract.`,
+          variant: "destructive",
+          duration: 12000,
+          className: "border-2 border-red-500 bg-red-50 text-red-900"
+        });
+        setSelectedAction("");
+        return;
+      }
+
+      // Validate service dates fall within contract period
+      const serviceDate = new Date(serviceDateFrom);
+      const contractStart = new Date(effectiveDate);
+      const contractEnd = new Date(endDate);
+
+      const isServiceDateValid = serviceDate >= contractStart && serviceDate <= contractEnd;
+      
+      if (isServiceDateValid) {
+        toast({
+          title: "🎉 VALIDATION SUCCESS - SCENARIO 2 PASS",
+          description: `✅ Contract validation successful!\n• Service Date: ${serviceDateFrom}\n• Contract Period: ${effectiveDate} to ${endDate}\n• Group#: ${currentMemberData.groupId}`,
+          duration: 8000,
+          className: "border-2 border-green-500 bg-green-50 text-green-900"
+        });
+        setTimeout(() => navigate("/search"), 1500);
+      } else {
+        toast({
+          title: "❌ CONTRACT VALIDATION ERROR - SCENARIO 2 FAIL",
+          description: `Service date ${serviceDateFrom} falls outside contract period ${effectiveDate} to ${endDate}. Please select the correct active contract for Group# ${currentMemberData.groupId}.`,
           variant: "destructive",
           duration: 10000,
           className: "border-2 border-red-500 bg-red-50 text-red-900"

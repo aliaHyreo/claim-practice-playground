@@ -26,6 +26,16 @@ export interface MemberInfo {
   groupId: string;
   networkName: string;
   networkId: string;
+  // Group contract details for validation
+  effectiveDate?: string;
+  endDate?: string;
+}
+
+export interface ContractInfo {
+  contractId: string;
+  groupNumber: string;
+  effectiveDate: string;
+  endDate: string;
 }
 
 export interface ProviderInfo {
@@ -538,6 +548,36 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
         networkId: "NET789"
       };
     }
+    
+    // For scenario 2, return correct member data but wrong group/contract info
+    if (dcn === "25048AA1001") {
+      return {
+        prefix: "Mr",
+        firstName: "John",
+        middleName: "D", 
+        lastName: "Wick",
+        dob: "1982-08-18", // Correct DOB matching claim form
+        sex: "M",
+        hcid: "H987654321", // HCID for searching contracts
+        memberPrefix: "01",
+        programCode: "HMO",
+        relationship: "Self",
+        memberCode: "001",
+        contractType: "Individual",
+        erisa: "Y",
+        pcp: "Dr. Jane Smith",
+        pcpState: "CA",
+        pcpRelationship: "Primary",
+        subscriberId: "123456789", // Correct subscriber ID
+        groupName: "ABC Corporation",
+        groupContract: "200000A001", // OLD/EXPIRED group - wrong for validation
+        detailContractCode: "DCC123",
+        product: "Premium Health",
+        groupId: "200000A001", // OLD group ID
+        networkName: "HealthNet Plus",
+        networkId: "NET789"
+      };
+    }
 
     return null;
   } catch (error) {
@@ -638,5 +678,33 @@ export const getMemberById = async (id: string): Promise<MemberInfo | null> => {
   } catch (error) {
     console.error('Error getting member by ID:', error);
     throw error;
+  }
+};
+
+// Search contracts by HCID
+export const searchContractsByHCID = async (hcid: string): Promise<ContractInfo[]> => {
+  try {
+    // Mock contract data for scenario 2 testing
+    if (hcid === "H987654321") {
+      return [
+        {
+          contractId: "500L",
+          groupNumber: "200000A001", // Old/expired contract
+          effectiveDate: "2020-04-28",
+          endDate: "2022-06-07"
+        },
+        {
+          contractId: "500L", 
+          groupNumber: "200000M001", // New/valid contract
+          effectiveDate: "2023-01-01",
+          endDate: "2024-01-01"
+        }
+      ];
+    }
+    
+    return [];
+  } catch (error) {
+    console.error('Error searching contracts:', error);
+    return [];
   }
 };
