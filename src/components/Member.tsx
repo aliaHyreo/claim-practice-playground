@@ -133,7 +133,7 @@ const Member = () => {
 
       {/* Table Headers - Always visible */}
       <div className="bg-gray-50 rounded-lg p-4">
-        <div className="grid grid-cols-7 gap-4 mb-2">
+        {/* <div className="grid grid-cols-7 gap-4 mb-2">
           <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
             PCP state <span className="text-gray-400">▼</span>
           </div>
@@ -155,7 +155,7 @@ const Member = () => {
           <div className="text-xs font-medium text-gray-600">
             Subs
           </div>
-        </div>
+        </div> */}
 
         {/* Second row of headers */}
         <div className="grid grid-cols-7 gap-4 pt-2 border-t border-gray-200">
