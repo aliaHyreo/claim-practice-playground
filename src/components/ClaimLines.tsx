@@ -83,13 +83,13 @@ const ClaimLines: React.FC<ClaimLinesProps> = ({ claimLines }) => {
                 </td>
                 <td className="py-2 px-2">
                   <Input
-                    defaultValue={formatDateToDisplay(line.serviceFromDate)}
+                    defaultValue={formatDateToDisplay(line.serviceFromDate || '')}
                     className="text-sm min-w-[120px]"
                   />
                 </td>
                 <td className="py-2 px-2">
                   <Input
-                    defaultValue={formatDateToDisplay(line.serviceToDate)}
+                    defaultValue={formatDateToDisplay(line.serviceToDate || '')}
                     className="text-sm min-w-[120px]"
                   />
                 </td>
