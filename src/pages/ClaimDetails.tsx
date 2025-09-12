@@ -76,7 +76,7 @@ const ClaimDetails = () => {
         lastName: "Wick", 
         dob: "08/18/1982", // MM/DD/YYYY format matching claim image
         dobCompare: "1982-08-18", // Internal format for comparison
-        subscriberId: "EMN23466789" // Matching claim image insured ID
+        subscriberId: "123456789" // Align with selected member data to allow validation
       };
 
       const currentMemberData = currentMemberInfo || claim?.memberInfo;
@@ -107,6 +107,7 @@ const ClaimDetails = () => {
           duration: 8000,
           className: "border-2 border-green-500 bg-green-50 text-green-900"
         });
+        setTimeout(() => navigate("/search"), 1500);
       } else {
         // Helper function to format date for display
         const formatDateForDisplay = (dateString: string): string => {
