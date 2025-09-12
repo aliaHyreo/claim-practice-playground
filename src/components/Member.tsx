@@ -160,25 +160,28 @@ const Member = () => {
         {/* Second row of headers */}
         <div className="grid grid-cols-7 gap-4">
           <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
-            Contract ID <span className="text-gray-400">▼</span>
+            Contract ID <span className="text-gray-400"></span>
           </div>
           <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
-            Case/Entity <span className="text-gray-400">▼</span>
+            Case/Entity <span className="text-gray-400"></span>
           </div>
           <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
-            Group# <span className="text-gray-400">▼</span>
+            Group# <span className="text-gray-400"></span>
           </div>
           <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
-            HCID# <span className="text-gray-400">▼</span>
+            HCID# <span className="text-gray-400"></span>
           </div>
           <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
-            Effective Date <span className="text-gray-400">▼</span>
+            Effective Date <span className="text-gray-400"></span>
           </div>
           <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
-            End Date <span className="text-gray-400">▼</span>
+            End Date <span className="text-gray-400"></span>
           </div>
           <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
-            Contract State <span className="text-gray-400">▼</span>
+            Contract State <span className="text-gray-400"></span>
+          </div>
+          <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
+            Action <span className="text-gray-400"></span>
           </div>
         </div>
       </div>
