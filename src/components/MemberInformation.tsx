@@ -318,24 +318,52 @@ const MemberInformation = ({ memberInfo, onMemberUpdate }: MemberInformationProp
         </CardContent>
       </Card>
 
-      {/* Group Section */}
+      {/* Group Information Section */}
       <Card>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg text-primary bg-primary/10 -mx-6 -mt-6 px-6 py-3 rounded-t-lg">
-            Group
+            Group Information
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <EditableField label="Group name" field="groupName" readonly />
+            <EditableField label="Group#" field="groupId" readonly />
             <EditableField label="Group contract #" field="groupContract" readonly />
             <EditableField label="Detail contract code" field="detailContractCode" readonly />
-            <EditableField label="Product" field="product" readonly />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <EditableField label="Group ID" field="groupId" readonly />
+            <div className="space-y-2">
+              <Label className="text-sm text-muted-foreground">
+                Effective Date
+              </Label>
+              <Input
+                value={formatDateToDisplay(formData.effectiveDate || '')}
+                className="h-10 focus:ring-0 focus:ring-offset-0 focus:border-input cursor-default"
+                readOnly
+                tabIndex={-1}
+                placeholder="MM/DD/YYYY"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm text-muted-foreground">
+                End Date
+              </Label>
+              <Input
+                value={formatDateToDisplay(formData.endDate || '')}
+                className="h-10 focus:ring-0 focus:ring-offset-0 focus:border-input cursor-default"
+                readOnly
+                tabIndex={-1}
+                placeholder="MM/DD/YYYY"
+              />
+            </div>
+            <EditableField label="Product" field="product" readonly />
+            <div></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <EditableField label="Network name" field="networkName" readonly />
             <EditableField label="Network ID" field="networkId" readonly />
+            <div></div>
             <div></div>
           </div>
         </CardContent>

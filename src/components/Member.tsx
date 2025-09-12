@@ -253,8 +253,8 @@ const Member = ({ onContractApply }: MemberProps) => {
                   <div className="text-gray-900">{contract.caseEntity}</div>
                   <div className="text-gray-900">{contract.group}</div>
                   <div className="text-gray-900">{contract.hcid}</div>
-                  <div className="text-gray-900">{contract.effectiveDate}</div>
-                  <div className="text-gray-900">{contract.endDate}</div>
+                   <div className="text-gray-900">{contract.effectiveDate}</div>
+                   <div className="text-gray-900">{contract.endDate}</div>
                   <div className="text-gray-900">{contract.contractState}</div>
                   <div className="flex items-center">
                     <Button

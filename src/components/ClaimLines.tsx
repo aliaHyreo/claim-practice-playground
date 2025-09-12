@@ -3,6 +3,24 @@ import { ClaimLine } from '@/services/claimsService';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 
+// Utility function to format date for display (MM/DD/YYYY)
+const formatDateToDisplay = (dateString: string): string => {
+  if (!dateString) return '';
+  
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+    
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const year = date.getFullYear();
+    
+    return `${month}/${day}/${year}`;
+  } catch (error) {
+    return dateString;
+  }
+};
+
 interface ClaimLinesProps {
   claimLines?: ClaimLine[];
 }
@@ -65,13 +83,13 @@ const ClaimLines: React.FC<ClaimLinesProps> = ({ claimLines }) => {
                 </td>
                 <td className="py-2 px-2">
                   <Input
-                    defaultValue={line.serviceFromDate}
+                    defaultValue={formatDateToDisplay(line.serviceFromDate)}
                     className="text-sm min-w-[120px]"
                   />
                 </td>
                 <td className="py-2 px-2">
                   <Input
-                    defaultValue={line.serviceToDate}
+                    defaultValue={formatDateToDisplay(line.serviceToDate)}
                     className="text-sm min-w-[120px]"
                   />
                 </td>

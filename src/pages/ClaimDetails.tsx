@@ -200,6 +200,23 @@ const ClaimDetails = () => {
         return;
       }
 
+      // Helper function to format date for display (MM/DD/YYYY)
+      const formatDateForValidationDisplay = (dateString: string): string => {
+        if (!dateString) return '';
+        try {
+          const date = new Date(dateString);
+          if (isNaN(date.getTime())) return dateString;
+          
+          const month = (date.getMonth() + 1).toString().padStart(2, '0');
+          const day = date.getDate().toString().padStart(2, '0');
+          const year = date.getFullYear();
+          
+          return `${month}/${day}/${year}`;
+        } catch (error) {
+          return dateString;
+        }
+      };
+
       // Validate service dates fall within contract period
       const serviceDate = new Date(serviceDateFrom);
       const contractStart = new Date(effectiveDate);
@@ -210,7 +227,7 @@ const ClaimDetails = () => {
       if (isServiceDateValid) {
         toast({
           title: "🎉 VALIDATION SUCCESS - SCENARIO 2 PASS",
-          description: `✅ Contract validation successful!\n• Service Date: ${serviceDateFrom}\n• Contract Period: ${effectiveDate} to ${endDate}\n• Group#: ${currentMemberData.groupId}`,
+          description: `✅ Contract validation successful!\n• Service Date: ${formatDateForValidationDisplay(serviceDateFrom)}\n• Contract Period: ${formatDateForValidationDisplay(effectiveDate)} to ${formatDateForValidationDisplay(endDate)}\n• Group#: ${currentMemberData.groupId}`,
           duration: 8000,
           className: "border-2 border-green-500 bg-green-50 text-green-900"
         });
@@ -218,7 +235,7 @@ const ClaimDetails = () => {
       } else {
         toast({
           title: "❌ CONTRACT VALIDATION ERROR - SCENARIO 2 FAIL",
-          description: `Service date ${serviceDateFrom} falls outside contract period ${effectiveDate} to ${endDate}. Please select the correct active contract for Group# ${currentMemberData.groupId}.`,
+          description: `Service date ${formatDateForValidationDisplay(serviceDateFrom)} falls outside contract period ${formatDateForValidationDisplay(effectiveDate)} to ${formatDateForValidationDisplay(endDate)}. Please select the correct active contract for Group# ${currentMemberData.groupId}.`,
           variant: "destructive",
           duration: 10000,
           className: "border-2 border-red-500 bg-red-50 text-red-900"
