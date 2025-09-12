@@ -349,8 +349,7 @@ const ClaimDetails = () => {
                     <h3 className="text-lg font-semibold mb-4">Member Information</h3>
                     {claim.memberInfo ? (
                       <MemberInformation 
-                        key={`member-${refreshKey}`} 
-                        memberInfo={claim.memberInfo}
+                        memberInfo={currentMemberInfo || claim.memberInfo}
                         onMemberUpdate={handleMemberUpdate}
                       />
                     ) : (
