@@ -9,6 +9,15 @@ interface ClaimImageProps {
 }
 
 const ClaimImage = ({ claimImageData }: ClaimImageProps) => {
+  // Handle null or undefined claimImageData
+  if (!claimImageData) {
+    return (
+      <Card className="p-6">
+        <div className="text-center text-gray-500">No claim image data available.</div>
+      </Card>
+    );
+  }
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
@@ -18,7 +27,7 @@ const ClaimImage = ({ claimImageData }: ClaimImageProps) => {
     });
   };
 
-  const hasCodeMismatch = claimImageData.claimLineCodeSystem !== claimImageData.claimLineCodeImage;
+  const hasCodeMismatch = claimImageData?.claimLineCodeSystem !== claimImageData?.claimLineCodeImage;
 
   return (
     <div className="space-y-6">
