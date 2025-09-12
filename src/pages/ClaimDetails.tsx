@@ -70,13 +70,13 @@ const ClaimDetails = () => {
 
   const handleActionSubmit = () => {
     if (selectedAction === "pay" && dcn === "25048AA1000") {
-      // Validate scenario 1 - check if corrected member data matches expected claim form data
+      // Validate scenario 1 - check if corrected member data matches expected claim form data from claim image
       const expectedClaimFormData = {
         firstName: "John",
         lastName: "Wick", 
-        dob: "09/02/1964", // MM/DD/YYYY format for display consistency
-        dobCompare: "1964-09-02", // Keep internal format for comparison
-        subscriberId: "WIC64090200"
+        dob: "08/18/1982", // MM/DD/YYYY format matching claim image
+        dobCompare: "1982-08-18", // Internal format for comparison
+        subscriberId: "EMN23466789" // Matching claim image insured ID
       };
 
       const currentMemberData = currentMemberInfo || claim?.memberInfo;
