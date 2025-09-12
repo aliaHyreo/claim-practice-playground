@@ -13,32 +13,54 @@ import {
 } from "@/services/claimsService";
 
 // Utility functions for date format conversion
+// Utility function to format date for display (MM/DD/YYYY)
 const formatDateToDisplay = (dateString: string): string => {
   if (!dateString) return '';
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return '';
-  return date.toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: '2-digit', 
-    day: '2-digit' 
-  });
+  
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+    
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const year = date.getFullYear();
+    
+    return `${month}/${day}/${year}`;
+  } catch (error) {
+    return dateString;
+  }
 };
 
+// Utility function to format date for input field (YYYY-MM-DD)
 const formatDateForInput = (dateString: string): string => {
   if (!dateString) return '';
-  // If it's already in YYYY-MM-DD format, return as is
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString;
   
-  // Try to parse MM/DD/YYYY format
-  const parts = dateString.split('/');
-  if (parts.length === 3) {
-    const [month, day, year] = parts;
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  try {
+    // Handle MM/DD/YYYY format
+    if (dateString.includes('/')) {
+      const [month, day, year] = dateString.split('/');
+      if (month && day && year) {
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      }
+    }
+    
+    // Handle YYYY-MM-DD format (already correct)
+    if (dateString.includes('-') && dateString.length === 10) {
+      return dateString;
+    }
+    
+    // Handle other formats
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+    
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const year = date.getFullYear();
+    
+    return `${year}-${month}-${day}`;
+  } catch (error) {
+    return '';
   }
-  
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return '';
-  return date.toISOString().split('T')[0];
 };
 
 interface MemberInformationProps {

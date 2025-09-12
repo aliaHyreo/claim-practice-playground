@@ -516,7 +516,7 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
         firstName: "John",
         middleName: "D",
         lastName: "Smith", // Wrong last name for scenario testing
-        dob: "1980-05-15", // Wrong DOB for scenario testing
+        dob: "1980-05-15", // Wrong DOB for scenario testing - should be 1964-09-02 per claim form
         sex: "M",
         hcid: "H123456789",
         memberPrefix: "01",

@@ -74,7 +74,8 @@ const ClaimDetails = () => {
       const expectedClaimFormData = {
         firstName: "John",
         lastName: "Wick", 
-        dob: "1964-09-02",
+        dob: "09/02/1964", // MM/DD/YYYY format for display consistency
+        dobCompare: "1964-09-02", // Keep internal format for comparison
         subscriberId: "WIC64090200"
       };
 
@@ -96,30 +97,48 @@ const ClaimDetails = () => {
       const fieldsMatch = 
         currentMemberData.firstName?.trim().toLowerCase() === expectedClaimFormData.firstName.toLowerCase() &&
         currentMemberData.lastName?.trim().toLowerCase() === expectedClaimFormData.lastName.toLowerCase() &&
-        currentMemberData.dob === expectedClaimFormData.dob &&
+        currentMemberData.dob === expectedClaimFormData.dobCompare &&
         currentMemberData.subscriberId === expectedClaimFormData.subscriberId;
       
       if (fieldsMatch) {
         toast({
           title: "🎉 VALIDATION SUCCESS - SCENARIO 1 PASS",
-          description: "All member information matches the claim form data perfectly! Patient Name, Birth Date, and Subscriber ID are validated successfully.",
+          description: `✅ All data matches perfectly!\n• Patient Name: ${expectedClaimFormData.firstName} ${expectedClaimFormData.lastName}\n• Birth Date: ${expectedClaimFormData.dob}\n• Subscriber ID: ${expectedClaimFormData.subscriberId}`,
           duration: 8000,
           className: "border-2 border-green-500 bg-green-50 text-green-900"
         });
       } else {
-        // Create detailed mismatch information
+        // Helper function to format date for display
+        const formatDateForDisplay = (dateString: string): string => {
+          if (!dateString) return '';
+          try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            const year = date.getFullYear();
+            
+            return `${month}/${day}/${year}`;
+          } catch (error) {
+            return dateString;
+          }
+        };
+
+        // Create detailed mismatch information with consistent date formatting
         const mismatches = [];
         if (currentMemberData.firstName?.trim().toLowerCase() !== expectedClaimFormData.firstName.toLowerCase()) {
-          mismatches.push(`First Name: "${currentMemberData.firstName}" ≠ "${expectedClaimFormData.firstName}"`);
+          mismatches.push(`Patient Name (First): "${currentMemberData.firstName}" ≠ Claim Form: "${expectedClaimFormData.firstName}"`);
         }
         if (currentMemberData.lastName?.trim().toLowerCase() !== expectedClaimFormData.lastName.toLowerCase()) {
-          mismatches.push(`Last Name: "${currentMemberData.lastName}" ≠ "${expectedClaimFormData.lastName}"`);
+          mismatches.push(`Patient Name (Last): "${currentMemberData.lastName}" ≠ Claim Form: "${expectedClaimFormData.lastName}"`);
         }
-        if (currentMemberData.dob !== expectedClaimFormData.dob) {
-          mismatches.push(`Birth Date: "${currentMemberData.dob}" ≠ "${expectedClaimFormData.dob}"`);
+        if (currentMemberData.dob !== expectedClaimFormData.dobCompare) {
+          const memberDobDisplay = formatDateForDisplay(currentMemberData.dob || '');
+          mismatches.push(`Patient Birth Date: "${memberDobDisplay}" ≠ Claim Form: "${expectedClaimFormData.dob}"`);
         }
         if (currentMemberData.subscriberId !== expectedClaimFormData.subscriberId) {
-          mismatches.push(`Subscriber ID: "${currentMemberData.subscriberId}" ≠ "${expectedClaimFormData.subscriberId}"`);
+          mismatches.push(`Subscriber ID: "${currentMemberData.subscriberId}" ≠ Claim Form: "${expectedClaimFormData.subscriberId}"`);
         }
         
         toast({
