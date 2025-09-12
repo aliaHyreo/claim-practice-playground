@@ -71,32 +71,63 @@ const ClaimDetails = () => {
   const handleActionSubmit = () => {
     if (selectedAction === "Pay" && dcn === "25048AA1000") {
       // Validate scenario 1 - check if corrected member data matches expected claim form data
-      const expectedData = {
+      const expectedClaimFormData = {
         firstName: "John",
         lastName: "Wick", 
         dob: "1964-09-02",
         subscriberId: "WIC64090200"
       };
 
-      const currentData = currentMemberInfo || claim?.memberInfo;
+      const currentMemberData = currentMemberInfo || claim?.memberInfo;
       
-      if (currentData && 
-          currentData.firstName === expectedData.firstName &&
-          currentData.lastName === expectedData.lastName &&
-          currentData.dob === expectedData.dob &&
-          currentData.subscriberId === expectedData.subscriberId) {
-        
+      if (!currentMemberData) {
         toast({
-          title: "✅ Scenario 1 - PASS",
-          description: "Member information has been successfully corrected and matches the claim form data!",
-          duration: 5000,
+          title: "❌ DATA MISMATCH ERROR",
+          description: "No member information available for validation. Please search and select the correct member first.",
+          variant: "destructive",
+          duration: 7000,
+          className: "border-2 border-red-500 bg-red-50 text-red-900"
+        });
+        setSelectedAction("");
+        return;
+      }
+
+      // Check if all required fields match between claim form and member information
+      const fieldsMatch = 
+        currentMemberData.firstName?.trim().toLowerCase() === expectedClaimFormData.firstName.toLowerCase() &&
+        currentMemberData.lastName?.trim().toLowerCase() === expectedClaimFormData.lastName.toLowerCase() &&
+        currentMemberData.dob === expectedClaimFormData.dob &&
+        currentMemberData.subscriberId === expectedClaimFormData.subscriberId;
+      
+      if (fieldsMatch) {
+        toast({
+          title: "🎉 VALIDATION SUCCESS - SCENARIO 1 PASS",
+          description: "All member information matches the claim form data perfectly! Patient Name, Birth Date, and Subscriber ID are validated successfully.",
+          duration: 8000,
+          className: "border-2 border-green-500 bg-green-50 text-green-900"
         });
       } else {
+        // Create detailed mismatch information
+        const mismatches = [];
+        if (currentMemberData.firstName?.trim().toLowerCase() !== expectedClaimFormData.firstName.toLowerCase()) {
+          mismatches.push(`First Name: "${currentMemberData.firstName}" ≠ "${expectedClaimFormData.firstName}"`);
+        }
+        if (currentMemberData.lastName?.trim().toLowerCase() !== expectedClaimFormData.lastName.toLowerCase()) {
+          mismatches.push(`Last Name: "${currentMemberData.lastName}" ≠ "${expectedClaimFormData.lastName}"`);
+        }
+        if (currentMemberData.dob !== expectedClaimFormData.dob) {
+          mismatches.push(`Birth Date: "${currentMemberData.dob}" ≠ "${expectedClaimFormData.dob}"`);
+        }
+        if (currentMemberData.subscriberId !== expectedClaimFormData.subscriberId) {
+          mismatches.push(`Subscriber ID: "${currentMemberData.subscriberId}" ≠ "${expectedClaimFormData.subscriberId}"`);
+        }
+        
         toast({
-          title: "❌ Scenario 1 - FAIL", 
-          description: "Member information does not match the expected claim form data. Please verify the member details.",
+          title: "❌ DATA MISMATCH ERROR - SCENARIO 1 FAIL",
+          description: `Member information does not match claim form data. Mismatches: ${mismatches.join(", ")}. Please correct the member information.`,
           variant: "destructive",
-          duration: 5000,
+          duration: 10000,
+          className: "border-2 border-red-500 bg-red-50 text-red-900"
         });
       }
     } else {
