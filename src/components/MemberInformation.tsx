@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 import { type MemberInfo } from "@/services/claimsService";
 
 interface MemberInformationProps {
@@ -10,9 +12,24 @@ interface MemberInformationProps {
 
 const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
   const [formData, setFormData] = useState(memberInfo);
+  const [searchData, setSearchData] = useState({
+    firstName: '',
+    lastName: '',
+    dob: '',
+    subscriberId: ''
+  });
 
   const handleInputChange = (field: keyof MemberInfo, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSearchChange = (field: string, value: string) => {
+    setSearchData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSearch = () => {
+    // Handle search logic here
+    console.log('Searching for member:', searchData);
   };
 
   const EditableField = ({ label, field, readonly = false }: { label: string; field: keyof MemberInfo; readonly?: boolean }) => (
@@ -33,6 +50,73 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
 
   return (
     <div className="space-y-6">
+      {/* Search Section */}
+      <Card>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg text-primary bg-primary/10 -mx-6 -mt-6 px-6 py-3 rounded-t-lg">
+            Search Member
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="searchFirstName" className="text-sm text-muted-foreground">
+                First Name
+              </Label>
+              <Input
+                id="searchFirstName"
+                value={searchData.firstName}
+                onChange={(e) => handleSearchChange('firstName', e.target.value)}
+                placeholder="Enter first name"
+                className="h-10"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="searchLastName" className="text-sm text-muted-foreground">
+                Last Name
+              </Label>
+              <Input
+                id="searchLastName"
+                value={searchData.lastName}
+                onChange={(e) => handleSearchChange('lastName', e.target.value)}
+                placeholder="Enter last name"
+                className="h-10"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="searchDob" className="text-sm text-muted-foreground">
+                DOB
+              </Label>
+              <Input
+                id="searchDob"
+                value={searchData.dob}
+                onChange={(e) => handleSearchChange('dob', e.target.value)}
+                placeholder="MM/DD/YYYY"
+                className="h-10"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="searchSubscriberId" className="text-sm text-muted-foreground">
+                Subscriber ID
+              </Label>
+              <Input
+                id="searchSubscriberId"
+                value={searchData.subscriberId}
+                onChange={(e) => handleSearchChange('subscriberId', e.target.value)}
+                placeholder="Enter subscriber ID"
+                className="h-10"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Button onClick={handleSearch} className="w-32">
+              <Search className="mr-2 h-4 w-4" />
+              Search
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Patient Section */}
       <Card>
         <CardHeader className="pb-4">
