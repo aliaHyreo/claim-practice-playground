@@ -158,7 +158,7 @@ const Member = () => {
         </div> */}
 
         {/* Second row of headers */}
-        <div className="grid grid-cols-7 gap-4">
+        <div className="grid grid-cols-8 gap-4">
           <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
             Contract ID <span className="text-gray-400"></span>
           </div>
@@ -192,7 +192,7 @@ const Member = () => {
           <CardContent className="p-4">
             <div className="space-y-2">
               {searchResults.contracts.map((contract, index) => (
-                <div key={index} className="grid grid-cols-7 gap-4 py-2 text-sm border-b border-gray-100 last:border-b-0">
+                <div key={index} className="grid grid-cols-8 gap-4 py-2 text-sm border-b border-gray-100 last:border-b-0">
                   <div className="text-gray-900">{contract.contractId}</div>
                   <div className="text-gray-900">{contract.caseEntity}</div>
                   <div className="text-gray-900">{contract.group}</div>
@@ -200,6 +200,14 @@ const Member = () => {
                   <div className="text-gray-900">{contract.effectiveDate}</div>
                   <div className="text-gray-900">{contract.endDate}</div>
                   <div className="text-gray-900">{contract.contractState}</div>
+                  <div className="flex items-center">
+                    <Button
+                      size="sm"
+                      className="bg-orange-500 hover:bg-orange-600 text-white px-4"
+                    >
+                      Apply
+                    </Button>
+                  </div>
                 </div>
               ))}
               <div className="pt-2">
