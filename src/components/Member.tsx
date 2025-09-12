@@ -158,7 +158,7 @@ const Member = () => {
         </div> */}
 
         {/* Second row of headers */}
-        <div className="grid grid-cols-7 gap-4 pt-2 border-t border-gray-200">
+        <div className="grid grid-cols-7 gap-4">
           <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
             Contract ID <span className="text-gray-400">▼</span>
           </div>
