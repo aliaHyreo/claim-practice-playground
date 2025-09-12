@@ -222,8 +222,8 @@ const ClaimDetails = () => {
                       <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
                         <SelectItem value="pay">Pay</SelectItem>
                         <SelectItem value="deny">Deny</SelectItem>
-                        <SelectItem value="pend">Pend</SelectItem>
-                        <SelectItem value="route">Route</SelectItem>
+                        {/* <SelectItem value="pend">Pend</SelectItem>
+                        <SelectItem value="route">Route</SelectItem> */}
                       </SelectContent>
                     </Select>
                     {selectedAction && (
