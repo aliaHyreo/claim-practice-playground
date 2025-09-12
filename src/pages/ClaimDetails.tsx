@@ -69,7 +69,7 @@ const ClaimDetails = () => {
   };
 
   const handleActionSubmit = () => {
-    if (selectedAction === "Pay" && dcn === "25048AA1000") {
+    if (selectedAction === "pay" && dcn === "25048AA1000") {
       // Validate scenario 1 - check if corrected member data matches expected claim form data
       const expectedClaimFormData = {
         firstName: "John",
