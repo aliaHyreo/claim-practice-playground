@@ -34,11 +34,11 @@ const PaymentInformation = ({ paymentInfo }: PaymentInformationProps) => {
 
   const EditableClaimField = ({ label, field }: { label: string; field: keyof typeof paymentInfo.claim }) => (
     <div className="space-y-2">
-      <Label htmlFor={field} className="text-sm text-muted-foreground">
+      <Label htmlFor={String(field)} className="text-sm text-muted-foreground">
         {label}
       </Label>
       <Input
-        id={field}
+        id={String(field)}
         value={formData.claim[field]?.toString() || ''}
         onChange={(e) => handleClaimInputChange(field, e.target.value)}
         className="h-10"
@@ -48,11 +48,11 @@ const PaymentInformation = ({ paymentInfo }: PaymentInformationProps) => {
 
   const EditableProviderField = ({ label, field }: { label: string; field: keyof typeof paymentInfo.provider }) => (
     <div className="space-y-2">
-      <Label htmlFor={field} className="text-sm text-muted-foreground">
+      <Label htmlFor={String(field)} className="text-sm text-muted-foreground">
         {label}
       </Label>
       <Input
-        id={field}
+        id={String(field)}
         value={formData.provider[field]?.toString() || ''}
         onChange={(e) => handleProviderInputChange(field, e.target.value)}
         className="h-10"
@@ -62,11 +62,11 @@ const PaymentInformation = ({ paymentInfo }: PaymentInformationProps) => {
 
   const EditableDrgField = ({ label, field }: { label: string; field: keyof typeof paymentInfo.drg }) => (
     <div className="space-y-2">
-      <Label htmlFor={field} className="text-sm text-muted-foreground">
+      <Label htmlFor={String(field)} className="text-sm text-muted-foreground">
         {label}
       </Label>
       <Input
-        id={field}
+        id={String(field)}
         value={formData.drg[field]?.toString() || ''}
         onChange={(e) => handleDrgInputChange(field, e.target.value)}
         className="h-10"

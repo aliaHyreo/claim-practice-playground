@@ -14,7 +14,7 @@ const SearchClaims = () => {
   const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearch = async () => {
-    const results = await ClaimsService.searchClaims({ dcn: searchTerm });
+    const results = await ClaimsService.searchClaims(searchTerm);
     setClaims(results);
     setHasSearched(true);
   };
