@@ -307,7 +307,7 @@ export class ClaimsService {
         providerInfo: this.getMockProviderInfo(),
         paymentInfo: this.getMockPaymentInfo(),
         claimHeaderInfo: this.getMockClaimHeaderInfo(),
-        claimLines,
+        claimLines: ClaimsService.getMockClaimLines(dcn),
         claimData: this.getMockClaimData(),
         searchData: { claimImage: this.getMockClaimImageData(dcn) }
       };
@@ -568,15 +568,15 @@ export class ClaimsService {
     if (dcn === "25048AA1001") {
       return {
         dcn: "25048AA1001",
-        patientName: "Jane Smith", // This matches the member data
-        dob: "1990-05-15",
-        zip: "12345",
-        serviceDates: { from: "2023-08-03", to: "2023-08-03" },
-        claimLineCodeSystem: "99213",
-        claimLineCodeImage: "99213", // Codes match for this scenario
+        patientName: "John Wick S", // Same as scenario 1 per user requirements
+        dob: "1982-08-18", // Same as scenario 1
+        zip: "41701", // Same as scenario 1
+        serviceDates: { from: "2023-08-04", to: "2023-08-04" }, // Updated service dates
+        claimLineCodeSystem: "84284", // Same as scenario 1
+        claimLineCodeImage: "E9973", // Same as scenario 1
         eligibilityValidation: [
           "Confirm contract group",
-          "Verify eligibility dates",
+          "Verify eligibility dates", 
           "Check contract validation",
           "Update contract if expired",
           "Apply correct contract group"
@@ -595,6 +595,42 @@ export class ClaimsService {
       claimLineCodeImage: "00000",
       eligibilityValidation: ["No validation data available"]
     };
+  }
+
+  static getMockClaimLines(dcn?: string): ClaimLine[] {
+    // Scenario 2: DCN 25048AA1001 - Service dates that require active group
+    if (dcn === "25048AA1001") {
+      return [
+        {
+          lineNo: 1,
+          serviceFromDate: "08/04/2023", // Service date after expired group end date
+          serviceToDate: "08/04/2023",
+          pos: "11", 
+          service: "Office Visit",
+          procedureCode: "99213",
+          modifiers: [],
+          units: 1,
+          diagnosis: "Z00.00",
+          billed: 200
+        }
+      ];
+    }
+    
+    // Default claim lines (Scenario 1 and others)
+    return [
+      {
+        lineNo: 1,
+        serviceFromDate: "08/03/2023",
+        serviceToDate: "08/03/2023",
+        pos: "11",
+        service: "Office Visit", 
+        procedureCode: "84284",
+        modifiers: [],
+        units: 1,
+        diagnosis: "Z00.00",
+        billed: 300
+      }
+    ];
   }
 }
 
@@ -647,10 +683,10 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
           prefix: "Mr",
           firstName: "John", // ✅ CORRECT - Matches claim form
           middleName: "D",
-          lastName: "Wick", // ✅ CORRECT - Matches claim form
+          lastName: "Wick S", // ✅ CORRECT - Matches claim form (includes S)
           dob: "1982-08-18", // ✅ CORRECT - Matches claim form
           sex: "M",
-          hcid: "H987654321", // ✅ CORRECT - Available for searching contracts
+          hcid: "9876543210987654", // ✅ CORRECT - Available for searching contracts
           memberPrefix: "01",
           programCode: "HMO",
           relationship: "Self",
@@ -661,15 +697,15 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
           pcpState: "CA",
           pcpRelationship: "Primary",
           subscriberId: "123456789", // ✅ CORRECT - Matches claim form
-          groupName: "ABC Corporation",
-          groupContract: "200000A001", // ❌ WRONG - Expired group contract
+          groupName: "Tech Solutions Inc",
+          groupContract: "500L", // ❌ WRONG - Expired group contract
           detailContractCode: "DCC123",
           product: "Premium Health",
           groupId: "200000A001", // ❌ WRONG - Expired group ID
           networkName: "HealthNet Plus",
           networkId: "NET789",
-          effectiveDate: "2020-04-28", // ❌ WRONG - Expired effective date
-          endDate: "2022-06-07" // ❌ WRONG - Expired end date
+          effectiveDate: "04/28/2020", // ❌ WRONG - Expired effective date (MM/DD/YYYY format)
+          endDate: "06/07/2022" // ❌ WRONG - Expired end date (MM/DD/YYYY format)
         };
       }
 
@@ -811,19 +847,19 @@ export const getMemberById = async (id: string): Promise<MemberInfo | null> => {
 export const searchContractsByHCID = async (hcid: string): Promise<ContractInfo[]> => {
   try {
     // Mock contract data for scenario 2 testing
-    if (hcid === "H987654321") {
+    if (hcid === "9876543210987654") {
       return [
         {
           contractId: "500L",
           groupNumber: "200000A001", // Old/expired contract
-          effectiveDate: "2020-04-28",
-          endDate: "2022-06-07"
+          effectiveDate: "04/28/2020", // MM/DD/YYYY format
+          endDate: "06/07/2022"
         },
         {
           contractId: "500L", 
-          groupNumber: "200000M001", // New/valid contract
-          effectiveDate: "2023-01-01",
-          endDate: "2024-01-01"
+          groupNumber: "200000M001", // New/valid contract that covers service dates
+          effectiveDate: "01/01/2023", // MM/DD/YYYY format
+          endDate: "01/01/2024"
         }
       ];
     }
