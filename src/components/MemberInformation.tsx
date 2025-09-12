@@ -39,6 +39,7 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
       </Label>
       <Input
         id={field}
+        type={field === 'dob' ? 'date' : 'text'}
         value={formData[field] || ''}
         onChange={(e) => handleInputChange(field, e.target.value)}
         className={`h-10 ${readonly ? 'focus:ring-0 focus:ring-offset-0 focus:border-input cursor-default' : ''}`}
@@ -89,9 +90,9 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
               </Label>
               <Input
                 id="searchDob"
+                type="date"
                 value={searchData.dob}
                 onChange={(e) => handleSearchChange('dob', e.target.value)}
-                placeholder="MM/DD/YYYY"
                 className="h-10"
               />
             </div>
