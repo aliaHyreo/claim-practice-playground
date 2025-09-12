@@ -1,10 +1,13 @@
+import { supabase } from "@/integrations/supabase/client";
+
 export interface EditDetail {
   code: string;
   description: string;
-  status: 'soft' | 'critical';
+  status: 'resolved' | 'critical';
 }
 
 export interface MemberInfo {
+  id?: string;
   prefix: string;
   firstName: string;
   middleName: string;
@@ -29,6 +32,10 @@ export interface MemberInfo {
   product: string;
   networkId: string;
   networkName: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
 }
 
 export interface ProviderInfo {
@@ -186,7 +193,38 @@ export interface ClaimLine {
   billed: number;
 }
 
+export interface ClaimForm {
+  id?: string;
+  dcn: string;
+  patientName: string;
+  dob: string;
+  zipCode: string;
+  serviceDateFrom: string;
+  serviceDateTo: string;
+  claimLineCodeSystem: string;
+  claimLineCodeImage: string;
+  eligibilityValidation: string[];
+}
+
+export interface MemberSearchResult {
+  id: string;
+  prefix: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  dob: string;
+  sex: string;
+  hcid: string;
+  subscriberId: string;
+  groupName: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+}
+
 export interface Claim {
+  id?: string;
   dcn: string;
   title: string;
   lastName: string;
@@ -202,6 +240,8 @@ export interface Claim {
   paid: number;
   edits: string[];
   actionCode?: string;
+  status?: string;
+  scenarioType?: string;
   memberInfo?: MemberInfo;
   providerInfo?: ProviderInfo;
   paymentInfo?: PaymentInfo;
@@ -211,456 +251,280 @@ export interface Claim {
   searchData?: SearchData;
 }
 
-// Edit descriptions and statuses
-const editDetails: Record<string, EditDetail> = {
-  "SPS": { code: "SPS", description: "USE PA MENU OPTION TO VIEW PRV", status: "soft" },
-  "PLP": { code: "PLP", description: "PROVIDER PER ADDRESS SELECTED", status: "soft" },
-  "RNB": { code: "RNB", description: "RENDERING NPI IS BLANK", status: "soft" },
-  "334": { code: "334", description: "FIRST 2 CHAR REQ IN PRVDR SEC NIM", status: "soft" },
-  "REL": { code: "REL", description: "RELATED CLAIM IN HISTORY", status: "soft" },
-  "IAF": { code: "IAF", description: "IMAGE ADJUDICATION FAILURE", status: "soft" },
-  "507": { code: "507", description: "ELIGIBILITY FOUND IS PARTIAL", status: "critical" }
-};
-
-// Mock data for claims
-const mockClaims: Claim[] = [
-  {
-    dcn: "DCN-00012345",
-    title: "John",
-    lastName: "Doe",
-    dob: "5/1/1980",
-    sex: "M",
-    memberCode: "MC-987654",
-    contractType: "PPO",
-    relationship: "Self",
-    pcp: "Dr. Smith",
-    erisa: "N",
-    billed: 300,
-    allowed: 100,
-    paid: 0,
-    edits: ["SPS", "PLP", "RNB", "334", "REL", "IAF", "507"],
-    actionCode: "-",
-    memberInfo: {
-      prefix: "Mr.",
-      firstName: "John",
-      middleName: "",
-      lastName: "Doe",
-      dob: "Wed, May 01, 1980",
-      sex: "M",
-      memberPrefix: "EMN",
-      hcid: "23456789",
-      relationship: "Self",
-      memberCode: "MC-987654",
-      contractType: "PPO",
-      erisa: "N",
-      pcp: "Dr. Smith",
-      pcpState: "-",
-      pcpRelationship: "-",
-      programCode: "-",
-      subscriberId: "123456789",
-      groupName: "ABC Group",
-      groupId: "200000M001",
-      groupContract: "0AA",
-      detailContractCode: "500L",
-      product: "LOCAL",
-      networkId: "-",
-      networkName: "-"
-    },
-    providerInfo: {
-      renderingNPI: "67926782",
-      renderingName: "James Clinic",
-      renderingAddress: "2426 BERKSHIRE AV Fox Cities.",
-      pricingState: "WI",
-      pricingZIP: "44011",
-      providerSPS: "-",
-      providerEPIN: "-",
-      licenseNumber: "-",
-      networkOption: "N/Y",
-      specialty: "V01",
-      taxonomy: "2345678232",
-      emergencyPricingInd: "-",
-      billingTaxId: "1234567B",
-      billingNPI: "1234567",
-      billingName2: "MILLERS RENTAL",
-      facilityType: "-",
-      providerSPS3: "5987543",
-      providerEPIN4: "-",
-      medicareId: "-",
-      address5: "203 ROMIG RD 0954642",
-      nationalState: "NY",
-      locationCode: "-",
-      bhaProviderIndicator: "YA",
-      taxonomy6: "-",
-      referringPhysician: "Kim Konch",
-      referringNPI7: "5974200",
-      serviceProvider: "James Clinic",
-      serviceFacilityTier: "-",
-      npi8: "-",
-      nsbIndicator: "None",
-      alternateFacilityNPI: "-"
-    },
-    paymentInfo: {
-      claim: {
-        deductible: 0,
-        copay: 0,
-        coins: 0,
-        patientLiability: 0,
-        memberSurcharge: 0,
-        nonEligible: 0,
-        hraPaid: 0,
-        claimPaid: 0,
-        pricingAllowedAmount: 100,
-        totalCharge: 300,
-        finalizationCode: "-"
-      },
-      provider: {
-        providerDiscount: 0,
-        providerLiability: 0,
-        providerRiskWithhold: 0,
-        providerSurcharge: 0,
-        interest: 0,
-        penalty: 0,
-        lrIndicator: "-",
-        systemInterest: 0
-      },
-      drg: {
-        amount: 0,
-        checkNumber: "-",
-        checkDate: "-",
-        paymentSystem: "D",
-        checkStatus: "Check not Found",
-        checkStatusDate: "Sun, Jun 1, 2025",
-        paidTo: "MEDICAL GROUP LLC",
-        accountNumber: "-",
-        eftCheckDate: "",
-        priced: ""
-      }
-    },
-    claimHeaderInfo: {
-      generalClaimData: {
-        serviceFromDate: "08/03/2023",
-        serviceToDate: "08/03/2023",
-        assignmentOfBenefits: "Y",
-        providerParticipation: "PAR",
-        providerContract: "CEPMS0",
-        treatmentAuth: "-",
-        patientAccount: "N41127.23297",
-        emergency: "No",
-        employment: "No",
-        coveredZipRadius: "-",
-        frequency: "-",
-        bbiIndicator: "-",
-        pciIndicator: "-",
-        fsbInd: "None",
-        fsbExclusion: "X",
-      },
-      benefitIndicators: {
-        cob: "No",
-        cobRule: "-",
-        medInd: "No",
-        medicareAdvantage: "Yes",
-        cdhp: "N",
-        planPayer: "N",
-        cobPercentage: "0",
-      },
-      diagnosisCodes: {
-        dx1: "G800",
-        dx2: "0",
-        dx3: "0",
-        medRule: "-",
-      },
-    },
-    claimLines: [
-      {
-        lineNo: 1,
-        serviceFromDate: "8/4/2023",
-        serviceToDate: "8/4/2023",
-        pos: "12",
-        service: "DME",
-        procedureCode: "E9973",
-        modifiers: ["NU EU, KX"],
-        units: 1,
-        diagnosis: "G800",
-        billed: 300
-      }
-    ],
-    claimData: {
-      originalClaim: {
-        lineNo: 1,
-        from: "8/4/2023...",
-        procedure: "E9973",
-        modifiers: "NU,EU, KX",
-        units: 1,
-        billed: 300
-      },
-      claimsXten: {
-        billed: 300,
-        procedure: "E9973",
-        modifiers: "NU,EU, KX",
-        units: 1,
-        payPercent: 50
-      }
-    },
-    searchData: {
-      claimImage: {
-        patientName: "John Wick",
-        dob: "1982-08-18",
-        zip: "41701",
-        serviceDates: {
-          from: "2023-08-03",
-          to: "2023-08-03"
-        },
-        claimLineCodeSystem: "84284",
-        claimLineCodeImage: "E9973",
-        eligibilityValidation: [
-          "Confirm patient name",
-          "Confirm DOB",
-          "Confirm contact information",
-          "Ensure eligibility dates match claim line",
-          "Update claim line if mismatch detected",
-          "Run member search with Member ID to confirm eligibility"
-        ]
-      }
-    }
-  },
-  {
-    dcn: "25048AA1000",
-    title: "John",
-    lastName: "Wick",
-    dob: "8/18/1982",
-    sex: "M",
-    memberCode: "20",
-    contractType: "H",
-    relationship: "Spouse",
-    pcp: "-",
-    erisa: "Y",
-    billed: 300,
-    allowed: 100,
-    paid: 0,
-    edits: ["SPS", "PLP", "RNB", "334", "REL", "IAF", "507"],
-    actionCode: "-",
-    memberInfo: {
-      prefix: "Mr.",
-      firstName: "John",
-      middleName: "",
-      lastName: "Wick",
-      dob: "Wed, Aug 18, 1982",
-      sex: "M",
-      memberPrefix: "EMN",
-      hcid: "23456789",
-      relationship: "Spouse",
-      memberCode: "20",
-      contractType: "H",
-      erisa: "Y",
-      pcp: "-",
-      pcpState: "-",
-      pcpRelationship: "-",
-      programCode: "-",
-      subscriberId: "123456789",
-      groupName: "ABC Group",
-      groupId: "200000M001",
-      groupContract: "0AA",
-      detailContractCode: "500L",
-      product: "LOCAL",
-      networkId: "-",
-      networkName: "-"
-    },
-    providerInfo: {
-      renderingNPI: "67926782",
-      renderingName: "James Clinic",
-      renderingAddress: "2426 BERKSHIRE AV Fox Cities.",
-      pricingState: "WI",
-      pricingZIP: "44011",
-      providerSPS: "-",
-      providerEPIN: "-",
-      licenseNumber: "-",
-      networkOption: "N/Y",
-      specialty: "V01",
-      taxonomy: "2345678232",
-      emergencyPricingInd: "-",
-      billingTaxId: "1234567B",
-      billingNPI: "1234567",
-      billingName2: "MILLERS RENTAL",
-      facilityType: "-",
-      providerSPS3: "5987543",
-      providerEPIN4: "-",
-      medicareId: "-",
-      address5: "203 ROMIG RD 0954642",
-      nationalState: "NY",
-      locationCode: "-",
-      bhaProviderIndicator: "YA",
-      taxonomy6: "-",
-      referringPhysician: "Kim Konch",
-      referringNPI7: "5974200",
-      serviceProvider: "James Clinic",
-      serviceFacilityTier: "-",
-      npi8: "-",
-      nsbIndicator: "None",
-      alternateFacilityNPI: "-"
-    },
-    paymentInfo: {
-      claim: {
-        deductible: 0,
-        copay: 0,
-        coins: 0,
-        patientLiability: 0,
-        memberSurcharge: 0,
-        nonEligible: 0,
-        hraPaid: 0,
-        claimPaid: 0,
-        pricingAllowedAmount: 100,
-        totalCharge: 300,
-        finalizationCode: "-"
-      },
-      provider: {
-        providerDiscount: 0,
-        providerLiability: 0,
-        providerRiskWithhold: 0,
-        providerSurcharge: 0,
-        interest: 0,
-        penalty: 0,
-        lrIndicator: "-",
-        systemInterest: 0
-      },
-      drg: {
-        amount: 0,
-        checkNumber: "-",
-        checkDate: "-",
-        paymentSystem: "D",
-        checkStatus: "Check not Found",
-        checkStatusDate: "Sun, Jun 1, 2025",
-        paidTo: "MEDICAL GROUP LLC",
-        accountNumber: "-",
-        eftCheckDate: "",
-        priced: ""
-      }
-    },
-    claimHeaderInfo: {
-      generalClaimData: {
-        serviceFromDate: "08/03/2023",
-        serviceToDate: "08/03/2023",
-        assignmentOfBenefits: "Y",
-        providerParticipation: "PAR",
-        providerContract: "CEPMS0",
-        treatmentAuth: "-",
-        patientAccount: "N41127.23297",
-        emergency: "No",
-        employment: "No",
-        coveredZipRadius: "-",
-        frequency: "-",
-        bbiIndicator: "-",
-        pciIndicator: "-",
-        fsbInd: "None",
-        fsbExclusion: "X",
-      },
-      benefitIndicators: {
-        cob: "No",
-        cobRule: "-",
-        medInd: "No",
-        medicareAdvantage: "Yes",
-        cdhp: "N",
-        planPayer: "N",
-        cobPercentage: "0",
-      },
-      diagnosisCodes: {
-        dx1: "G800",
-        dx2: "0",
-        dx3: "0",
-        medRule: "-",
-      },
-    },
-    claimLines: [
-      {
-        lineNo: 1,
-        serviceFromDate: "8/4/2023",
-        serviceToDate: "8/4/2023",
-        pos: "12",
-        service: "DME",
-        procedureCode: "E9973",
-        modifiers: ["NU EU, KX"],
-        units: 1,
-        diagnosis: "G800",
-        billed: 300
-      }
-    ],
-    claimData: {
-      originalClaim: {
-        lineNo: 1,
-        from: "8/4/2023...",
-        procedure: "E9973",
-        modifiers: "NU,EU, KX",
-        units: 1,
-        billed: 300
-      },
-      claimsXten: {
-        billed: 300,
-        procedure: "E9973",
-        modifiers: "NU,EU, KX",
-        units: 1,
-        payPercent: 50
-      }
-    },
-    searchData: {
-      claimImage: {
-        patientName: "John Wick",
-        dob: "1982-08-18",
-        zip: "41701",
-        serviceDates: {
-          from: "2023-08-03",
-          to: "2023-08-03"
-        },
-        claimLineCodeSystem: "84284",
-        claimLineCodeImage: "E9973",
-        eligibilityValidation: [
-          "Confirm patient name",
-          "Confirm DOB",
-          "Confirm contact information",
-          "Ensure eligibility dates match claim line",
-          "Update claim line if mismatch detected",
-          "Run member search with Member ID to confirm eligibility"
-        ]
-      }
-    }
-  },
-  {
-    dcn: "25048AA2000",
-    title: "Jane",
-    lastName: "Smith",
-    dob: "3/15/1975",
-    sex: "F",
-    memberCode: "15",
-    contractType: "PPO",
-    relationship: "Self",
-    pcp: "Dr. Johnson",
-    erisa: "N",
-    billed: 150,
-    allowed: 120,
-    paid: 100,
-    edits: ["PLP", "REL"],
-    actionCode: "A"
-  },
-  {
-    dcn: "25048AA3000",
-    title: "Robert",
-    lastName: "Brown",
-    dob: "11/22/1990",
-    sex: "M",
-    memberCode: "30",
-    contractType: "HMO",
-    relationship: "Child",
-    pcp: "Dr. Williams",
-    erisa: "Y",
-    billed: 500,
-    allowed: 450,
-    paid: 400,
-    edits: ["SPS", "334", "507"],
-    actionCode: "B"
-  }
-];
-
 export class ClaimsService {
-  // Search claims by DCN
+  static async getClaimByDCN(dcn: string): Promise<Claim | null> {
+    try {
+      const { data: claim, error } = await supabase
+        .from('claims')
+        .select('*')
+        .eq('dcn', dcn)
+        .single();
+
+      if (error || !claim) {
+        console.error('Error fetching claim:', error);
+        return null;
+      }
+
+      // Get member info if it exists
+      const memberInfo = await this.getMemberInfoForClaim(claim.dcn);
+      
+      // Get claim form (source of truth)
+      const searchData = await this.getClaimFormData(claim.dcn);
+
+      return {
+        id: claim.id,
+        dcn: claim.dcn,
+        title: claim.title,
+        lastName: claim.last_name,
+        dob: claim.dob,
+        sex: claim.sex,
+        memberCode: claim.member_code,
+        contractType: claim.contract_type,
+        relationship: claim.relationship,
+        pcp: claim.pcp,
+        erisa: claim.erisa,
+        billed: claim.billed,
+        allowed: claim.allowed,
+        paid: claim.paid,
+        edits: claim.edits,
+        actionCode: claim.action_code,
+        status: claim.status,
+        scenarioType: claim.scenario_type,
+        memberInfo,
+        searchData,
+        // Mock data for other sections (to be implemented later)
+        providerInfo: this.getMockProviderInfo(),
+        paymentInfo: this.getMockPaymentInfo(),
+        claimHeaderInfo: this.getMockClaimHeaderInfo(),
+        claimLines: this.getMockClaimLines(),
+        claimData: this.getMockClaimData()
+      };
+    } catch (error) {
+      console.error('Error in getClaimByDCN:', error);
+      return null;
+    }
+  }
+
+  static async getMemberInfoForClaim(dcn: string): Promise<MemberInfo | undefined> {
+    try {
+      // For now, return basic member info from claim
+      // This will be updated when member is selected
+      return undefined;
+    } catch (error) {
+      console.error('Error fetching member info:', error);
+      return undefined;
+    }
+  }
+
+  static async getClaimFormData(dcn: string): Promise<SearchData | undefined> {
+    try {
+      const { data: claimForm, error } = await supabase
+        .from('claim_forms')
+        .select('*')
+        .eq('dcn', dcn)
+        .single();
+
+      if (error || !claimForm) {
+        console.error('Error fetching claim form:', error);
+        return undefined;
+      }
+
+      return {
+        claimImage: {
+          patientName: claimForm.patient_name,
+          dob: claimForm.dob,
+          zip: claimForm.zip_code,
+          serviceDates: {
+            from: claimForm.service_date_from,
+            to: claimForm.service_date_to
+          },
+          claimLineCodeSystem: claimForm.claim_line_code_system,
+          claimLineCodeImage: claimForm.claim_line_code_image,
+          eligibilityValidation: claimForm.eligibility_validation
+        }
+      };
+    } catch (error) {
+      console.error('Error fetching claim form data:', error);
+      return undefined;
+    }
+  }
+
+  static async searchMembers(searchCriteria: {
+    firstName?: string;
+    lastName?: string;
+    dob?: string;
+    subscriberId?: string;
+  }): Promise<MemberSearchResult[]> {
+    try {
+      let query = supabase.from('members').select(`
+        id, prefix, first_name, middle_name, last_name, dob, sex,
+        hcid, subscriber_id, group_name, address, city, state, zip_code
+      `);
+
+      if (searchCriteria.firstName) {
+        query = query.ilike('first_name', `%${searchCriteria.firstName}%`);
+      }
+      if (searchCriteria.lastName) {
+        query = query.ilike('last_name', `%${searchCriteria.lastName}%`);
+      }
+      if (searchCriteria.dob) {
+        query = query.eq('dob', searchCriteria.dob);
+      }
+      if (searchCriteria.subscriberId) {
+        query = query.eq('subscriber_id', searchCriteria.subscriberId);
+      }
+
+      const { data: members, error } = await query;
+
+      if (error) {
+        console.error('Error searching members:', error);
+        return [];
+      }
+
+      return members?.map(member => ({
+        id: member.id,
+        prefix: member.prefix,
+        firstName: member.first_name,
+        middleName: member.middle_name,
+        lastName: member.last_name,
+        dob: member.dob,
+        sex: member.sex,
+        hcid: member.hcid,
+        subscriberId: member.subscriber_id,
+        groupName: member.group_name,
+        address: member.address,
+        city: member.city,
+        state: member.state,
+        zipCode: member.zip_code
+      })) || [];
+    } catch (error) {
+      console.error('Error in searchMembers:', error);
+      return [];
+    }
+  }
+
+  static async getMemberById(id: string): Promise<MemberInfo | null> {
+    try {
+      const { data: member, error } = await supabase
+        .from('members')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error || !member) {
+        console.error('Error fetching member:', error);
+        return null;
+      }
+
+      return {
+        id: member.id,
+        prefix: member.prefix,
+        firstName: member.first_name,
+        middleName: member.middle_name,
+        lastName: member.last_name,
+        dob: member.dob,
+        sex: member.sex,
+        memberPrefix: member.member_prefix,
+        hcid: member.hcid,
+        relationship: member.relationship,
+        memberCode: member.member_code,
+        contractType: member.contract_type,
+        erisa: member.erisa,
+        pcp: member.pcp,
+        pcpState: member.pcp_state,
+        pcpRelationship: member.pcp_relationship,
+        programCode: member.program_code,
+        subscriberId: member.subscriber_id,
+        groupName: member.group_name,
+        groupId: member.group_id,
+        groupContract: member.group_contract,
+        detailContractCode: member.detail_contract_code,
+        product: member.product,
+        networkId: member.network_id,
+        networkName: member.network_name,
+        address: member.address,
+        city: member.city,
+        state: member.state,
+        zipCode: member.zip_code
+      };
+    } catch (error) {
+      console.error('Error in getMemberById:', error);
+      return null;
+    }
+  }
+
+  static async validateMemberData(memberInfo: MemberInfo, claimForm: ClaimForm): Promise<{
+    isValid: boolean;
+    errors: string[];
+  }> {
+    const errors: string[] = [];
+
+    // Validate patient name
+    const memberFullName = `${memberInfo.firstName} ${memberInfo.lastName}`.trim();
+    if (memberFullName !== claimForm.patientName.trim()) {
+      errors.push(`Patient name mismatch: Expected "${claimForm.patientName}", got "${memberFullName}"`);
+    }
+
+    // Validate DOB
+    if (memberInfo.dob !== claimForm.dob) {
+      errors.push(`DOB mismatch: Expected "${claimForm.dob}", got "${memberInfo.dob}"`);
+    }
+
+    // Validate ZIP code if available
+    if (memberInfo.zipCode && memberInfo.zipCode !== claimForm.zipCode) {
+      errors.push(`ZIP code mismatch: Expected "${claimForm.zipCode}", got "${memberInfo.zipCode}"`);
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
+  }
+
+  static async updateClaimStatus(dcn: string, actionCode: string): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('claims')
+        .update({ 
+          action_code: actionCode,
+          status: actionCode === 'pay' ? 'approved' : 'processed'
+        })
+        .eq('dcn', dcn);
+
+      if (error) {
+        console.error('Error updating claim status:', error);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error in updateClaimStatus:', error);
+      return false;
+    }
+  }
+
+  static getEditDetails(edits: string[]): EditDetail[] {
+    const editMap: Record<string, EditDetail> = {
+      'SPS': { code: 'SPS', description: 'Spouse eligibility verification required', status: 'resolved' },
+      'PLP': { code: 'PLP', description: 'Primary liability payer check needed', status: 'resolved' },
+      'RNB': { code: 'RNB', description: 'Relationship not on benefits', status: 'resolved' },
+      '334': { code: '334', description: 'Provider specialty code validation', status: 'resolved' },
+      'REL': { code: 'REL', description: 'Relationship code verification', status: 'resolved' },
+      'IAF': { code: 'IAF', description: 'Ineligible amount found', status: 'resolved' },
+      '507': { code: '507', description: 'Member information validation required', status: 'critical' }
+    };
+
+    return edits.map(edit => editMap[edit] || { 
+      code: edit, 
+      description: `Edit ${edit} - Manual review required`, 
+      status: 'critical' 
+    });
+  }
+
+  // Search claims by DCN - for backward compatibility
   static searchClaims(dcn: string): Claim[] {
+    // This will be replaced with database search
+    const mockClaims = this.getAllClaims();
     if (!dcn.trim()) {
       return mockClaims;
     }
@@ -670,32 +534,32 @@ export class ClaimsService {
     );
   }
 
-  // Get claim by exact DCN
-  static getClaimByDCN(dcn: string): Claim | null {
-    return mockClaims.find(claim => 
-      claim.dcn.toLowerCase() === dcn.toLowerCase()
-    ) || null;
-  }
-
-  // Get all claims
   static getAllClaims(): Claim[] {
-    return mockClaims;
-  }
-
-  // Get edit details for a claim
-  static getEditDetails(edits: string[]): EditDetail[] {
-    return edits.map(editCode => 
-      editDetails[editCode] || { 
-        code: editCode, 
-        description: "Unknown edit code", 
-        status: "soft" as const 
+    // Mock implementation - to be replaced with database query
+    return [
+      {
+        dcn: "25048AA1000",
+        title: "John",
+        lastName: "Wick",
+        dob: "1982-08-18",
+        sex: "M",
+        memberCode: "20",
+        contractType: "H",
+        relationship: "Spouse",
+        pcp: "-",
+        erisa: "Y",
+        billed: 300,
+        allowed: 100,
+        paid: 0,
+        edits: ["SPS", "PLP", "RNB", "334", "REL", "IAF", "507"],
+        actionCode: "-"
       }
-    );
+    ];
   }
 
-  // Simulate refreshing claim data
-  static refreshClaimData(dcn: string): Claim | null {
-    const claim = this.getClaimByDCN(dcn);
+  // Simulate refreshing claim data - for backward compatibility
+  static async refreshClaimData(dcn: string): Promise<Claim | null> {
+    const claim = await this.getClaimByDCN(dcn);
     if (claim) {
       // Simulate some random changes
       const randomBilled = Math.floor(Math.random() * 1000) + 100;
@@ -710,5 +574,156 @@ export class ClaimsService {
       };
     }
     return null;
+  }
+
+  // Mock data methods (to be implemented later)
+  private static getMockProviderInfo(): ProviderInfo {
+    return {
+      renderingNPI: "67926782",
+      renderingName: "James Clinic",
+      renderingAddress: "2426 BERKSHIRE AV Fox Cities.",
+      pricingState: "WI",
+      pricingZIP: "44011",
+      providerSPS: "-",
+      providerEPIN: "-",
+      licenseNumber: "-",
+      networkOption: "N/Y",
+      specialty: "V01",
+      taxonomy: "2345678232",
+      emergencyPricingInd: "-",
+      billingTaxId: "1234567B",
+      billingNPI: "1234567",
+      billingName2: "MILLERS RENTAL",
+      facilityType: "-",
+      providerSPS3: "5987543",
+      providerEPIN4: "-",
+      medicareId: "-",
+      address5: "203 ROMIG RD 0954642",
+      nationalState: "NY",
+      locationCode: "-",
+      bhaProviderIndicator: "YA",
+      taxonomy6: "-",
+      referringPhysician: "Kim Konch",
+      referringNPI7: "5974200",
+      serviceProvider: "James Clinic",
+      serviceFacilityTier: "-",
+      npi8: "-",
+      nsbIndicator: "None",
+      alternateFacilityNPI: "-"
+    };
+  }
+
+  private static getMockPaymentInfo(): PaymentInfo {
+    return {
+      claim: {
+        deductible: 0,
+        copay: 0,
+        coins: 0,
+        patientLiability: 0,
+        memberSurcharge: 0,
+        nonEligible: 0,
+        hraPaid: 0,
+        claimPaid: 0,
+        pricingAllowedAmount: 100,
+        totalCharge: 300,
+        finalizationCode: "-"
+      },
+      provider: {
+        providerDiscount: 0,
+        providerLiability: 0,
+        providerRiskWithhold: 0,
+        providerSurcharge: 0,
+        interest: 0,
+        penalty: 0,
+        lrIndicator: "-",
+        systemInterest: 0
+      },
+      drg: {
+        amount: 0,
+        checkNumber: "-",
+        checkDate: "-",
+        paymentSystem: "D",
+        checkStatus: "Check not Found",
+        checkStatusDate: "2025-06-01",
+        paidTo: "MEDICAL GROUP LLC",
+        accountNumber: "-",
+        eftCheckDate: "",
+        priced: ""
+      }
+    };
+  }
+
+  private static getMockClaimHeaderInfo(): ClaimHeaderInfo {
+    return {
+      generalClaimData: {
+        serviceFromDate: "08/03/2023",
+        serviceToDate: "08/03/2023",
+        assignmentOfBenefits: "Y",
+        providerParticipation: "PAR",
+        providerContract: "CEPMS0",
+        treatmentAuth: "-",
+        patientAccount: "N41127.23297",
+        emergency: "No",
+        employment: "No",
+        coveredZipRadius: "-",
+        frequency: "-",
+        bbiIndicator: "-",
+        pciIndicator: "-",
+        fsbInd: "None",
+        fsbExclusion: "X"
+      },
+      benefitIndicators: {
+        cob: "No",
+        cobRule: "-",
+        medInd: "No",
+        medicareAdvantage: "Yes",
+        cdhp: "N",
+        planPayer: "N",
+        cobPercentage: "0"
+      },
+      diagnosisCodes: {
+        dx1: "G800",
+        dx2: "0",
+        dx3: "0",
+        medRule: "-"
+      }
+    };
+  }
+
+  private static getMockClaimLines(): ClaimLine[] {
+    return [
+      {
+        lineNo: 1,
+        serviceFromDate: "8/4/2023",
+        serviceToDate: "8/4/2023",
+        pos: "12",
+        service: "DME",
+        procedureCode: "E9973",
+        modifiers: ["NU EU, KX"],
+        units: 1,
+        diagnosis: "G800",
+        billed: 300
+      }
+    ];
+  }
+
+  private static getMockClaimData(): any {
+    return {
+      originalClaim: {
+        lineNo: 1,
+        from: "8/4/2023...",
+        procedure: "E9973",
+        modifiers: "NU,EU, KX",
+        units: 1,
+        billed: 300
+      },
+      claimsXten: {
+        billed: 300,
+        procedure: "E9973",
+        modifiers: "NU,EU, KX",
+        units: 1,
+        payPercent: 50
+      }
+    };
   }
 }

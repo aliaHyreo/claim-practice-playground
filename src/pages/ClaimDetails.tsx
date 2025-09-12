@@ -28,16 +28,17 @@ const ClaimDetails = () => {
 
   useEffect(() => {
     if (dcn) {
-      const foundClaim = ClaimsService.getClaimByDCN(dcn);
-      setClaim(foundClaim);
-      
-      if (!foundClaim) {
-        toast({
-          title: "Claim not found",
-          description: `No claim found with DCN: ${dcn}`,
-          variant: "destructive",
-        });
-      }
+      ClaimsService.getClaimByDCN(dcn).then(foundClaim => {
+        setClaim(foundClaim);
+        
+        if (!foundClaim) {
+          toast({
+            title: "Claim not found",
+            description: `No claim found with DCN: ${dcn}`,
+            variant: "destructive",
+          });
+        }
+      });
     }
   }, [dcn, toast]);
 
@@ -48,16 +49,16 @@ const ClaimDetails = () => {
     
     // Simulate API delay
     setTimeout(() => {
-      const refreshedClaim = ClaimsService.refreshClaimData(dcn);
-      if (refreshedClaim) {
-        setClaim(refreshedClaim);
-        setRefreshKey(prev => prev + 1); // Force re-render of all child components
-        toast({
-          title: "Data refreshed",
-          description: "Claim data has been updated with latest information.",
-        });
-      }
-      setIsRefreshing(false);
+      ClaimsService.refreshClaimData(dcn).then(refreshedClaim => {
+        if (refreshedClaim) {
+          setClaim(refreshedClaim);
+          setRefreshKey(prev => prev + 1); // Force re-render of all child components
+          toast({
+            title: "Data refreshed",
+            description: "Claim data has been updated with latest information.",
+          });
+        }
+        setIsRefreshing(false);
     }, 1000);
   };
 
