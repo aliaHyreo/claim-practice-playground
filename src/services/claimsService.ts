@@ -669,74 +669,38 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
     
     // SCENARIO 2 (DCN: 25048AA1001) - PATIENT DATA IS CORRECT, GROUP DATA IS WRONG
     if (dcn === "25048AA1001") {
-      const { data: memberData, error } = await supabase
-        .from('members')
-        .select('*')
-        .eq('hcid', 'H987654321')
-        .eq('group_id', '200000A001') // Load the EXPIRED contract first (wrong group)
-        .single();
-
-      if (error || !memberData) {
-        console.error('Error fetching member data:', error);
-        // Fallback data if database query fails
-        return {
-          prefix: "Mr",
-          firstName: "John", // ✅ CORRECT - Matches claim form
-          middleName: "D",
-          lastName: "Wick S", // ✅ CORRECT - Matches claim form (includes S)
-          dob: "1982-08-18", // ✅ CORRECT - Matches claim form
-          sex: "M",
-          hcid: "9876543210987654", // ✅ CORRECT - Available for searching contracts
-          memberPrefix: "01",
-          programCode: "HMO",
-          relationship: "Self",
-          memberCode: "001",
-          contractType: "Individual",
-          erisa: "Y",
-          pcp: "Dr. Jane Smith",
-          pcpState: "CA",
-          pcpRelationship: "Primary",
-          subscriberId: "123456789", // ✅ CORRECT - Matches claim form
-          groupName: "Tech Solutions Inc",
-          groupContract: "500L", // ❌ WRONG - Expired group contract
-          detailContractCode: "DCC123",
-          product: "Premium Health",
-          groupId: "200000A001", // ❌ WRONG - Expired group ID
-          networkName: "HealthNet Plus",
-          networkId: "NET789",
-          effectiveDate: "04/28/2020", // ❌ WRONG - Expired effective date (MM/DD/YYYY format)
-          endDate: "06/07/2022" // ❌ WRONG - Expired end date (MM/DD/YYYY format)
-        };
-      }
-
-      // Return database data for Scenario 2
+      // Return all correct patient data but with expired group information
       return {
-        prefix: memberData.prefix || "Mr",
-        firstName: memberData.first_name, // ✅ CORRECT - John
-        middleName: memberData.middle_name || "D",
-        lastName: memberData.last_name, // ✅ CORRECT - Wick
-        dob: memberData.dob, // ✅ CORRECT - 1982-08-18
-        sex: memberData.sex,
-        hcid: memberData.hcid, // ✅ CORRECT - H987654321
-        memberPrefix: memberData.member_prefix || "01",
-        programCode: memberData.program_code || "HMO",
-        relationship: memberData.relationship,
-        memberCode: memberData.member_code,
-        contractType: memberData.contract_type,
-        erisa: memberData.erisa,
-        pcp: memberData.pcp,
-        pcpState: memberData.pcp_state,
-        pcpRelationship: memberData.pcp_relationship || "Primary",
-        subscriberId: memberData.subscriber_id, // ✅ CORRECT - 123456789
-        groupName: memberData.group_name,
-        groupContract: memberData.group_contract, // ❌ WRONG - 200000A001 (expired)
-        detailContractCode: memberData.detail_contract_code || "DCC123",
-        product: memberData.product || "Premium Health",
-        groupId: memberData.group_id, // ❌ WRONG - 200000A001 (expired)
-        networkName: memberData.network_name || "HealthNet Plus",
-        networkId: memberData.network_id || "NET789",
-        effectiveDate: memberData.effective_date, // ❌ WRONG - 2020-04-28 (expired)
-        endDate: memberData.end_date // ❌ WRONG - 2022-06-07 (expired)
+        prefix: "Mr",
+        firstName: "John", // ✅ CORRECT - Matches claim form
+        middleName: "D",
+        lastName: "Wick S", // ✅ CORRECT - Matches claim form (includes S)
+        dob: "1982-08-18", // ✅ CORRECT - Matches claim form
+        sex: "M",
+        hcid: "9876543210987654", // ✅ CORRECT - Available for searching contracts
+        memberPrefix: "01",
+        programCode: "HMO",
+        relationship: "Self",
+        memberCode: "001",
+        contractType: "Individual",
+        erisa: "Y",
+        pcp: "Dr. Jane Smith",
+        pcpState: "KY",
+        pcpRelationship: "Primary",
+        subscriberId: "123456789", // ✅ CORRECT - Matches claim form
+        groupName: "Tech Solutions Inc",
+        groupContract: "500L", // ❌ WRONG - Expired group contract
+        detailContractCode: "500L",
+        product: "HMO Standard",
+        groupId: "200000A001", // ❌ WRONG - Expired group ID
+        networkName: "Primary Network",
+        networkId: "NET001",
+        address: "123 Main St", // ✅ CORRECT - Matches claim form
+        city: "Louisville", // ✅ CORRECT - Matches claim form  
+        state: "KY", // ✅ CORRECT - Matches claim form
+        zipCode: "41701", // ✅ CORRECT - Matches claim form
+        effectiveDate: "04/28/2020", // ❌ WRONG - Expired effective date (MM/DD/YYYY format)
+        endDate: "06/07/2022" // ❌ WRONG - Expired end date (MM/DD/YYYY format)
       };
     }
 
