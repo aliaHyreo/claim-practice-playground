@@ -673,8 +673,8 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
       return {
         prefix: "Mr",
         firstName: "John", // ✅ CORRECT - Matches claim form
-        middleName: "D",
-        lastName: "Wick S", // ✅ CORRECT - Matches claim form (includes S)
+        middleName: "",  // ✅ REMOVE middle name to match claim form exactly
+        lastName: "Wick S", // ✅ CORRECT - Matches claim form exactly "John Wick S"
         dob: "1982-08-18", // ✅ CORRECT - Matches claim form
         sex: "M",
         hcid: "9876543210987654", // ✅ CORRECT - Available for searching contracts
