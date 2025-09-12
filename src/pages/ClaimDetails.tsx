@@ -59,6 +59,7 @@ const ClaimDetails = () => {
           });
         }
         setIsRefreshing(false);
+      });
     }, 1000);
   };
 
