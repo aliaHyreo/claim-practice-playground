@@ -1,11 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export interface EditDetail {
-  code: string;
-  description: string;
-  status: 'resolved' | 'critical';
-}
-
 export interface MemberInfo {
   id?: string;
   prefix: string;
@@ -14,8 +8,9 @@ export interface MemberInfo {
   lastName: string;
   dob: string;
   sex: string;
-  memberPrefix: string;
   hcid: string;
+  memberPrefix: string;
+  programCode: string;
   relationship: string;
   memberCode: string;
   contractType: string;
@@ -23,50 +18,42 @@ export interface MemberInfo {
   pcp: string;
   pcpState: string;
   pcpRelationship: string;
-  programCode: string;
   subscriberId: string;
   groupName: string;
-  groupId: string;
   groupContract: string;
   detailContractCode: string;
   product: string;
-  networkId: string;
+  groupId: string;
   networkName: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zipCode?: string;
+  networkId: string;
 }
 
 export interface ProviderInfo {
-  renderingNPI: string;
-  renderingName: string;
-  renderingAddress: string;
-  pricingState: string;
-  pricingZIP: string;
-  providerSPS: string;
-  providerEPIN: string;
-  licenseNumber: string;
-  networkOption: string;
-  specialty: string;
-  taxonomy: string;
-  emergencyPricingInd: string;
-  billingTaxId: string;
+  billingName: string;
   billingNPI: string;
-  billingName2: string;
-  facilityType: string;
-  providerSPS3: string;
-  providerEPIN4: string;
-  medicareId: string;
-  address5: string;
-  nationalState: string;
-  locationCode: string;
-  bhaProviderIndicator: string;
-  taxonomy6: string;
+  billingTaxId: string;
+  renderingName: string;
+  renderingNPI: string;
+  renderingAddress: string;
   referringPhysician: string;
-  referringNPI7: string;
-  serviceProvider: string;
+  referringNPI: string;
+  taxonomy: string;
+  specialty: string;
+  networkOption: string;
+  licenseNumber: string;
+  providerEpin: string;
+  providerSps: string;
+  facilityType: string;
+  address: string;
+  medicareId: string;
+  emergencyPricingInd: string;
+  bhaProviderIndicator: string;
+  locationCode: string;
+  nationalState: string;
+  pricingState: string;
+  pricingZip: string;
   serviceFacilityTier: string;
+  serviceProvider: string;
   npi8: string;
   nsbIndicator: string;
   alternateFacilityNPI: string;
@@ -145,39 +132,15 @@ export interface ClaimHeaderInfo {
   };
 }
 
-export interface ClaimImageData {
-  patientName: string;
-  dob: string;
-  zip: string;
-  serviceDates: {
-    from: string;
-    to: string;
-  };
-  claimLineCodeSystem: string;
-  claimLineCodeImage: string;
-  eligibilityValidation: string[];
+export interface ClaimData {
+  originalClaim: any;
+  claimsXten: any;
+  overrides: any;
+  adjustments: any;
 }
 
 export interface SearchData {
-  claimImage: ClaimImageData;
-}
-
-export interface ClaimData {
-  originalClaim: {
-    lineNo: number;
-    from: string;
-    procedure: string;
-    modifiers: string;
-    units: number;
-    billed: number;
-  };
-  claimsXten: {
-    billed: number;
-    procedure: string;
-    modifiers: string;
-    units: number;
-    payPercent: number;
-  };
+  claimImage?: any;
 }
 
 export interface ClaimLine {
@@ -223,6 +186,20 @@ export interface MemberSearchResult {
   zipCode: string;
 }
 
+export interface ClaimImageData {
+  dcn?: string;
+  patientName?: string;
+  dob?: string;
+  [key: string]: any;
+}
+
+export interface EditDetail {
+  code: string;
+  description: string;
+  type: string;
+  status: string;
+}
+
 export interface Claim {
   id?: string;
   dcn: string;
@@ -254,406 +231,183 @@ export interface Claim {
 export class ClaimsService {
   static async getClaimByDCN(dcn: string): Promise<Claim | null> {
     try {
-      const { data: claim, error } = await supabase
+      const { data: claimData, error: claimError } = await supabase
         .from('claims')
         .select('*')
         .eq('dcn', dcn)
-        .single();
+        .maybeSingle();
 
-      if (error || !claim) {
-        console.error('Error fetching claim:', error);
-        return null;
-      }
+      if (claimError) throw claimError;
+      if (!claimData) return null;
 
-      // Get member info if it exists
-      const memberInfo = await this.getMemberInfoForClaim(claim.dcn);
-      
-      // Get claim form (source of truth)
-      const searchData = await this.getClaimFormData(claim.dcn);
+      const memberInfo = await getMemberInfoByDCN(dcn);
+      const providerInfo = await this.getProviderInfoByDCN(dcn);
+      const claimLines = await this.getClaimLinesByDCN(dcn);
 
       return {
-        id: claim.id,
-        dcn: claim.dcn,
-        title: claim.title,
-        lastName: claim.last_name,
-        dob: claim.dob,
-        sex: claim.sex,
-        memberCode: claim.member_code,
-        contractType: claim.contract_type,
-        relationship: claim.relationship,
-        pcp: claim.pcp,
-        erisa: claim.erisa,
-        billed: claim.billed,
-        allowed: claim.allowed,
-        paid: claim.paid,
-        edits: claim.edits,
-        actionCode: claim.action_code,
-        status: claim.status,
-        scenarioType: claim.scenario_type,
+        id: claimData.id,
+        dcn: claimData.dcn,
+        title: claimData.title || '',
+        lastName: claimData.last_name || '',
+        dob: claimData.dob || '',
+        sex: claimData.sex || '',
+        memberCode: claimData.member_code || '',
+        contractType: claimData.contract_type || '',
+        relationship: claimData.relationship || '',
+        pcp: claimData.pcp || '',
+        erisa: claimData.erisa || '',
+        billed: claimData.billed || 0,
+        allowed: claimData.allowed || 0,
+        paid: claimData.paid || 0,
+        edits: claimData.edits || [],
+        actionCode: claimData.action_code,
+        status: claimData.status,
+        scenarioType: claimData.scenario_type,
         memberInfo,
-        searchData,
-        // Get real data from database
-        providerInfo: await this.getProviderInfo(),
-        claimLines: await this.getClaimLinesForClaim(claim.id),
+        providerInfo,
         paymentInfo: this.getMockPaymentInfo(),
         claimHeaderInfo: this.getMockClaimHeaderInfo(),
-        claimData: this.getMockClaimData()
+        claimLines,
+        claimData: this.getMockClaimData(),
+        searchData: { claimImage: {} }
       };
     } catch (error) {
-      console.error('Error in getClaimByDCN:', error);
-      return null;
+      console.error('Error fetching claim:', error);
+      throw error;
     }
   }
 
-  static async getMemberInfoForClaim(dcn: string): Promise<MemberInfo | undefined> {
+  static async getClaimLinesByDCN(dcn: string): Promise<ClaimLine[]> {
     try {
-      // Fetch member with wrong test data (missing 'S' in last name)
-      const { data: member, error } = await supabase
-        .from('members')
-        .select('*')
-        .eq('hcid', '23456789')
-        .single();
-
-      if (error || !member) {
-        console.error('Error fetching member info:', error);
-        return undefined;
-      }
-
-      return {
-        id: member.id,
-        prefix: member.prefix || '',
-        firstName: member.first_name,
-        middleName: member.middle_name || '',
-        lastName: member.last_name, // This will be wrong (missing 'S')
-        dob: member.dob,
-        sex: member.sex || '',
-        memberPrefix: member.member_prefix || '',
-        hcid: member.hcid || '',
-        relationship: member.relationship || '',
-        memberCode: member.member_code || '',
-        contractType: member.contract_type || '',
-        erisa: member.erisa || '',
-        pcp: member.pcp || '',
-        pcpState: member.pcp_state || '',
-        pcpRelationship: member.pcp_relationship || '',
-        programCode: member.program_code || '',
-        subscriberId: member.subscriber_id || '',
-        groupName: member.group_name || '',
-        groupId: member.group_id || '',
-        groupContract: member.group_contract || '',
-        detailContractCode: member.detail_contract_code || '',
-        product: member.product || '',
-        networkId: member.network_id || '',
-        networkName: member.network_name || '',
-        address: member.address || '',
-        city: member.city || '',
-        state: member.state || '',
-        zipCode: member.zip_code || ''
-      };
-    } catch (error) {
-      console.error('Error fetching member info:', error);
-      return undefined;
-    }
-  }
-
-  static async getClaimFormData(dcn: string): Promise<SearchData | undefined> {
-    try {
-      const { data: claimForm, error } = await supabase
-        .from('claim_forms')
-        .select('*')
+      const { data: claimData } = await supabase
+        .from('claims')
+        .select('id')
         .eq('dcn', dcn)
-        .single();
+        .maybeSingle();
 
-      if (error || !claimForm) {
-        console.error('Error fetching claim form:', error);
-        return undefined;
-      }
+      if (!claimData) return [];
 
-      return {
-        claimImage: {
-          patientName: claimForm.patient_name,
-          dob: claimForm.dob,
-          zip: claimForm.zip_code,
-          serviceDates: {
-            from: claimForm.service_date_from,
-            to: claimForm.service_date_to
-          },
-          claimLineCodeSystem: claimForm.claim_line_code_system,
-          claimLineCodeImage: claimForm.claim_line_code_image,
-          eligibilityValidation: claimForm.eligibility_validation
-        }
-      };
-    } catch (error) {
-      console.error('Error fetching claim form data:', error);
-      return undefined;
-    }
-  }
+      const { data: linesData, error: linesError } = await supabase
+        .from('claim_lines')
+        .select('*')
+        .eq('claim_id', claimData.id);
 
-  static async searchMembers(searchCriteria: {
-    firstName?: string;
-    lastName?: string;
-    dob?: string;
-    subscriberId?: string;
-  }): Promise<MemberSearchResult[]> {
-    try {
-      let query = supabase.from('members').select(`
-        id, prefix, first_name, middle_name, last_name, dob, sex,
-        hcid, subscriber_id, group_name, address, city, state, zip_code
-      `);
+      if (linesError) throw linesError;
 
-      if (searchCriteria.firstName) {
-        query = query.ilike('first_name', `%${searchCriteria.firstName}%`);
-      }
-      if (searchCriteria.lastName) {
-        query = query.ilike('last_name', `%${searchCriteria.lastName}%`);
-      }
-      if (searchCriteria.dob) {
-        query = query.eq('dob', searchCriteria.dob);
-      }
-      if (searchCriteria.subscriberId) {
-        query = query.eq('subscriber_id', searchCriteria.subscriberId);
-      }
-
-      const { data: members, error } = await query;
-
-      if (error) {
-        console.error('Error searching members:', error);
-        return [];
-      }
-
-      return members?.map(member => ({
-        id: member.id,
-        prefix: member.prefix,
-        firstName: member.first_name,
-        middleName: member.middle_name,
-        lastName: member.last_name,
-        dob: member.dob,
-        sex: member.sex,
-        hcid: member.hcid,
-        subscriberId: member.subscriber_id,
-        groupName: member.group_name,
-        address: member.address,
-        city: member.city,
-        state: member.state,
-        zipCode: member.zip_code
+      return linesData?.map(line => ({
+        lineNo: line.line_no || 0,
+        serviceFromDate: line.service_from_date || '',
+        serviceToDate: line.service_to_date || '',
+        pos: line.pos || '',
+        service: line.service || '',
+        procedureCode: line.procedure_code || '',
+        modifiers: line.modifiers || [],
+        units: line.units || 0,
+        diagnosis: line.diagnosis || '',
+        billed: Number(line.billed) || 0
       })) || [];
     } catch (error) {
-      console.error('Error in searchMembers:', error);
+      console.error('Error fetching claim lines:', error);
       return [];
     }
   }
 
-  static async getMemberById(id: string): Promise<MemberInfo | null> {
+  static async getProviderInfoByDCN(dcn: string): Promise<ProviderInfo | null> {
     try {
-      const { data: member, error } = await supabase
-        .from('members')
+      const { data, error } = await supabase
+        .from('providers')
         .select('*')
-        .eq('id', id)
-        .single();
+        .limit(1)
+        .maybeSingle();
 
-      if (error || !member) {
-        console.error('Error fetching member:', error);
-        return null;
-      }
+      if (error) throw error;
+      if (!data) return null;
 
       return {
-        id: member.id,
-        prefix: member.prefix,
-        firstName: member.first_name,
-        middleName: member.middle_name,
-        lastName: member.last_name,
-        dob: member.dob,
-        sex: member.sex,
-        memberPrefix: member.member_prefix,
-        hcid: member.hcid,
-        relationship: member.relationship,
-        memberCode: member.member_code,
-        contractType: member.contract_type,
-        erisa: member.erisa,
-        pcp: member.pcp,
-        pcpState: member.pcp_state,
-        pcpRelationship: member.pcp_relationship,
-        programCode: member.program_code,
-        subscriberId: member.subscriber_id,
-        groupName: member.group_name,
-        groupId: member.group_id,
-        groupContract: member.group_contract,
-        detailContractCode: member.detail_contract_code,
-        product: member.product,
-        networkId: member.network_id,
-        networkName: member.network_name,
-        address: member.address,
-        city: member.city,
-        state: member.state,
-        zipCode: member.zip_code
+        billingName: data.billing_name2 || '',
+        billingNPI: data.billing_npi || '',
+        billingTaxId: data.billing_tax_id || '',
+        renderingName: data.rendering_name || '',
+        renderingNPI: data.rendering_npi || '',
+        renderingAddress: data.rendering_address || '',
+        referringPhysician: data.referring_physician || '',
+        referringNPI: data.referring_npi7 || '',
+        taxonomy: data.taxonomy || '',
+        specialty: data.specialty || '',
+        networkOption: data.network_option || '',
+        licenseNumber: data.license_number || '',
+        providerEpin: data.provider_epin || '',
+        providerSps: data.provider_sps || '',
+        facilityType: data.facility_type || '',
+        address: data.address5 || '',
+        medicareId: data.medicare_id || '',
+        emergencyPricingInd: data.emergency_pricing_ind || '',
+        bhaProviderIndicator: data.bha_provider_indicator || '',
+        locationCode: data.location_code || '',
+        nationalState: data.national_state || '',
+        pricingState: data.pricing_state || '',
+        pricingZip: data.pricing_zip || '',
+        serviceFacilityTier: data.service_facility_tier || '',
+        serviceProvider: data.service_provider || '',
+        npi8: data.npi8 || '',
+        nsbIndicator: data.nsb_indicator || '',
+        alternateFacilityNPI: data.alternate_facility_npi || ''
       };
     } catch (error) {
-      console.error('Error in getMemberById:', error);
+      console.error('Error fetching provider info:', error);
       return null;
     }
   }
 
-  static async validateMemberData(memberInfo: MemberInfo, claimForm: ClaimForm): Promise<{
-    isValid: boolean;
-    errors: string[];
-  }> {
-    const errors: string[] = [];
-
-    // Validate patient name
-    const memberFullName = `${memberInfo.firstName} ${memberInfo.lastName}`.trim();
-    if (memberFullName !== claimForm.patientName.trim()) {
-      errors.push(`Patient name mismatch: Expected "${claimForm.patientName}", got "${memberFullName}"`);
-    }
-
-    // Validate DOB
-    if (memberInfo.dob !== claimForm.dob) {
-      errors.push(`DOB mismatch: Expected "${claimForm.dob}", got "${memberInfo.dob}"`);
-    }
-
-    // Validate ZIP code if available
-    if (memberInfo.zipCode && memberInfo.zipCode !== claimForm.zipCode) {
-      errors.push(`ZIP code mismatch: Expected "${claimForm.zipCode}", got "${memberInfo.zipCode}"`);
-    }
-
-    return {
-      isValid: errors.length === 0,
-      errors
-    };
+  static async refreshClaimData(dcn: string): Promise<Claim | null> {
+    return this.getClaimByDCN(dcn);
   }
 
-  static async updateClaimStatus(dcn: string, actionCode: string): Promise<boolean> {
+  static async searchClaims(criteria: { dcn?: string }): Promise<Claim[]> {
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('claims')
-        .update({ 
-          action_code: actionCode,
-          status: actionCode === 'pay' ? 'approved' : 'processed'
-        })
-        .eq('dcn', dcn);
+        .select('*')
+        .ilike('dcn', `%${criteria.dcn || ''}%`);
 
-      if (error) {
-        console.error('Error updating claim status:', error);
-        return false;
-      }
+      if (error) throw error;
 
-      return true;
+      return data?.map(claim => ({
+        id: claim.id,
+        dcn: claim.dcn,
+        title: claim.title || '',
+        lastName: claim.last_name || '',
+        dob: claim.dob || '',
+        sex: claim.sex || '',
+        memberCode: claim.member_code || '',
+        contractType: claim.contract_type || '',
+        relationship: claim.relationship || '',
+        pcp: claim.pcp || '',
+        erisa: claim.erisa || '',
+        billed: claim.billed || 0,
+        allowed: claim.allowed || 0,
+        paid: claim.paid || 0,
+        edits: claim.edits || [],
+        actionCode: claim.action_code,
+        status: claim.status,
+        scenarioType: claim.scenario_type
+      })) || [];
     } catch (error) {
-      console.error('Error in updateClaimStatus:', error);
-      return false;
+      console.error('Error searching claims:', error);
+      return [];
     }
   }
 
   static getEditDetails(edits: string[]): EditDetail[] {
-    const editMap: Record<string, EditDetail> = {
-      'SPS': { code: 'SPS', description: 'Spouse eligibility verification required', status: 'resolved' },
-      'PLP': { code: 'PLP', description: 'Primary liability payer check needed', status: 'resolved' },
-      'RNB': { code: 'RNB', description: 'Relationship not on benefits', status: 'resolved' },
-      '334': { code: '334', description: 'Provider specialty code validation', status: 'resolved' },
-      'REL': { code: 'REL', description: 'Relationship code verification', status: 'resolved' },
-      'IAF': { code: 'IAF', description: 'Ineligible amount found', status: 'resolved' },
-      '507': { code: '507', description: 'Member information validation required', status: 'critical' }
-    };
-
-    return edits.map(edit => editMap[edit] || { 
-      code: edit, 
-      description: `Edit ${edit} - Manual review required`, 
-      status: 'critical' 
-    });
+    return edits.map(edit => ({
+      code: edit,
+      description: `Edit ${edit} description`,
+      type: 'warning',
+      status: 'active'
+    }));
   }
 
-  // Search claims by DCN - for backward compatibility
-  static searchClaims(dcn: string): Claim[] {
-    // This will be replaced with database search
-    const mockClaims = this.getAllClaims();
-    if (!dcn.trim()) {
-      return mockClaims;
-    }
-    
-    return mockClaims.filter(claim => 
-      claim.dcn.toLowerCase().includes(dcn.toLowerCase())
-    );
-  }
-
-  static getAllClaims(): Claim[] {
-    // Mock implementation - to be replaced with database query
-    return [
-      {
-        dcn: "25048AA1000",
-        title: "John",
-        lastName: "Wick",
-        dob: "1982-08-18",
-        sex: "M",
-        memberCode: "20",
-        contractType: "H",
-        relationship: "Spouse",
-        pcp: "-",
-        erisa: "Y",
-        billed: 300,
-        allowed: 100,
-        paid: 0,
-        edits: ["SPS", "PLP", "RNB", "334", "REL", "IAF", "507"],
-        actionCode: "-"
-      }
-    ];
-  }
-
-  // Simulate refreshing claim data - for backward compatibility
-  static async refreshClaimData(dcn: string): Promise<Claim | null> {
-    const claim = await this.getClaimByDCN(dcn);
-    if (claim) {
-      // Simulate some random changes
-      const randomBilled = Math.floor(Math.random() * 1000) + 100;
-      const randomAllowed = Math.floor(randomBilled * 0.8);
-      const randomPaid = Math.floor(randomAllowed * 0.9);
-      
-      return {
-        ...claim,
-        billed: randomBilled,
-        allowed: randomAllowed,
-        paid: randomPaid
-      };
-    }
-    return null;
-  }
-
-  // Mock data methods (to be implemented later)
-  private static getMockProviderInfo(): ProviderInfo {
-    return {
-      renderingNPI: "67926782",
-      renderingName: "James Clinic",
-      renderingAddress: "2426 BERKSHIRE AV Fox Cities.",
-      pricingState: "WI",
-      pricingZIP: "44011",
-      providerSPS: "-",
-      providerEPIN: "-",
-      licenseNumber: "-",
-      networkOption: "N/Y",
-      specialty: "V01",
-      taxonomy: "2345678232",
-      emergencyPricingInd: "-",
-      billingTaxId: "1234567B",
-      billingNPI: "1234567",
-      billingName2: "MILLERS RENTAL",
-      facilityType: "-",
-      providerSPS3: "5987543",
-      providerEPIN4: "-",
-      medicareId: "-",
-      address5: "203 ROMIG RD 0954642",
-      nationalState: "NY",
-      locationCode: "-",
-      bhaProviderIndicator: "YA",
-      taxonomy6: "-",
-      referringPhysician: "Kim Konch",
-      referringNPI7: "5974200",
-      serviceProvider: "James Clinic",
-      serviceFacilityTier: "-",
-      npi8: "-",
-      nsbIndicator: "None",
-      alternateFacilityNPI: "-"
-    };
-  }
-
-  private static getMockPaymentInfo(): PaymentInfo {
+  static getMockPaymentInfo(): PaymentInfo {
     return {
       claim: {
         deductible: 0,
@@ -693,7 +447,7 @@ export class ClaimsService {
     };
   }
 
-  private static getMockClaimHeaderInfo(): ClaimHeaderInfo {
+  static getMockClaimHeaderInfo(): ClaimHeaderInfo {
     return {
       generalClaimData: {
         serviceFromDate: "08/03/2023",
@@ -730,28 +484,11 @@ export class ClaimsService {
     };
   }
 
-  private static getMockClaimLines(): ClaimLine[] {
-    return [
-      {
-        lineNo: 1,
-        serviceFromDate: "8/4/2023",
-        serviceToDate: "8/4/2023",
-        pos: "12",
-        service: "DME",
-        procedureCode: "E9973",
-        modifiers: ["NU EU, KX"],
-        units: 1,
-        diagnosis: "G800",
-        billed: 300
-      }
-    ];
-  }
-
-  private static getMockClaimData(): any {
+  static getMockClaimData(): ClaimData {
     return {
       originalClaim: {
         lineNo: 1,
-        from: "8/4/2023...",
+        from: "8/4/2023",
         procedure: "E9973",
         modifiers: "NU,EU, KX",
         units: 1,
@@ -761,91 +498,145 @@ export class ClaimsService {
         billed: 300,
         procedure: "E9973",
         modifiers: "NU,EU, KX",
-        units: 1,
-        payPercent: 50
-      }
+        units: 1
+      },
+      overrides: {},
+      adjustments: {}
     };
   }
-
-  static async getProviderInfo(): Promise<ProviderInfo | undefined> {
-    try {
-      const { data: provider, error } = await supabase
-        .from('providers')
-        .select('*')
-        .limit(1)
-        .single();
-
-      if (error || !provider) {
-        console.error('Error fetching provider info:', error);
-        return this.getMockProviderInfo();
-      }
-
-      return {
-        renderingNPI: provider.rendering_npi || '',
-        renderingName: provider.rendering_name || '',
-        renderingAddress: provider.rendering_address || '',
-        pricingState: provider.pricing_state || '',
-        pricingZIP: provider.pricing_zip || '',
-        providerSPS: provider.provider_sps || '',
-        providerEPIN: provider.provider_epin || '',
-        licenseNumber: provider.license_number || '',
-        networkOption: provider.network_option || '',
-        specialty: provider.specialty || '',
-        taxonomy: provider.taxonomy || '',
-        emergencyPricingInd: provider.emergency_pricing_ind || '',
-        billingTaxId: provider.billing_tax_id || '',
-        billingNPI: provider.billing_npi || '',
-        billingName2: provider.billing_name2 || '',
-        facilityType: provider.facility_type || '',
-        providerSPS3: provider.provider_sps3 || '',
-        providerEPIN4: provider.provider_epin4 || '',
-        medicareId: provider.medicare_id || '',
-        address5: provider.address5 || '',
-        nationalState: provider.national_state || '',
-        locationCode: provider.location_code || '',
-        bhaProviderIndicator: provider.bha_provider_indicator || '',
-        taxonomy6: provider.taxonomy6 || '',
-        referringPhysician: provider.referring_physician || '',
-        referringNPI7: provider.referring_npi7 || '',
-        serviceProvider: provider.service_provider || '',
-        serviceFacilityTier: provider.service_facility_tier || '',
-        npi8: provider.npi8 || '',
-        nsbIndicator: provider.nsb_indicator || '',
-        alternateFacilityNPI: provider.alternate_facility_npi || ''
-      };
-    } catch (error) {
-      console.error('Error fetching provider info:', error);
-      return this.getMockProviderInfo();
-    }
-  }
-
-  static async getClaimLinesForClaim(claimId: string): Promise<ClaimLine[]> {
-    try {
-      const { data: claimLines, error } = await supabase
-        .from('claim_lines')
-        .select('*')
-        .eq('claim_id', claimId);
-
-      if (error || !claimLines) {
-        console.error('Error fetching claim lines:', error);
-        return this.getMockClaimLines();
-      }
-
-      return claimLines.map(line => ({
-        lineNo: line.line_no || 0,
-        serviceFromDate: line.service_from_date || '',
-        serviceToDate: line.service_to_date || '',
-        pos: line.pos || '',
-        service: line.service || '',
-        procedureCode: line.procedure_code || '',
-        modifiers: line.modifiers || [],
-        units: line.units || 0,
-        diagnosis: line.diagnosis || '',
-        billed: line.billed || 0
-      }));
-    } catch (error) {
-      console.error('Error fetching claim lines:', error);
-      return this.getMockClaimLines();
-    }
-  }
 }
+
+// Get member info by DCN with intentionally wrong data for scenario testing
+export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null> => {
+  try {
+    // For scenario 1, return intentionally wrong test data (John Smith instead of John Wick)
+    if (dcn === "25048AA1000") {
+      return {
+        prefix: "Mr",
+        firstName: "John",
+        middleName: "D",
+        lastName: "Smith", // Wrong last name for scenario testing
+        dob: "1980-05-15", // Wrong DOB for scenario testing
+        sex: "M",
+        hcid: "H123456789",
+        memberPrefix: "01",
+        programCode: "HMO",
+        relationship: "Self",
+        memberCode: "001",
+        contractType: "Individual",
+        erisa: "Y",
+        pcp: "Dr. Jane Smith",
+        pcpState: "CA",
+        pcpRelationship: "Primary",
+        subscriberId: "SUB654321", // Wrong subscriber ID for scenario testing
+        groupName: "ABC Corporation",
+        groupContract: "GRP001",
+        detailContractCode: "DCC123",
+        product: "Premium Health",
+        groupId: "GID456",
+        networkName: "HealthNet Plus",
+        networkId: "NET789"
+      };
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error getting member info:', error);
+    return null;
+  }
+};
+
+// Search for members by criteria
+export const searchMembers = async (criteria: {
+  firstName?: string;
+  lastName?: string;
+  dob?: string;
+  subscriberId?: string;
+}): Promise<MemberSearchResult[]> => {
+  try {
+    let query = supabase
+      .from('members')
+      .select('*');
+
+    if (criteria.firstName) {
+      query = query.ilike('first_name', `%${criteria.firstName}%`);
+    }
+    if (criteria.lastName) {
+      query = query.ilike('last_name', `%${criteria.lastName}%`);
+    }
+    if (criteria.dob) {
+      query = query.eq('dob', criteria.dob);
+    }
+    if (criteria.subscriberId) {
+      query = query.eq('subscriber_id', criteria.subscriberId);
+    }
+
+    const { data, error } = await query;
+    
+    if (error) throw error;
+
+    return data?.map(member => ({
+      id: member.id,
+      prefix: member.prefix || '',
+      firstName: member.first_name,
+      middleName: member.middle_name || '',
+      lastName: member.last_name,
+      dob: member.dob,
+      sex: member.sex || '',
+      hcid: member.hcid || '',
+      subscriberId: member.subscriber_id || '',
+      groupName: member.group_name || '',
+      address: member.address || '',
+      city: member.city || '',
+      state: member.state || '',
+      zipCode: member.zip_code || ''
+    })) || [];
+  } catch (error) {
+    console.error('Error searching members:', error);
+    throw error;
+  }
+};
+
+// Get member info by ID
+export const getMemberById = async (id: string): Promise<MemberInfo | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('members')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) return null;
+
+    return {
+      prefix: data.prefix || '',
+      firstName: data.first_name,
+      middleName: data.middle_name || '',
+      lastName: data.last_name,
+      dob: data.dob,
+      sex: data.sex || '',
+      hcid: data.hcid || '',
+      memberPrefix: data.member_prefix || '',
+      programCode: data.program_code || '',
+      relationship: data.relationship || '',
+      memberCode: data.member_code || '',
+      contractType: data.contract_type || '',
+      erisa: data.erisa || '',
+      pcp: data.pcp || '',
+      pcpState: data.pcp_state || '',
+      pcpRelationship: data.pcp_relationship || '',
+      subscriberId: data.subscriber_id || '',
+      groupName: data.group_name || '',
+      groupContract: data.group_contract || '',
+      detailContractCode: data.detail_contract_code || '',
+      product: data.product || '',
+      groupId: data.group_id || '',
+      networkName: data.network_name || '',
+      networkId: data.network_id || ''
+    };
+  } catch (error) {
+    console.error('Error getting member by ID:', error);
+    throw error;
+  }
+};

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, RefreshCw } from "lucide-react";
-import { ClaimsService, type Claim } from "@/services/claimsService";
+import { ClaimsService, type Claim, type MemberInfo } from "@/services/claimsService";
 import { useToast } from "@/hooks/use-toast";
 import EventResolution from "@/components/EventResolution";
 import MemberInformation from "@/components/MemberInformation";
@@ -24,6 +24,7 @@ const ClaimDetails = () => {
   const [claim, setClaim] = useState<Claim | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedAction, setSelectedAction] = useState<string>("");
+  const [currentMemberInfo, setCurrentMemberInfo] = useState<MemberInfo | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
@@ -68,12 +69,49 @@ const ClaimDetails = () => {
   };
 
   const handleActionSubmit = () => {
-    if (selectedAction) {
+    if (selectedAction === "Pay" && dcn === "25048AA1000") {
+      // Validate scenario 1 - check if corrected member data matches expected claim form data
+      const expectedData = {
+        firstName: "John",
+        lastName: "Wick", 
+        dob: "1964-09-02",
+        subscriberId: "WIC64090200"
+      };
+
+      const currentData = currentMemberInfo || claim?.memberInfo;
+      
+      if (currentData && 
+          currentData.firstName === expectedData.firstName &&
+          currentData.lastName === expectedData.lastName &&
+          currentData.dob === expectedData.dob &&
+          currentData.subscriberId === expectedData.subscriberId) {
+        
+        toast({
+          title: "✅ Scenario 1 - PASS",
+          description: "Member information has been successfully corrected and matches the claim form data!",
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: "❌ Scenario 1 - FAIL", 
+          description: "Member information does not match the expected claim form data. Please verify the member details.",
+          variant: "destructive",
+          duration: 5000,
+        });
+      }
+    } else {
       toast({
         title: "Action Submitted",
-        description: `Claim has been ${selectedAction.toLowerCase()}ed successfully.`,
+        description: `Action "${selectedAction}" has been submitted successfully.`,
       });
-      setSelectedAction("");
+    }
+    setSelectedAction("");
+  };
+
+  const handleMemberUpdate = (updatedMember: MemberInfo) => {
+    setCurrentMemberInfo(updatedMember);
+    if (claim) {
+      setClaim(prev => prev ? { ...prev, memberInfo: updatedMember } : null);
     }
   };
 
@@ -260,7 +298,11 @@ const ClaimDetails = () => {
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold mb-4">Member Information</h3>
                     {claim.memberInfo ? (
-                      <MemberInformation key={`member-${refreshKey}`} memberInfo={claim.memberInfo} />
+                      <MemberInformation 
+                        key={`member-${refreshKey}`} 
+                        memberInfo={claim.memberInfo}
+                        onMemberUpdate={handleMemberUpdate}
+                      />
                     ) : (
                       <div className="text-muted-foreground">No member information available.</div>
                     )}

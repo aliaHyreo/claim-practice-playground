@@ -3,8 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
-import { type MemberInfo } from "@/services/claimsService";
+import { Search, Check } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { 
+  type MemberInfo, 
+  type MemberSearchResult, 
+  searchMembers, 
+  getMemberById 
+} from "@/services/claimsService";
 
 // Utility functions for date format conversion
 const formatDateToDisplay = (dateString: string): string => {
@@ -37,9 +43,10 @@ const formatDateForInput = (dateString: string): string => {
 
 interface MemberInformationProps {
   memberInfo: MemberInfo;
+  onMemberUpdate?: (updatedMember: MemberInfo) => void;
 }
 
-const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
+const MemberInformation = ({ memberInfo, onMemberUpdate }: MemberInformationProps) => {
   const [formData, setFormData] = useState(memberInfo);
   const [searchData, setSearchData] = useState({
     firstName: '',
@@ -47,6 +54,9 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
     dob: '',
     subscriberId: ''
   });
+  const [searchResults, setSearchResults] = useState<MemberSearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const { toast } = useToast();
 
   const handleInputChange = (field: keyof MemberInfo, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -56,9 +66,63 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
     setSearchData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSearch = () => {
-    // Handle search logic here
-    console.log('Searching for member:', searchData);
+  const handleSearch = async () => {
+    if (!searchData.firstName && !searchData.lastName && !searchData.dob && !searchData.subscriberId) {
+      toast({
+        title: "Search Error",
+        description: "Please enter at least one search criteria",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const results = await searchMembers(searchData);
+      setSearchResults(results);
+      
+      if (results.length === 0) {
+        toast({
+          title: "No Results",
+          description: "No members found matching the search criteria",
+        });
+      } else {
+        toast({
+          title: "Search Complete",
+          description: `Found ${results.length} member(s)`,
+        });
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      toast({
+        title: "Search Error",
+        description: "Failed to search members. Please try again.",
+        variant: "destructive",
+      });
+    }
+    setIsSearching(false);
+  };
+
+  const handleSelectMember = async (memberResult: MemberSearchResult) => {
+    try {
+      const fullMemberInfo = await getMemberById(memberResult.id);
+      if (fullMemberInfo) {
+        setFormData(fullMemberInfo);
+        onMemberUpdate?.(fullMemberInfo);
+        setSearchResults([]);
+        toast({
+          title: "Member Selected",
+          description: `Selected ${memberResult.firstName} ${memberResult.lastName}`,
+        });
+      }
+    } catch (error) {
+      console.error('Error selecting member:', error);
+      toast({
+        title: "Selection Error",
+        description: "Failed to load member details. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const EditableField = ({ label, field, readonly = false }: { label: string; field: keyof MemberInfo; readonly?: boolean }) => (
@@ -141,11 +205,45 @@ const MemberInformation = ({ memberInfo }: MemberInformationProps) => {
             </div>
           </div>
           <div className="flex justify-end">
-            <Button onClick={handleSearch} className="w-32">
+            <Button onClick={handleSearch} disabled={isSearching} className="w-32">
               <Search className="mr-2 h-4 w-4" />
-              Search
+              {isSearching ? 'Searching...' : 'Search'}
             </Button>
           </div>
+
+          {/* Search Results */}
+          {searchResults.length > 0 && (
+            <div className="mt-6 space-y-3">
+              <h3 className="text-sm font-medium text-muted-foreground">Search Results - Select the correct member:</h3>
+              <div className="space-y-2 max-h-60 overflow-y-auto">
+                {searchResults.map((member) => (
+                  <div
+                    key={member.id}
+                    className="p-4 border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
+                    onClick={() => handleSelectMember(member)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <div className="font-medium">
+                          {member.firstName} {member.middleName} {member.lastName}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          DOB: {formatDateToDisplay(member.dob)} | Subscriber ID: {member.subscriberId}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {member.address}, {member.city}, {member.state} {member.zipCode}
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        <Check className="h-4 w-4 mr-2" />
+                        Select
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
