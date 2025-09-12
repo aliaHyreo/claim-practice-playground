@@ -516,7 +516,7 @@ export class ClaimsService {
   }
 }
 
-// Get member info by DCN with intentionally wrong data for scenario testing
+// Get member info by DCN - loads the first (expired) contract initially
 export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null> => {
   try {
     // For scenario 1, return intentionally wrong test data (John Smith instead of John Wick)
@@ -526,7 +526,7 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
         firstName: "John",
         middleName: "D",
         lastName: "Smith", // Wrong last name for scenario testing
-        dob: "1980-05-15", // Wrong DOB for scenario testing - should be 1964-09-02 per claim form
+        dob: "1980-05-15", // Wrong DOB for scenario testing - should be 1982-08-18 per claim form
         sex: "M",
         hcid: "H123456789",
         memberPrefix: "01",
@@ -538,7 +538,7 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
         pcp: "Dr. Jane Smith",
         pcpState: "CA",
         pcpRelationship: "Primary",
-        subscriberId: "SUB654321", // Wrong subscriber ID for scenario testing
+        subscriberId: "EMN23466789", // Wrong subscriber ID for scenario testing - should be 123456789
         groupName: "ABC Corporation",
         groupContract: "GRP001",
         detailContractCode: "DCC123",
@@ -549,35 +549,47 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
       };
     }
     
-    // For scenario 2, return correct member data but wrong group/contract info
+    // For scenario 2, get member data from database and return the EXPIRED contract first
     if (dcn === "25048AA1001") {
+      const { data: memberData, error } = await supabase
+        .from('members')
+        .select('*')
+        .eq('hcid', 'H987654321')
+        .eq('group_id', '200000A001') // Load the expired contract first
+        .single();
+
+      if (error || !memberData) {
+        console.error('Error fetching member data:', error);
+        return null;
+      }
+
       return {
-        prefix: "Mr",
-        firstName: "John",
-        middleName: "D", 
-        lastName: "Wick",
-        dob: "1982-08-18", // Correct DOB matching claim form
-        sex: "M",
-        hcid: "H987654321", // HCID for searching contracts
-        memberPrefix: "01",
-        programCode: "HMO",
-        relationship: "Self",
-        memberCode: "001",
-        contractType: "Individual",
-        erisa: "Y",
-        pcp: "Dr. Jane Smith",
-        pcpState: "CA",
-        pcpRelationship: "Primary",
-        subscriberId: "123456789", // Correct subscriber ID
-        groupName: "ABC Corporation",
-        groupContract: "200000A001", // OLD/EXPIRED group - wrong for validation
-        detailContractCode: "DCC123",
-        product: "Premium Health",
-        groupId: "200000A001", // OLD group ID
-        networkName: "HealthNet Plus",
-        networkId: "NET789",
-        effectiveDate: "2020-04-28", // OLD effective date - expired
-        endDate: "2022-06-07" // OLD end date - expired
+        prefix: memberData.prefix || "Mr",
+        firstName: memberData.first_name,
+        middleName: memberData.middle_name || "D",
+        lastName: memberData.last_name,
+        dob: memberData.dob,
+        sex: memberData.sex,
+        hcid: memberData.hcid,
+        memberPrefix: memberData.member_prefix || "01",
+        programCode: memberData.program_code || "HMO",
+        relationship: memberData.relationship,
+        memberCode: memberData.member_code,
+        contractType: memberData.contract_type,
+        erisa: memberData.erisa,
+        pcp: memberData.pcp,
+        pcpState: memberData.pcp_state,
+        pcpRelationship: memberData.pcp_relationship || "Primary",
+        subscriberId: memberData.subscriber_id,
+        groupName: memberData.group_name,
+        groupContract: memberData.group_contract,
+        detailContractCode: memberData.detail_contract_code || "DCC123",
+        product: memberData.product || "Premium Health",
+        groupId: memberData.group_id,
+        networkName: memberData.network_name || "HealthNet Plus",
+        networkId: memberData.network_id || "NET789",
+        effectiveDate: memberData.effective_date,
+        endDate: memberData.end_date
       };
     }
 

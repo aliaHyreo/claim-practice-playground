@@ -189,6 +189,8 @@ export type Database = {
           created_at: string
           detail_contract_code: string | null
           dob: string
+          effective_date: string | null
+          end_date: string | null
           erisa: string | null
           first_name: string
           group_contract: string | null
@@ -222,6 +224,8 @@ export type Database = {
           created_at?: string
           detail_contract_code?: string | null
           dob: string
+          effective_date?: string | null
+          end_date?: string | null
           erisa?: string | null
           first_name: string
           group_contract?: string | null
@@ -255,6 +259,8 @@ export type Database = {
           created_at?: string
           detail_contract_code?: string | null
           dob?: string
+          effective_date?: string | null
+          end_date?: string | null
           erisa?: string | null
           first_name?: string
           group_contract?: string | null
