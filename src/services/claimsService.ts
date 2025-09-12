@@ -292,11 +292,11 @@ export class ClaimsService {
         scenarioType: claim.scenario_type,
         memberInfo,
         searchData,
-        // Mock data for other sections (to be implemented later)
-        providerInfo: this.getMockProviderInfo(),
+        // Get real data from database
+        providerInfo: await this.getProviderInfo(),
+        claimLines: await this.getClaimLinesForClaim(claim.id),
         paymentInfo: this.getMockPaymentInfo(),
         claimHeaderInfo: this.getMockClaimHeaderInfo(),
-        claimLines: this.getMockClaimLines(),
         claimData: this.getMockClaimData()
       };
     } catch (error) {
@@ -307,9 +307,49 @@ export class ClaimsService {
 
   static async getMemberInfoForClaim(dcn: string): Promise<MemberInfo | undefined> {
     try {
-      // For now, return basic member info from claim
-      // This will be updated when member is selected
-      return undefined;
+      // Fetch member with wrong test data (missing 'S' in last name)
+      const { data: member, error } = await supabase
+        .from('members')
+        .select('*')
+        .eq('hcid', '23456789')
+        .single();
+
+      if (error || !member) {
+        console.error('Error fetching member info:', error);
+        return undefined;
+      }
+
+      return {
+        id: member.id,
+        prefix: member.prefix || '',
+        firstName: member.first_name,
+        middleName: member.middle_name || '',
+        lastName: member.last_name, // This will be wrong (missing 'S')
+        dob: member.dob,
+        sex: member.sex || '',
+        memberPrefix: member.member_prefix || '',
+        hcid: member.hcid || '',
+        relationship: member.relationship || '',
+        memberCode: member.member_code || '',
+        contractType: member.contract_type || '',
+        erisa: member.erisa || '',
+        pcp: member.pcp || '',
+        pcpState: member.pcp_state || '',
+        pcpRelationship: member.pcp_relationship || '',
+        programCode: member.program_code || '',
+        subscriberId: member.subscriber_id || '',
+        groupName: member.group_name || '',
+        groupId: member.group_id || '',
+        groupContract: member.group_contract || '',
+        detailContractCode: member.detail_contract_code || '',
+        product: member.product || '',
+        networkId: member.network_id || '',
+        networkName: member.network_name || '',
+        address: member.address || '',
+        city: member.city || '',
+        state: member.state || '',
+        zipCode: member.zip_code || ''
+      };
     } catch (error) {
       console.error('Error fetching member info:', error);
       return undefined;
@@ -725,5 +765,87 @@ export class ClaimsService {
         payPercent: 50
       }
     };
+  }
+
+  static async getProviderInfo(): Promise<ProviderInfo | undefined> {
+    try {
+      const { data: provider, error } = await supabase
+        .from('providers')
+        .select('*')
+        .limit(1)
+        .single();
+
+      if (error || !provider) {
+        console.error('Error fetching provider info:', error);
+        return this.getMockProviderInfo();
+      }
+
+      return {
+        renderingNPI: provider.rendering_npi || '',
+        renderingName: provider.rendering_name || '',
+        renderingAddress: provider.rendering_address || '',
+        pricingState: provider.pricing_state || '',
+        pricingZIP: provider.pricing_zip || '',
+        providerSPS: provider.provider_sps || '',
+        providerEPIN: provider.provider_epin || '',
+        licenseNumber: provider.license_number || '',
+        networkOption: provider.network_option || '',
+        specialty: provider.specialty || '',
+        taxonomy: provider.taxonomy || '',
+        emergencyPricingInd: provider.emergency_pricing_ind || '',
+        billingTaxId: provider.billing_tax_id || '',
+        billingNPI: provider.billing_npi || '',
+        billingName2: provider.billing_name2 || '',
+        facilityType: provider.facility_type || '',
+        providerSPS3: provider.provider_sps3 || '',
+        providerEPIN4: provider.provider_epin4 || '',
+        medicareId: provider.medicare_id || '',
+        address5: provider.address5 || '',
+        nationalState: provider.national_state || '',
+        locationCode: provider.location_code || '',
+        bhaProviderIndicator: provider.bha_provider_indicator || '',
+        taxonomy6: provider.taxonomy6 || '',
+        referringPhysician: provider.referring_physician || '',
+        referringNPI7: provider.referring_npi7 || '',
+        serviceProvider: provider.service_provider || '',
+        serviceFacilityTier: provider.service_facility_tier || '',
+        npi8: provider.npi8 || '',
+        nsbIndicator: provider.nsb_indicator || '',
+        alternateFacilityNPI: provider.alternate_facility_npi || ''
+      };
+    } catch (error) {
+      console.error('Error fetching provider info:', error);
+      return this.getMockProviderInfo();
+    }
+  }
+
+  static async getClaimLinesForClaim(claimId: string): Promise<ClaimLine[]> {
+    try {
+      const { data: claimLines, error } = await supabase
+        .from('claim_lines')
+        .select('*')
+        .eq('claim_id', claimId);
+
+      if (error || !claimLines) {
+        console.error('Error fetching claim lines:', error);
+        return this.getMockClaimLines();
+      }
+
+      return claimLines.map(line => ({
+        lineNo: line.line_no || 0,
+        serviceFromDate: line.service_from_date || '',
+        serviceToDate: line.service_to_date || '',
+        pos: line.pos || '',
+        service: line.service || '',
+        procedureCode: line.procedure_code || '',
+        modifiers: line.modifiers || [],
+        units: line.units || 0,
+        diagnosis: line.diagnosis || '',
+        billed: line.billed || 0
+      }));
+    } catch (error) {
+      console.error('Error fetching claim lines:', error);
+      return this.getMockClaimLines();
+    }
   }
 }
