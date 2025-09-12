@@ -519,14 +519,14 @@ export class ClaimsService {
 // Get member info by DCN - loads the first (expired) contract initially
 export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null> => {
   try {
-    // For scenario 1, return intentionally wrong test data (John Smith instead of John Wick)
+    // SCENARIO 1 (DCN: 25048AA1000) - PATIENT DATA IS WRONG
     if (dcn === "25048AA1000") {
       return {
         prefix: "Mr",
         firstName: "John",
         middleName: "D",
-        lastName: "Smith", // Wrong last name for scenario testing
-        dob: "1980-05-15", // Wrong DOB for scenario testing - should be 1982-08-18 per claim form
+        lastName: "Smith", // ❌ WRONG - Should be "Wick" per claim form
+        dob: "1980-05-15", // ❌ WRONG - Should be "1982-08-18" per claim form  
         sex: "M",
         hcid: "H123456789",
         memberPrefix: "01",
@@ -538,7 +538,7 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
         pcp: "Dr. Jane Smith",
         pcpState: "CA",
         pcpRelationship: "Primary",
-        subscriberId: "EMN23466789", // Wrong subscriber ID for scenario testing - should be 123456789
+        subscriberId: "EMN23466789", // ❌ WRONG - Should be "123456789" per claim form
         groupName: "ABC Corporation",
         groupContract: "GRP001",
         detailContractCode: "DCC123",
@@ -549,28 +549,57 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
       };
     }
     
-    // For scenario 2, get member data from database and return the EXPIRED contract first
+    // SCENARIO 2 (DCN: 25048AA1001) - PATIENT DATA IS CORRECT, GROUP DATA IS WRONG
     if (dcn === "25048AA1001") {
       const { data: memberData, error } = await supabase
         .from('members')
         .select('*')
         .eq('hcid', 'H987654321')
-        .eq('group_id', '200000A001') // Load the expired contract first
+        .eq('group_id', '200000A001') // Load the EXPIRED contract first (wrong group)
         .single();
 
       if (error || !memberData) {
         console.error('Error fetching member data:', error);
-        return null;
+        // Fallback data if database query fails
+        return {
+          prefix: "Mr",
+          firstName: "John", // ✅ CORRECT - Matches claim form
+          middleName: "D",
+          lastName: "Wick", // ✅ CORRECT - Matches claim form
+          dob: "1982-08-18", // ✅ CORRECT - Matches claim form
+          sex: "M",
+          hcid: "H987654321", // ✅ CORRECT - Available for searching contracts
+          memberPrefix: "01",
+          programCode: "HMO",
+          relationship: "Self",
+          memberCode: "001",
+          contractType: "Individual",
+          erisa: "Y",
+          pcp: "Dr. Jane Smith",
+          pcpState: "CA",
+          pcpRelationship: "Primary",
+          subscriberId: "123456789", // ✅ CORRECT - Matches claim form
+          groupName: "ABC Corporation",
+          groupContract: "200000A001", // ❌ WRONG - Expired group contract
+          detailContractCode: "DCC123",
+          product: "Premium Health",
+          groupId: "200000A001", // ❌ WRONG - Expired group ID
+          networkName: "HealthNet Plus",
+          networkId: "NET789",
+          effectiveDate: "2020-04-28", // ❌ WRONG - Expired effective date
+          endDate: "2022-06-07" // ❌ WRONG - Expired end date
+        };
       }
 
+      // Return database data for Scenario 2
       return {
         prefix: memberData.prefix || "Mr",
-        firstName: memberData.first_name,
+        firstName: memberData.first_name, // ✅ CORRECT - John
         middleName: memberData.middle_name || "D",
-        lastName: memberData.last_name,
-        dob: memberData.dob,
+        lastName: memberData.last_name, // ✅ CORRECT - Wick
+        dob: memberData.dob, // ✅ CORRECT - 1982-08-18
         sex: memberData.sex,
-        hcid: memberData.hcid,
+        hcid: memberData.hcid, // ✅ CORRECT - H987654321
         memberPrefix: memberData.member_prefix || "01",
         programCode: memberData.program_code || "HMO",
         relationship: memberData.relationship,
@@ -580,16 +609,16 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
         pcp: memberData.pcp,
         pcpState: memberData.pcp_state,
         pcpRelationship: memberData.pcp_relationship || "Primary",
-        subscriberId: memberData.subscriber_id,
+        subscriberId: memberData.subscriber_id, // ✅ CORRECT - 123456789
         groupName: memberData.group_name,
-        groupContract: memberData.group_contract,
+        groupContract: memberData.group_contract, // ❌ WRONG - 200000A001 (expired)
         detailContractCode: memberData.detail_contract_code || "DCC123",
         product: memberData.product || "Premium Health",
-        groupId: memberData.group_id,
+        groupId: memberData.group_id, // ❌ WRONG - 200000A001 (expired)
         networkName: memberData.network_name || "HealthNet Plus",
         networkId: memberData.network_id || "NET789",
-        effectiveDate: memberData.effective_date,
-        endDate: memberData.end_date
+        effectiveDate: memberData.effective_date, // ❌ WRONG - 2020-04-28 (expired)
+        endDate: memberData.end_date // ❌ WRONG - 2022-06-07 (expired)
       };
     }
 
@@ -598,7 +627,6 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
     console.error('Error getting member info:', error);
     return null;
   }
-};
 
 // Search for members by criteria
 export const searchMembers = async (criteria: {
