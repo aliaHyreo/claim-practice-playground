@@ -309,7 +309,7 @@ export class ClaimsService {
         claimHeaderInfo: this.getMockClaimHeaderInfo(),
         claimLines,
         claimData: this.getMockClaimData(),
-        searchData: { claimImage: null }
+        searchData: { claimImage: this.getMockClaimImageData(dcn) }
       };
     } catch (error) {
       console.error('Error getting claim by DCN:', error);
@@ -539,6 +539,61 @@ export class ClaimsService {
       },
       overrides: {},
       adjustments: {}
+    };
+  }
+
+  static getMockClaimImageData(dcn: string): ClaimImageData {
+    // Scenario 1: DCN 25048AA1000 - Member name mismatch (John Wick S vs John Wick)
+    if (dcn === "25048AA1000") {
+      return {
+        dcn: "25048AA1000",
+        patientName: "John Wick S", // This is the CORRECT name from claim image
+        dob: "1982-08-18",
+        zip: "41701",
+        serviceDates: { from: "2023-08-03", to: "2023-08-03" },
+        claimLineCodeSystem: "84284",
+        claimLineCodeImage: "E9973", // Different from system code to show mismatch
+        eligibilityValidation: [
+          "Confirm patient name",
+          "Confirm DOB", 
+          "Confirm contact information",
+          "Ensure eligibility dates match claim line",
+          "Update claim line if mismatch detected",
+          "Run member search with Member ID to confirm eligibility"
+        ]
+      };
+    }
+    
+    // Scenario 2: DCN 25048AA1001 - Contract group mismatch  
+    if (dcn === "25048AA1001") {
+      return {
+        dcn: "25048AA1001",
+        patientName: "Jane Smith", // This matches the member data
+        dob: "1990-05-15",
+        zip: "12345",
+        serviceDates: { from: "2023-08-03", to: "2023-08-03" },
+        claimLineCodeSystem: "99213",
+        claimLineCodeImage: "99213", // Codes match for this scenario
+        eligibilityValidation: [
+          "Confirm contract group",
+          "Verify eligibility dates",
+          "Check contract validation",
+          "Update contract if expired",
+          "Apply correct contract group"
+        ]
+      };
+    }
+    
+    // Default claim image data
+    return {
+      dcn: dcn,
+      patientName: "Unknown Patient",
+      dob: "1990-01-01",
+      zip: "00000",
+      serviceDates: { from: "2023-01-01", to: "2023-01-01" },
+      claimLineCodeSystem: "00000",
+      claimLineCodeImage: "00000",
+      eligibilityValidation: ["No validation data available"]
     };
   }
 }
