@@ -233,6 +233,32 @@ const ClaimDetails = () => {
     setSelectedAction("");
   };
 
+  const handleContractApply = (contractData: {
+    groupId: string;
+    groupContract: string;
+    effectiveDate: string;
+    endDate: string;
+  }) => {
+    // Update the current member info with the new contract data
+    const updatedMemberInfo = {
+      ...currentMemberInfo,
+      groupId: contractData.groupId,
+      groupContract: contractData.groupContract,
+      effectiveDate: contractData.effectiveDate,
+      endDate: contractData.endDate
+    };
+    
+    setCurrentMemberInfo(updatedMemberInfo);
+    
+    // Also update the claim data
+    if (claim) {
+      setClaim(prev => prev ? { 
+        ...prev, 
+        memberInfo: updatedMemberInfo 
+      } : null);
+    }
+  };
+
   const handleMemberUpdate = (updatedMember: MemberInfo) => {
     setCurrentMemberInfo(updatedMember);
     if (claim) {
@@ -482,7 +508,10 @@ const ClaimDetails = () => {
               </TabsContent>
 
               <TabsContent value="search">
-                <SearchTabs key={`search-${refreshKey}`} searchData={claim.searchData} />
+                <SearchTabs 
+                  searchData={claim.searchData} 
+                  onContractApply={handleContractApply}
+                />
               </TabsContent>
             </Tabs>
           </CardContent>

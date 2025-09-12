@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Info } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface MemberContract {
   contractId: string;
@@ -19,68 +20,119 @@ interface MemberData {
   contracts: MemberContract[];
 }
 
-const Member = () => {
+interface MemberProps {
+  onContractApply?: (contractData: {
+    groupId: string;
+    groupContract: string;
+    effectiveDate: string;
+    endDate: string;
+  }) => void;
+}
+
+const Member = ({ onContractApply }: MemberProps) => {
   const [memberId, setMemberId] = useState("");
   const [searchResults, setSearchResults] = useState<MemberData | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const { toast } = useToast();
 
-  // Mock data matching the images
-  const mockMemberData: MemberData = {
-    memberId: "23456789",
-    contracts: [
-      {
-        contractId: "500L",
-        caseEntity: "200000",
-        group: "200000A001",
-        hcid: "23456789",
-        effectiveDate: "4/28/2020",
-        endDate: "6/7/2022",
-        contractState: "WI"
-      },
-      {
-        contractId: "QTAK",
-        caseEntity: "209647",
-        group: "200000A001",
-        hcid: "23456789",
-        effectiveDate: "4/28/2020",
-        endDate: "6/8/2027",
-        contractState: "WI"
-      },
-      {
-        contractId: "QTAK",
-        caseEntity: "200000",
-        group: "200000A001",
-        hcid: "23456789",
-        effectiveDate: "1/2/2023",
-        endDate: "2/1/2023",
-        contractState: "WI"
-      },
-      {
-        contractId: "JKT",
-        caseEntity: "209888",
-        group: "200000A444",
-        hcid: "23456789",
-        effectiveDate: "4/28/2020",
-        endDate: "6/7/2022",
-        contractState: "WI"
-      },
-      {
-        contractId: "500L",
-        caseEntity: "200000",
-        group: "200000M001",
-        hcid: "23456789",
-        effectiveDate: "1/1/2023",
-        endDate: "1/1/2024",
-        contractState: "WI"
-      }
-    ]
+  // Updated mock data for scenario 2 with HCID H987654321
+  const getMockMemberData = (searchId: string): MemberData | null => {
+    if (searchId === "H987654321") {
+      return {
+        memberId: "H987654321",
+        contracts: [
+          {
+            contractId: "500L",
+            caseEntity: "200000",
+            group: "200000A001", // Old/expired contract
+            hcid: "H987654321",
+            effectiveDate: "4/28/2020",
+            endDate: "6/7/2022",
+            contractState: "WI"
+          },
+          {
+            contractId: "500L",
+            caseEntity: "200000",
+            group: "200000M001", // New/valid contract for 2023 service dates
+            hcid: "H987654321",
+            effectiveDate: "1/1/2023",
+            endDate: "1/1/2024",
+            contractState: "WI"
+          }
+        ]
+      };
+    } 
+    
+    // Original mock data for other searches
+    if (searchId === "23456789") {
+      return {
+        memberId: "23456789",
+        contracts: [
+          {
+            contractId: "500L",
+            caseEntity: "200000",
+            group: "200000A001",
+            hcid: "23456789",
+            effectiveDate: "4/28/2020",
+            endDate: "6/7/2022",
+            contractState: "WI"
+          },
+          {
+            contractId: "QTAK",
+            caseEntity: "209647",
+            group: "200000A001",
+            hcid: "23456789",
+            effectiveDate: "4/28/2020",
+            endDate: "6/8/2027",
+            contractState: "WI"
+          },
+          {
+            contractId: "QTAK",
+            caseEntity: "200000",
+            group: "200000A001",
+            hcid: "23456789",
+            effectiveDate: "1/2/2023",
+            endDate: "2/1/2023",
+            contractState: "WI"
+          },
+          {
+            contractId: "JKT",
+            caseEntity: "209888",
+            group: "200000A444",
+            hcid: "23456789",
+            effectiveDate: "4/28/2020",
+            endDate: "6/7/2022",
+            contractState: "WI"
+          },
+          {
+            contractId: "500L",
+            caseEntity: "200000",
+            group: "200000M001",
+            hcid: "23456789",
+            effectiveDate: "1/1/2023",
+            endDate: "1/1/2024",
+            contractState: "WI"
+          }
+        ]
+      };
+    }
+    
+    return null;
   };
 
   const handleSearch = () => {
     if (memberId.trim()) {
-      // Simulate search - in real app, this would be an API call
-      setSearchResults(mockMemberData);
+      const results = getMockMemberData(memberId.trim());
+      setSearchResults(results);
       setHasSearched(true);
+      
+      if (!results) {
+        toast({
+          title: "No Results Found",
+          description: `No member found with ID: ${memberId}`,
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -96,6 +148,35 @@ const Member = () => {
     }
   };
 
+  const handleApplyContract = (contract: MemberContract) => {
+    if (onContractApply) {
+      // Convert date format from M/D/YYYY to YYYY-MM-DD for validation
+      const formatDateForStorage = (dateString: string): string => {
+        try {
+          const [month, day, year] = dateString.split('/');
+          const paddedMonth = month.padStart(2, '0');
+          const paddedDay = day.padStart(2, '0');
+          return `${year}-${paddedMonth}-${paddedDay}`;
+        } catch (error) {
+          return dateString;
+        }
+      };
+
+      onContractApply({
+        groupId: contract.group,
+        groupContract: contract.group,
+        effectiveDate: formatDateForStorage(contract.effectiveDate),
+        endDate: formatDateForStorage(contract.endDate)
+      });
+
+      toast({
+        title: "Contract Applied",
+        description: `Group contract ${contract.group} has been applied to member information.`,
+        duration: 5000,
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Search Header */}
@@ -104,7 +185,7 @@ const Member = () => {
         
         <div className="flex items-center gap-4 mb-6">
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">Member ID</label>
+            <label className="text-sm font-medium text-gray-700">Member ID (HCID)</label>
             <Info className="w-4 h-4 text-gray-400" />
           </div>
           <div className="flex gap-2">
@@ -112,8 +193,8 @@ const Member = () => {
               value={memberId}
               onChange={(e) => setMemberId(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder=""
-              className="w-40"
+              placeholder="Enter HCID (e.g., H987654321)"
+              className="w-48"
             />
             <Button 
               onClick={handleSearch}
@@ -133,31 +214,6 @@ const Member = () => {
 
       {/* Table Headers - Always visible */}
       <div className="bg-gray-50 rounded-lg p-4">
-        {/* <div className="grid grid-cols-7 gap-4 mb-2">
-          <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
-            PCP state <span className="text-gray-400">▼</span>
-          </div>
-          <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
-            Member code <span className="text-gray-400">▼</span>
-          </div>
-          <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
-            Relationship <span className="text-gray-400">▼</span>
-          </div>
-          <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
-            DOB <span className="text-gray-400">▼</span>
-          </div>
-          <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
-            Last name <span className="text-gray-400">▼</span>
-          </div>
-          <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
-            Name <span className="text-gray-400">▼</span>
-          </div>
-          <div className="text-xs font-medium text-gray-600">
-            Subs
-          </div>
-        </div> */}
-
-        {/* Second row of headers */}
         <div className="grid grid-cols-8 gap-4">
           <div className="text-xs font-medium text-gray-600 flex items-center gap-1">
             Contract ID <span className="text-gray-400"></span>
@@ -203,6 +259,7 @@ const Member = () => {
                   <div className="flex items-center">
                     <Button
                       size="sm"
+                      onClick={() => handleApplyContract(contract)}
                       className="bg-orange-500 hover:bg-orange-600 text-white px-4"
                     >
                       Apply

@@ -7,9 +7,15 @@ import { SearchData } from "@/services/claimsService";
 
 interface SearchTabsProps {
   searchData?: SearchData;
+  onContractApply?: (contractData: {
+    groupId: string;
+    groupContract: string;
+    effectiveDate: string;
+    endDate: string;
+  }) => void;
 }
 
-const SearchTabs = ({ searchData }: SearchTabsProps) => {
+const SearchTabs = ({ searchData, onContractApply }: SearchTabsProps) => {
   if (!searchData) {
     return (
       <Card>
@@ -41,7 +47,7 @@ const SearchTabs = ({ searchData }: SearchTabsProps) => {
           </TabsContent>
 
           <TabsContent value="member">
-            <Member />
+            <Member onContractApply={onContractApply} />
           </TabsContent>
 
           <TabsContent value="pricing">

@@ -575,7 +575,9 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
         product: "Premium Health",
         groupId: "200000A001", // OLD group ID
         networkName: "HealthNet Plus",
-        networkId: "NET789"
+        networkId: "NET789",
+        effectiveDate: "2020-04-28", // OLD effective date - expired
+        endDate: "2022-06-07" // OLD end date - expired
       };
     }
 
