@@ -4,7 +4,7 @@ export interface MemberInfo {
   id?: string;
   prefix: string;
   firstName: string;
-  middleName: string;
+  middleName?: string;
   lastName: string;
   dob: string;
   sex: string;
@@ -26,7 +26,10 @@ export interface MemberInfo {
   groupId: string;
   networkName: string;
   networkId: string;
-  // Group contract details for validation
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
   effectiveDate?: string;
   endDate?: string;
 }
@@ -42,30 +45,36 @@ export interface ProviderInfo {
   billingName: string;
   billingNPI: string;
   billingTaxId: string;
-  renderingName: string;
-  renderingNPI: string;
-  renderingAddress: string;
-  referringPhysician: string;
-  referringNPI: string;
+  emergencyPricingInd: string;
   taxonomy: string;
   specialty: string;
   networkOption: string;
   licenseNumber: string;
   providerEpin: string;
+  renderingNPI: string;
+  renderingName: string;
+  renderingAddress: string;
+  pricingState: string;
+  npi8: string;
+  nsbIndicator: string;
+  serviceFacilityTier: string;
+  serviceProvider: string;
+  referringNPI7: string;
+  referringNPI: string;
+  referringPhysician: string;
+  taxonomy6: string;
+  pricingZip: string;
   providerSps: string;
-  facilityType: string;
-  address: string;
-  medicareId: string;
-  emergencyPricingInd: string;
   bhaProviderIndicator: string;
   locationCode: string;
   nationalState: string;
-  pricingState: string;
-  pricingZip: string;
-  serviceFacilityTier: string;
-  serviceProvider: string;
-  npi8: string;
-  nsbIndicator: string;
+  address5: string;
+  address: string;
+  medicareId: string;
+  providerEpin4: string;
+  providerSps3: string;
+  facilityType: string;
+  billingName2: string;
   alternateFacilityNPI: string;
 }
 
@@ -73,7 +82,10 @@ export interface PaymentInfo {
   claim: {
     deductible: number;
     copay: number;
+    coinsurance: number;
     coins: number;
+    totalPaid: number;
+    patientResponsibility: number;
     patientLiability: number;
     memberSurcharge: number;
     nonEligible: number;
@@ -82,22 +94,19 @@ export interface PaymentInfo {
     pricingAllowedAmount: number;
     totalCharge: number;
     finalizationCode: string;
+    primaryPaidAmount: number;
+    allowedAmount: number;
+    writeOffAmount: number;
+    benefitPeriod: string;
+    benefitPeriodUsed: number;
+    benefitPeriodRemaining: number;
+    lifetimeBenefit: number;
+    lifetimeBenefitUsed: number;
+    lifetimeBenefitRemaining: number;
   };
-  provider: {
-    providerDiscount: number;
-    providerLiability: number;
-    providerRiskWithhold: number;
-    providerSurcharge: number;
-    interest: number;
-    penalty: number;
-    lrIndicator: string;
-    systemInterest: number;
-  };
-  drg: {
-    amount: number;
+  member: {
+    memberPaidAmount: number;
     checkNumber: string;
-    checkDate: string;
-    paymentSystem: string;
     checkStatus: string;
     checkStatusDate: string;
     paidTo: string;
@@ -105,6 +114,8 @@ export interface PaymentInfo {
     eftCheckDate: string;
     priced: string;
   };
+  provider: any;
+  drg: any;
 }
 
 export interface ClaimHeaderInfo {
@@ -171,11 +182,11 @@ export interface ClaimForm {
   dcn: string;
   patientName: string;
   dob: string;
-  zipCode: string;
-  serviceDateFrom: string;
-  serviceDateTo: string;
-  claimLineCodeSystem: string;
+  serviceFromDate: string;
+  serviceToDate: string;
   claimLineCodeImage: string;
+  claimLineCodeSystem: string;
+  zipCode: string;
   eligibilityValidation: string[];
 }
 
@@ -189,7 +200,6 @@ export interface MemberSearchResult {
   sex: string;
   hcid: string;
   subscriberId: string;
-  groupName: string;
   address: string;
   city: string;
   state: string;
@@ -250,9 +260,29 @@ export class ClaimsService {
       if (claimError) throw claimError;
       if (!claimData) return null;
 
+      // Get member info separately
       const memberInfo = await getMemberInfoByDCN(dcn);
-      const providerInfo = await this.getProviderInfoByDCN(dcn);
-      const claimLines = await this.getClaimLinesByDCN(dcn);
+
+      // Get claim lines
+      const { data: linesData, error: linesError } = await supabase
+        .from('claim_lines')
+        .select('*')
+        .eq('claim_id', claimData.id);
+
+      if (linesError) throw linesError;
+
+      const claimLines: ClaimLine[] = linesData?.map(line => ({
+        lineNo: line.line_no || 0,
+        serviceFromDate: line.service_from_date || '',
+        serviceToDate: line.service_to_date || '',
+        pos: line.pos || '',
+        service: line.service || '',
+        procedureCode: line.procedure_code || '',
+        modifiers: line.modifiers || [],
+        units: line.units || 0,
+        diagnosis: line.diagnosis || '',
+        billed: Number(line.billed) || 0
+      })) || [];
 
       return {
         id: claimData.id,
@@ -266,119 +296,39 @@ export class ClaimsService {
         relationship: claimData.relationship || '',
         pcp: claimData.pcp || '',
         erisa: claimData.erisa || '',
-        billed: claimData.billed || 0,
-        allowed: claimData.allowed || 0,
-        paid: claimData.paid || 0,
+        billed: Number(claimData.billed) || 0,
+        allowed: Number(claimData.allowed) || 0,
+        paid: Number(claimData.paid) || 0,
         edits: claimData.edits || [],
         actionCode: claimData.action_code,
         status: claimData.status,
         scenarioType: claimData.scenario_type,
         memberInfo,
-        providerInfo,
+        providerInfo: this.getMockProviderInfo(),
         paymentInfo: this.getMockPaymentInfo(),
         claimHeaderInfo: this.getMockClaimHeaderInfo(),
         claimLines,
         claimData: this.getMockClaimData(),
-        searchData: { claimImage: {} }
+        searchData: { claimImage: null }
       };
     } catch (error) {
-      console.error('Error fetching claim:', error);
-      throw error;
-    }
-  }
-
-  static async getClaimLinesByDCN(dcn: string): Promise<ClaimLine[]> {
-    try {
-      const { data: claimData } = await supabase
-        .from('claims')
-        .select('id')
-        .eq('dcn', dcn)
-        .maybeSingle();
-
-      if (!claimData) return [];
-
-      const { data: linesData, error: linesError } = await supabase
-        .from('claim_lines')
-        .select('*')
-        .eq('claim_id', claimData.id);
-
-      if (linesError) throw linesError;
-
-      return linesData?.map(line => ({
-        lineNo: line.line_no || 0,
-        serviceFromDate: line.service_from_date || '',
-        serviceToDate: line.service_to_date || '',
-        pos: line.pos || '',
-        service: line.service || '',
-        procedureCode: line.procedure_code || '',
-        modifiers: line.modifiers || [],
-        units: line.units || 0,
-        diagnosis: line.diagnosis || '',
-        billed: Number(line.billed) || 0
-      })) || [];
-    } catch (error) {
-      console.error('Error fetching claim lines:', error);
-      return [];
-    }
-  }
-
-  static async getProviderInfoByDCN(dcn: string): Promise<ProviderInfo | null> {
-    try {
-      const { data, error } = await supabase
-        .from('providers')
-        .select('*')
-        .limit(1)
-        .maybeSingle();
-
-      if (error) throw error;
-      if (!data) return null;
-
-      return {
-        billingName: data.billing_name2 || '',
-        billingNPI: data.billing_npi || '',
-        billingTaxId: data.billing_tax_id || '',
-        renderingName: data.rendering_name || '',
-        renderingNPI: data.rendering_npi || '',
-        renderingAddress: data.rendering_address || '',
-        referringPhysician: data.referring_physician || '',
-        referringNPI: data.referring_npi7 || '',
-        taxonomy: data.taxonomy || '',
-        specialty: data.specialty || '',
-        networkOption: data.network_option || '',
-        licenseNumber: data.license_number || '',
-        providerEpin: data.provider_epin || '',
-        providerSps: data.provider_sps || '',
-        facilityType: data.facility_type || '',
-        address: data.address5 || '',
-        medicareId: data.medicare_id || '',
-        emergencyPricingInd: data.emergency_pricing_ind || '',
-        bhaProviderIndicator: data.bha_provider_indicator || '',
-        locationCode: data.location_code || '',
-        nationalState: data.national_state || '',
-        pricingState: data.pricing_state || '',
-        pricingZip: data.pricing_zip || '',
-        serviceFacilityTier: data.service_facility_tier || '',
-        serviceProvider: data.service_provider || '',
-        npi8: data.npi8 || '',
-        nsbIndicator: data.nsb_indicator || '',
-        alternateFacilityNPI: data.alternate_facility_npi || ''
-      };
-    } catch (error) {
-      console.error('Error fetching provider info:', error);
+      console.error('Error getting claim by DCN:', error);
       return null;
     }
   }
 
   static async refreshClaimData(dcn: string): Promise<Claim | null> {
+    // In a real application, this would refresh data from external systems
+    // For now, just return the same data
     return this.getClaimByDCN(dcn);
   }
 
-  static async searchClaims(criteria: { dcn?: string }): Promise<Claim[]> {
+  static async getAllClaims(): Promise<Claim[]> {
     try {
       const { data, error } = await supabase
         .from('claims')
         .select('*')
-        .ilike('dcn', `%${criteria.dcn || ''}%`);
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
@@ -394,9 +344,45 @@ export class ClaimsService {
         relationship: claim.relationship || '',
         pcp: claim.pcp || '',
         erisa: claim.erisa || '',
-        billed: claim.billed || 0,
-        allowed: claim.allowed || 0,
-        paid: claim.paid || 0,
+        billed: Number(claim.billed) || 0,
+        allowed: Number(claim.allowed) || 0,
+        paid: Number(claim.paid) || 0,
+        edits: claim.edits || [],
+        actionCode: claim.action_code,
+        status: claim.status,
+        scenarioType: claim.scenario_type
+      })) || [];
+    } catch (error) {
+      console.error('Error getting all claims:', error);
+      return [];
+    }
+  }
+
+  static async searchClaims(query: string): Promise<Claim[]> {
+    try {
+      const { data, error } = await supabase
+        .from('claims')
+        .select('*')
+        .or(`dcn.ilike.%${query}%,last_name.ilike.%${query}%`)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      return data?.map(claim => ({
+        id: claim.id,
+        dcn: claim.dcn,
+        title: claim.title || '',
+        lastName: claim.last_name || '',
+        dob: claim.dob || '',
+        sex: claim.sex || '',
+        memberCode: claim.member_code || '',
+        contractType: claim.contract_type || '',
+        relationship: claim.relationship || '',
+        pcp: claim.pcp || '',
+        erisa: claim.erisa || '',
+        billed: Number(claim.billed) || 0,
+        allowed: Number(claim.allowed) || 0,
+        paid: Number(claim.paid) || 0,
         edits: claim.edits || [],
         actionCode: claim.action_code,
         status: claim.status,
@@ -417,43 +403,84 @@ export class ClaimsService {
     }));
   }
 
+  static getMockProviderInfo(): ProviderInfo {
+    return {
+      billingName: "MEDICAL GROUP LLC",
+      billingNPI: "1234567890",
+      billingTaxId: "123456789",
+      emergencyPricingInd: "N",
+      taxonomy: "207Q00000X",
+      specialty: "Family Medicine",
+      networkOption: "In-Network",
+      licenseNumber: "MD12345",
+      providerEpin: "EPIN123",
+      renderingNPI: "9876543210",
+      renderingName: "Dr. Smith",
+      renderingAddress: "123 Medical St, City, State 12345",
+      pricingState: "CA",
+      npi8: "87654321",
+      nsbIndicator: "Y",
+      alternateFacilityNPI: "1111111111",
+      serviceFacilityTier: "Tier 1",
+      serviceProvider: "Primary",
+      referringNPI7: "7777777777",
+      referringNPI: "7777777777",
+      referringPhysician: "Dr. Johnson",
+      taxonomy6: "207Q00000X",
+      pricingZip: "12345",
+      providerSps: "SPS123",
+      bhaProviderIndicator: "N",
+      locationCode: "LOC001",
+      nationalState: "CA",
+      address5: "123 Medical St",
+      address: "123 Medical St, City, State 12345",
+      medicareId: "MED123456",
+      providerEpin4: "EPIN456",
+      providerSps3: "SPS456",
+      facilityType: "Office",
+      billingName2: "MEDICAL GROUP LLC"
+    };
+  }
+
   static getMockPaymentInfo(): PaymentInfo {
     return {
       claim: {
         deductible: 0,
-        copay: 0,
+        copay: 20,
+        coinsurance: 0,
         coins: 0,
-        patientLiability: 0,
+        totalPaid: 240,
+        patientResponsibility: 60,
+        patientLiability: 60,
         memberSurcharge: 0,
         nonEligible: 0,
         hraPaid: 0,
-        claimPaid: 0,
-        pricingAllowedAmount: 100,
+        claimPaid: 240,
+        pricingAllowedAmount: 300,
         totalCharge: 300,
-        finalizationCode: "-"
+        finalizationCode: "PAID",
+        primaryPaidAmount: 240,
+        allowedAmount: 300,
+        writeOffAmount: 60,
+        benefitPeriod: "Calendar Year",
+        benefitPeriodUsed: 1200,
+        benefitPeriodRemaining: 800,
+        lifetimeBenefit: 10000,
+        lifetimeBenefitUsed: 5000,
+        lifetimeBenefitRemaining: 5000
       },
-      provider: {
-        providerDiscount: 0,
-        providerLiability: 0,
-        providerRiskWithhold: 0,
-        providerSurcharge: 0,
-        interest: 0,
-        penalty: 0,
-        lrIndicator: "-",
-        systemInterest: 0
-      },
-      drg: {
-        amount: 0,
-        checkNumber: "-",
-        checkDate: "-",
-        paymentSystem: "D",
+      member: {
+        memberPaidAmount: 240,
+        checkNumber: "CHK123456",
         checkStatus: "Check not Found",
         checkStatusDate: "2025-06-01",
         paidTo: "MEDICAL GROUP LLC",
         accountNumber: "-",
         eftCheckDate: "",
         priced: ""
-      }
+      },
+      provider: {},
+      drg: {}
     };
   }
 
@@ -627,6 +654,7 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
     console.error('Error getting member info:', error);
     return null;
   }
+};
 
 // Search for members by criteria
 export const searchMembers = async (criteria: {
@@ -639,7 +667,7 @@ export const searchMembers = async (criteria: {
     let query = supabase
       .from('members')
       .select('*');
-
+    
     if (criteria.firstName) {
       query = query.ilike('first_name', `%${criteria.firstName}%`);
     }
@@ -652,8 +680,8 @@ export const searchMembers = async (criteria: {
     if (criteria.subscriberId) {
       query = query.eq('subscriber_id', criteria.subscriberId);
     }
-
-    const { data, error } = await query;
+    
+    const { data, error } = await query.limit(10);
     
     if (error) throw error;
 
@@ -667,7 +695,6 @@ export const searchMembers = async (criteria: {
       sex: member.sex || '',
       hcid: member.hcid || '',
       subscriberId: member.subscriber_id || '',
-      groupName: member.group_name || '',
       address: member.address || '',
       city: member.city || '',
       state: member.state || '',
@@ -675,7 +702,7 @@ export const searchMembers = async (criteria: {
     })) || [];
   } catch (error) {
     console.error('Error searching members:', error);
-    throw error;
+    return [];
   }
 };
 
@@ -715,7 +742,9 @@ export const getMemberById = async (id: string): Promise<MemberInfo | null> => {
       product: data.product || '',
       groupId: data.group_id || '',
       networkName: data.network_name || '',
-      networkId: data.network_id || ''
+      networkId: data.network_id || '',
+      effectiveDate: data.effective_date || '',
+      endDate: data.end_date || ''
     };
   } catch (error) {
     console.error('Error getting member by ID:', error);
