@@ -184,22 +184,6 @@ const ClaimDetails = () => {
         return;
       }
 
-      // Check if contract dates are available (should be populated after applying correct contract)
-      const effectiveDate = currentMemberData.effectiveDate;
-      const endDate = currentMemberData.endDate;
-      
-      if (!effectiveDate || !endDate) {
-        toast({
-          title: "❌ CONTRACT VALIDATION ERROR - SCENARIO 2 FAIL",
-          description: `Group information is incorrect. Current Group# ${currentMemberData.groupId || currentMemberData.groupContract} has expired contract dates. Please search by HCID "${currentMemberData.hcid}" in Member tab under Search to find the correct active contract.`,
-          variant: "destructive",
-          duration: 12000,
-          className: "border-2 border-red-500 bg-red-50 text-red-900"
-        });
-        setSelectedAction("");
-        return;
-      }
-
       // Helper function to format date for display (MM/DD/YYYY)
       const formatDateForValidationDisplay = (dateString: string): string => {
         if (!dateString) return '';
@@ -216,6 +200,38 @@ const ClaimDetails = () => {
           return dateString;
         }
       };
+
+      // Check if contract dates are available and if they're expired
+      const effectiveDate = currentMemberData.effectiveDate;
+      const endDate = currentMemberData.endDate;
+      
+      if (!effectiveDate || !endDate) {
+        toast({
+          title: "❌ CONTRACT VALIDATION ERROR - SCENARIO 2 FAIL",
+          description: `Group information is incorrect. Current Group# ${currentMemberData.groupId || currentMemberData.groupContract} has expired contract dates. Please search by HCID "${currentMemberData.hcid}" in Member tab under Search to find the correct active contract.`,
+          variant: "destructive",
+          duration: 12000,
+          className: "border-2 border-red-500 bg-red-50 text-red-900"
+        });
+        setSelectedAction("");
+        return;
+      }
+
+      // Check if current contract is expired even if dates exist
+      const currentDate = new Date();
+      const contractEndDate = new Date(endDate);
+      
+      if (contractEndDate < currentDate) {
+        toast({
+          title: "❌ CONTRACT VALIDATION ERROR - SCENARIO 2 FAIL",
+          description: `Group information is incorrect. Current Group# ${currentMemberData.groupId || currentMemberData.groupContract} has expired contract (ended ${formatDateForValidationDisplay(endDate)}). Please search by HCID "${currentMemberData.hcid}" in Member tab under Search to find the correct active contract.`,
+          variant: "destructive",
+          duration: 12000,
+          className: "border-2 border-red-500 bg-red-50 text-red-900"
+        });
+        setSelectedAction("");
+        return;
+      }
 
       // Validate service dates fall within contract period
       const serviceDate = new Date(serviceDateFrom);
