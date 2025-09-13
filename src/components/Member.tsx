@@ -35,17 +35,17 @@ const Member = ({ onContractApply }: MemberProps) => {
   const [hasSearched, setHasSearched] = useState(false);
   const { toast } = useToast();
 
-  // Updated mock data for scenario 2 with HCID H987654321
+  // Updated mock data for scenario 2 with HCID 9876543210987654
   const getMockMemberData = (searchId: string): MemberData | null => {
-    if (searchId === "H987654321") {
+    if (searchId === "9876543210987654") {
       return {
-        memberId: "H987654321",
+        memberId: "9876543210987654",
         contracts: [
           {
             contractId: "500L",
             caseEntity: "200000",
             group: "200000A001", // Old/expired contract
-            hcid: "H987654321",
+            hcid: "9876543210987654",
             effectiveDate: "4/28/2020",
             endDate: "6/7/2022",
             contractState: "WI"
@@ -54,7 +54,7 @@ const Member = ({ onContractApply }: MemberProps) => {
             contractId: "500L",
             caseEntity: "200000",
             group: "200000M001", // New/valid contract for 2023 service dates
-            hcid: "H987654321",
+            hcid: "9876543210987654",
             effectiveDate: "1/1/2023",
             endDate: "1/1/2024",
             contractState: "WI"
@@ -193,7 +193,7 @@ const Member = ({ onContractApply }: MemberProps) => {
               value={memberId}
               onChange={(e) => setMemberId(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Enter HCID (e.g., H987654321)"
+              placeholder="Enter HCID (e.g., 9876543210987654)"
               className="w-48"
             />
             <Button 
