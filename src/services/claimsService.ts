@@ -1027,22 +1027,22 @@ export class ClaimsService {
       };
     }
     
-    // Scenario 3: DCN 25048AA1002 - Emergency services
+    // Scenario 3: DCN 25048AA1002 - 597 SOFT EDIT (Service date outside contract)
     if (dcn === "25048AA1002") {
       return {
         dcn: "25048AA1002",
-        patientName: "Sarah Johnson",
-        dob: "1990-03-22",
-        zip: "75201",
-        serviceDates: { from: "2023-09-15", to: "2023-09-17" },
-        claimLineCodeSystem: "99285",
-        claimLineCodeImage: "99285",
+        patientName: "Sarah Johnson", // Matches member information
+        dob: "1990-03-22", // Matches member information
+        zip: "75201", // Matches member information
+        serviceDates: { from: "2024-04-04", to: "2024-04-04" }, // Service dates OUTSIDE contract period
+        claimLineCodeSystem: "99285", // Emergency procedure code
+        claimLineCodeImage: "99285", // Matches system code
         eligibilityValidation: [
-          "Confirm emergency authorization",
-          "Verify emergency facility status",
-          "Check emergency service coverage",
-          "Validate emergency diagnosis codes",
-          "Apply emergency service rules"
+          "Confirm service dates against contract period",
+          "Verify contract effective and end dates", 
+          "Check if service dates fall within coverage",
+          "Service date 04/04/2024 outside contract period 01/01/2023-01/01/2024",
+          "No active eligibility for service dates - DENY claim"
         ]
       };
     }
