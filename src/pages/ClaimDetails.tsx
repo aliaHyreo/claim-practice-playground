@@ -231,7 +231,38 @@ const ClaimDetails = () => {
         return new Date(dateString);
       };
 
-      // Check if current contract is expired even if dates exist
+      // For scenario 2 (DCN 25048AA1001), validate service dates fall within contract period
+      // instead of checking if contract is currently expired
+      if (dcn === "25048AA1001") {
+        // Validate service dates fall within contract period
+        const serviceDate = new Date(serviceDateFrom);
+        const contractStart = parseContractDate(effectiveDate);
+        const contractEnd = parseContractDate(endDate);
+
+        const isServiceDateValid = serviceDate >= contractStart && serviceDate <= contractEnd;
+        
+        if (isServiceDateValid) {
+          toast({
+            title: "🎉 VALIDATION SUCCESS - SCENARIO 2 PASS",
+            description: `✅ Contract validation successful!\n• Service Date: ${formatDateForValidationDisplay(serviceDateFrom)}\n• Contract Period: ${formatDateForValidationDisplay(effectiveDate)} to ${formatDateForValidationDisplay(endDate)}\n• Group#: ${currentMemberData.groupId}`,
+            duration: 8000,
+            className: "border-2 border-green-500 bg-green-50 text-green-900"
+          });
+          setTimeout(() => navigate("/search"), 1500);
+        } else {
+          toast({
+            title: "❌ CONTRACT VALIDATION ERROR - SCENARIO 2 FAIL",
+            description: `Service date ${formatDateForValidationDisplay(serviceDateFrom)} falls outside contract period ${formatDateForValidationDisplay(effectiveDate)} to ${formatDateForValidationDisplay(endDate)}. Please select the correct active contract for Group# ${currentMemberData.groupId}.`,
+            variant: "destructive",
+            duration: 10000,
+            className: "border-2 border-red-500 bg-red-50 text-red-900"
+          });
+        }
+        setSelectedAction("");
+        return;
+      }
+
+      // For other scenarios, check if current contract is expired
       const currentDate = new Date();
       const contractEndDate = parseContractDate(endDate);
       
@@ -247,7 +278,7 @@ const ClaimDetails = () => {
         return;
       }
 
-      // Validate service dates fall within contract period
+      // Validate service dates fall within contract period for other scenarios
       const serviceDate = new Date(serviceDateFrom);
       const contractStart = parseContractDate(effectiveDate);
       const contractEnd = parseContractDate(endDate);
@@ -256,7 +287,7 @@ const ClaimDetails = () => {
       
       if (isServiceDateValid) {
         toast({
-          title: "🎉 VALIDATION SUCCESS - SCENARIO 2 PASS",
+          title: "🎉 VALIDATION SUCCESS",
           description: `✅ Contract validation successful!\n• Service Date: ${formatDateForValidationDisplay(serviceDateFrom)}\n• Contract Period: ${formatDateForValidationDisplay(effectiveDate)} to ${formatDateForValidationDisplay(endDate)}\n• Group#: ${currentMemberData.groupId}`,
           duration: 8000,
           className: "border-2 border-green-500 bg-green-50 text-green-900"
@@ -264,7 +295,7 @@ const ClaimDetails = () => {
         setTimeout(() => navigate("/search"), 1500);
       } else {
         toast({
-          title: "❌ CONTRACT VALIDATION ERROR - SCENARIO 2 FAIL",
+          title: "❌ CONTRACT VALIDATION ERROR",
           description: `Service date ${formatDateForValidationDisplay(serviceDateFrom)} falls outside contract period ${formatDateForValidationDisplay(effectiveDate)} to ${formatDateForValidationDisplay(endDate)}. Please select the correct active contract for Group# ${currentMemberData.groupId}.`,
           variant: "destructive",
           duration: 10000,
