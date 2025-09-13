@@ -217,14 +217,28 @@ const ClaimDetails = () => {
         return;
       }
 
+      // Parse dates correctly - handle MM/DD/YYYY format from member data
+      const parseContractDate = (dateString: string): Date => {
+        if (!dateString) return new Date(0);
+        
+        // Check if date is in MM/DD/YYYY format (member data format)
+        if (dateString.includes('/')) {
+          const [month, day, year] = dateString.split('/');
+          return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        }
+        
+        // Handle YYYY-MM-DD format
+        return new Date(dateString);
+      };
+
       // Check if current contract is expired even if dates exist
       const currentDate = new Date();
-      const contractEndDate = new Date(endDate);
+      const contractEndDate = parseContractDate(endDate);
       
       if (contractEndDate < currentDate) {
         toast({
           title: "❌ CONTRACT VALIDATION ERROR - SCENARIO 2 FAIL",
-          description: `Group information is incorrect. Current Group# ${currentMemberData.groupId || currentMemberData.groupContract} has expired contract (ended ${formatDateForValidationDisplay(endDate)}). Please search by HCID "${currentMemberData.hcid}" in Member tab under Search to find the correct active contract.`,
+          description: `Group information is incorrect. Current Group# ${currentMemberData.groupId || currentMemberData.groupContract} has expired contract (ended ${formatDateForValidationDisplay(endDate)}). Please search by HCID "${currentMemberData.hcid || 'undefined'}" in Member tab under Search to find the correct active contract.`,
           variant: "destructive",
           duration: 12000,
           className: "border-2 border-red-500 bg-red-50 text-red-900"
@@ -235,8 +249,8 @@ const ClaimDetails = () => {
 
       // Validate service dates fall within contract period
       const serviceDate = new Date(serviceDateFrom);
-      const contractStart = new Date(effectiveDate);
-      const contractEnd = new Date(endDate);
+      const contractStart = parseContractDate(effectiveDate);
+      const contractEnd = parseContractDate(endDate);
 
       const isServiceDateValid = serviceDate >= contractStart && serviceDate <= contractEnd;
       
