@@ -313,22 +313,23 @@ const ClaimDetails = () => {
     effectiveDate: string;
     endDate: string;
   }) => {
-    // Update the current member info with the new contract data
-    // For scenario 509, we need to preserve all existing member data and only update the group/contract fields
+    // For scenario 509, preserve ALL existing member data and only update the group/contract fields
     const updatedMemberInfo = {
-      ...currentMemberInfo,
+      ...currentMemberInfo, // Preserve ALL existing fields first
+      // Only update the specific group/contract fields
       groupId: contractData.groupId,
       groupContract: contractData.groupContract,
       effectiveDate: contractData.effectiveDate,
       endDate: contractData.endDate,
-      // Ensure we keep the groupName and detailContractCode aligned with the group
-      groupName: contractData.groupId === "200000M001" ? "Health Plan Group 2023" : currentMemberInfo?.groupName,
-      detailContractCode: contractData.groupId === "200000M001" ? "200000M001" : currentMemberInfo?.detailContractCode
+      // Update related group fields consistently
+      groupName: contractData.groupId === "200000M001" ? "Health Plan Group 2023" : 
+                 contractData.groupId === "200000A001" ? "Health Plan Group 2020" : currentMemberInfo?.groupName,
+      detailContractCode: contractData.groupId
     };
     
     setCurrentMemberInfo(updatedMemberInfo);
     
-    // Also update the claim data
+    // Update claim data while preserving all other claim fields
     if (claim) {
       setClaim(prev => prev ? { 
         ...prev, 
@@ -336,7 +337,7 @@ const ClaimDetails = () => {
       } : null);
     }
     
-    console.log("Contract applied - Updated member info:", updatedMemberInfo);
+    console.log("Contract applied - Updated member info (preserving all fields):", updatedMemberInfo);
   };
 
   const handleMemberUpdate = (updatedMember: MemberInfo) => {
