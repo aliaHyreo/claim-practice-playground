@@ -289,11 +289,20 @@ const ClaimDetails = () => {
               className: "border-2 border-red-500 bg-red-50 text-red-900"
             });
           }
+        } else if (selectedAction === "pay") {
+          // Pay action should fail for scenario 597
+          toast({
+            title: "❌ PAYMENT ERROR - SCENARIO 597",
+            description: `Cannot process payment. Service date ${formatDateForValidationDisplay(serviceDateFrom)} falls outside contract period (${formatDateForValidationDisplay(effectiveDate)} to ${formatDateForValidationDisplay(endDate)}). No active eligibility for service dates. This claim should be DENIED.`,
+            variant: "destructive",
+            duration: 12000,
+            className: "border-2 border-red-500 bg-red-50 text-red-900"
+          });
         } else {
-          // Any action other than deny should fail
+          // Any other action should also fail
           toast({
             title: "❌ SCENARIO 3 VALIDATION ERROR (597 SOFT EDIT)",
-            description: `Service date ${formatDateForValidationDisplay(serviceDateFrom)} falls outside contract period (${formatDateForValidationDisplay(effectiveDate)} to ${formatDateForValidationDisplay(endDate)}). No active eligibility for service dates. Action "${selectedAction.toUpperCase()}" should be DENY for this scenario.`,
+            description: `Service date ${formatDateForValidationDisplay(serviceDateFrom)} falls outside contract period (${formatDateForValidationDisplay(effectiveDate)} to ${formatDateForValidationDisplay(endDate)}). No active eligibility for service dates. Action "${String(selectedAction).toUpperCase()}" should be DENY for this scenario.`,
             variant: "destructive",
             duration: 12000,
             className: "border-2 border-red-500 bg-red-50 text-red-900"
