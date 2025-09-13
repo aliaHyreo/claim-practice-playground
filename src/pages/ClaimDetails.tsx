@@ -313,9 +313,17 @@ const ClaimDetails = () => {
     effectiveDate: string;
     endDate: string;
   }) => {
+    // Get the current member information (fallback to claim.memberInfo if currentMemberInfo is null)
+    const existingMemberInfo = currentMemberInfo || claim?.memberInfo;
+    
+    if (!existingMemberInfo) {
+      console.error("No existing member info found to preserve");
+      return;
+    }
+    
     // For scenario 509, preserve ALL existing member data and only update the group/contract fields
     const updatedMemberInfo = {
-      ...currentMemberInfo, // Preserve ALL existing fields first
+      ...existingMemberInfo, // Preserve ALL existing fields (patient, subscriber, etc.)
       // Only update the specific group/contract fields
       groupId: contractData.groupId,
       groupContract: contractData.groupContract,
@@ -323,8 +331,8 @@ const ClaimDetails = () => {
       endDate: contractData.endDate,
       // Update related group fields consistently
       groupName: contractData.groupId === "200000M001" ? "Health Plan Group 2023" : 
-                 contractData.groupId === "200000A001" ? "Health Plan Group 2020" : currentMemberInfo?.groupName,
-      detailContractCode: contractData.groupId
+                 contractData.groupId === "200000A001" ? "Tech Solutions Inc" : existingMemberInfo.groupName,
+      detailContractCode: contractData.groupContract || contractData.groupId
     };
     
     setCurrentMemberInfo(updatedMemberInfo);
@@ -337,7 +345,10 @@ const ClaimDetails = () => {
       } : null);
     }
     
-    console.log("Contract applied - Updated member info (preserving all fields):", updatedMemberInfo);
+    console.log("Contract applied - Preserved all fields, updated only group info:", {
+      original: existingMemberInfo,
+      updated: updatedMemberInfo
+    });
   };
 
   const handleMemberUpdate = (updatedMember: MemberInfo) => {
