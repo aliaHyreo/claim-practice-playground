@@ -65,7 +65,16 @@ const ClaimDetails = () => {
   };
 
   const getEditBadgeVariant = (edit: string) => {
-    return edit === "507" ? "destructive" : "secondary";
+    switch(edit) {
+      case "507":
+        return "destructive"; // Red for critical member info mismatch
+      case "509": 
+        return "outline"; // Orange/warning for contract validation
+      case "597":
+        return "destructive"; // Red for no active eligibility
+      default:
+        return "secondary";
+    }
   };
 
   const handleActionSubmit = () => {
@@ -235,28 +244,57 @@ const ClaimDetails = () => {
         });
       }
     } else if (dcn === "25048AA1002") {
-      // Scenario 3: 597 SOFT EDIT - Service date outside contract period
-      if (actionValue === "deny") {
+      // Scenario 3: 597 SOFT EDIT - Service date outside contract period validation
+      const currentMemberData = currentMemberInfo || claim?.memberInfo;
+      const claimServiceDate = claim?.claimLines?.[0]?.serviceFromDate; // Should be "2024-04-04"
+      const contractEffectiveDate = currentMemberData?.effectiveDate; // "01/01/2023"
+      const contractEndDate = currentMemberData?.endDate; // "01/01/2024"
+      
+      // Parse dates for comparison
+      const parseDate = (dateStr: string): Date => {
+        if (!dateStr) return new Date('1900-01-01');
+        
+        // Handle MM/DD/YYYY format (from contract data)
+        if (dateStr.includes('/') && dateStr.split('/')[2]?.length === 4) {
+          const [month, day, year] = dateStr.split('/');
+          return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        }
+        
+        // Handle YYYY-MM-DD format (from claim lines)
+        return new Date(dateStr);
+      };
+      
+      const serviceDate = parseDate(claimServiceDate || '');
+      const effectiveDate = parseDate(contractEffectiveDate || '');
+      const endDate = parseDate(contractEndDate || '');
+      
+      // Check if service date falls OUTSIDE contract period (this is expected for 597)
+      const isServiceDateOutsideContract = serviceDate < effectiveDate || serviceDate > endDate;
+      
+      if (actionValue === "deny" && isServiceDateOutsideContract) {
+        // Correct action for scenario 597 - DENY when service date is outside contract
         toast({
           title: "🎉 VALIDATION SUCCESS - SCENARIO 597 PASS",
-          description: "✅ Claim correctly denied due to service date outside contract period!",
+          description: `✅ Service date ${claimServiceDate} is outside contract period (${contractEffectiveDate} to ${contractEndDate}). Claim correctly DENIED for no active eligibility.`,
           duration: 8000,
           className: "border-2 border-green-500 bg-green-50 text-green-900"
         });
         setTimeout(() => navigate("/search"), 1500);
-      } else if (actionValue === "pay") {
+      } else if (actionValue === "pay" && isServiceDateOutsideContract) {
+        // Wrong action for scenario 597 - trying to PAY when should DENY
         toast({
-          title: "❌ PAYMENT ERROR - SCENARIO 597",
-          description: "Cannot process payment. Service date falls outside contract period. No active eligibility for service dates. This claim should be DENIED.",
+          title: "❌ INCORRECT ACTION - SCENARIO 597",
+          description: `Service date ${claimServiceDate} is outside contract period (${contractEffectiveDate} to ${contractEndDate}). No active eligibility - must DENY claim.`,
           variant: "destructive",
           duration: 12000,
           className: "border-2 border-red-500 bg-red-50 text-red-900"
         });
       } else {
+        // Any other incorrect actions
         toast({
-          title: "❌ SCENARIO 597 VALIDATION ERROR",
-          description: `Service date falls outside contract period. Action "${actionValue.toUpperCase()}" should be DENY for this scenario.`,
-          variant: "destructive", 
+          title: "❌ VALIDATION ERROR - SCENARIO 597",
+          description: `For scenario 597, service date ${claimServiceDate} is outside active contract period. Please select DENY action.`,
+          variant: "destructive",
           duration: 12000,
           className: "border-2 border-red-500 bg-red-50 text-red-900"
         });
@@ -367,20 +405,24 @@ const ClaimDetails = () => {
               {/* Edits Section */}
               <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
                 <span className="text-xs text-blue-600 font-medium mb-1">Edits</span>
-                <div className="flex gap-1">
-                  {claim.edits.map((edit) => (
-                    <Badge 
-                      key={edit} 
-                      className={`text-xs px-2 py-1 font-medium rounded ${
-                        edit === "507" 
-                          ? "bg-red-100 text-red-800 border-red-200" 
-                          : "bg-blue-100 text-blue-800 border-blue-200"
-                      }`}
-                    >
-                      {edit}
-                    </Badge>
-                  ))}
-                </div>
+                 <div className="flex gap-1">
+                   {claim.edits.map((edit) => (
+                     <Badge 
+                       key={edit} 
+                       className={`text-xs px-2 py-1 font-medium rounded ${
+                         edit === "507" 
+                           ? "bg-red-100 text-red-800 border-red-200" 
+                           : edit === "509"
+                           ? "bg-orange-100 text-orange-800 border-orange-200"
+                           : edit === "597"
+                           ? "bg-red-100 text-red-800 border-red-200"
+                           : "bg-blue-100 text-blue-800 border-blue-200"
+                       }`}
+                     >
+                       {edit}
+                     </Badge>
+                   ))}
+                 </div>
               </div>
 
               {/* Financial Information */}

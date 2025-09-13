@@ -395,12 +395,38 @@ export class ClaimsService {
   }
 
   static getEditDetails(edits: string[]): EditDetail[] {
-    return edits.map(edit => ({
-      code: edit,
-      description: `Edit ${edit} description`,
-      type: 'warning',
-      status: 'active'
-    }));
+    return edits.map(edit => {
+      switch(edit) {
+        case "507":
+          return {
+            code: edit,
+            description: "Patient information mismatch - verify member demographics",
+            type: 'error',
+            status: 'active'
+          };
+        case "509":
+          return {
+            code: edit,
+            description: "Contract group validation required - verify active eligibility",
+            type: 'warning',
+            status: 'active'
+          };
+        case "597":
+          return {
+            code: edit,
+            description: "No active eligibility for service dates - service date outside contract period",
+            type: 'error',
+            status: 'active'
+          };
+        default:
+          return {
+            code: edit,
+            description: `Edit ${edit} description`,
+            type: 'warning',
+            status: 'active'
+          };
+      }
+    });
   }
 
   static getMockProviderInfo(dcn?: string): ProviderInfo {
@@ -1102,8 +1128,8 @@ export class ClaimsService {
       return [
         {
           lineNo: 1,
-          serviceFromDate: "3/3/2024", // Service date OUTSIDE contract period (01/01/2023 - 01/01/2024)
-          serviceToDate: "3/3/2024", // Service date OUTSIDE contract period
+          serviceFromDate: "2024-04-04", // Service date OUTSIDE contract period (01/01/2023 - 01/01/2024)
+          serviceToDate: "2024-04-04", // Service date OUTSIDE contract period
           pos: "23",
           service: "Emergency Visit",
           procedureCode: "99285",

@@ -167,23 +167,13 @@ const Member = ({ onContractApply }: MemberProps) => {
 
   const handleApplyContract = (contract: MemberContract) => {
     if (onContractApply) {
-      // Convert date format from M/D/YYYY to YYYY-MM-DD for validation
-      const formatDateForStorage = (dateString: string): string => {
-        try {
-          const [month, day, year] = dateString.split('/');
-          const paddedMonth = month.padStart(2, '0');
-          const paddedDay = day.padStart(2, '0');
-          return `${year}-${paddedMonth}-${paddedDay}`;
-        } catch (error) {
-          return dateString;
-        }
-      };
-
+      // Keep the date format as MM/DD/YYYY for member information display
+      // The validation logic in ClaimDetails will handle the date parsing
       onContractApply({
         groupId: contract.group,
         groupContract: contract.group,
-        effectiveDate: formatDateForStorage(contract.effectiveDate),
-        endDate: formatDateForStorage(contract.endDate)
+        effectiveDate: contract.effectiveDate, // Keep original MM/DD/YYYY format
+        endDate: contract.endDate // Keep original MM/DD/YYYY format
       });
 
       toast({
