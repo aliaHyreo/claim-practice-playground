@@ -1007,14 +1007,14 @@ export class ClaimsService {
       };
     }
     
-    // Scenario 2: DCN 25048AA1001 - Contract group mismatch  
+    // Scenario 2: DCN 25048AA1001 - Contract group mismatch (509 edit)
     if (dcn === "25048AA1001") {
       return {
         dcn: "25048AA1001",
-        patientName: "John Wick S", // Same as scenario 1 per user requirements
+        patientName: "John Wick", // Correct name matching member information
         dob: "1982-08-18", // Same as scenario 1
         zip: "41701", // Same as scenario 1
-        serviceDates: { from: "2023-08-04", to: "2023-08-04" }, // Updated service dates
+        serviceDates: { from: "2023-08-04", to: "2023-08-04" }, // Service dates requiring active contract
         claimLineCodeSystem: "99213", // Updated to match scenario 2
         claimLineCodeImage: "99213", // Updated to match scenario 2
         eligibilityValidation: [
@@ -1079,13 +1079,13 @@ export class ClaimsService {
       ];
     }
     
-    // Scenario 2: DCN 25048AA1001 - Service dates that require active group
+    // Scenario 2: DCN 25048AA1001 - Service dates that require active group (509 edit)
     if (dcn === "25048AA1001") {
       return [
         {
           lineNo: 1,
-          serviceFromDate: "08/04/2023", // Service date after expired group end date
-          serviceToDate: "08/04/2023",
+          serviceFromDate: "2023-08-04", // Service date in YYYY-MM-DD format requiring active contract
+          serviceToDate: "2023-08-04", // Service date in YYYY-MM-DD format
           pos: "11", 
           service: "Office Visit",
           procedureCode: "99213",
@@ -1184,14 +1184,14 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
       };
     }
     
-    // SCENARIO 2 (DCN: 25048AA1001) - PATIENT DATA IS CORRECT, GROUP DATA IS WRONG
+    // SCENARIO 2 (DCN: 25048AA1001) - PATIENT DATA IS CORRECT, GROUP DATA IS WRONG (509 edit)
     if (dcn === "25048AA1001") {
       // Return all correct patient data but with expired group information
       return {
         prefix: "Mr",
-        firstName: "John", // ✅ CORRECT - Matches claim form
-        middleName: "",  // ✅ REMOVE middle name to match claim form exactly
-        lastName: "Wick S", // ✅ CORRECT - Matches claim form exactly "John Wick S"
+        firstName: "John", // ✅ CORRECT - Matches claim form exactly
+        middleName: "", // ✅ CORRECT - No middle name to match "John Wick" from claim form
+        lastName: "Wick", // ✅ CORRECT - Matches claim form exactly "John Wick" 
         dob: "1982-08-18", // ✅ CORRECT - Matches claim form
         sex: "M",
         hcid: "9876543210987654", // ✅ CORRECT - Available for searching contracts
