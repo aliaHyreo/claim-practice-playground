@@ -1031,7 +1031,7 @@ export class ClaimsService {
     if (dcn === "25048AA1002") {
       return {
         dcn: "25048AA1002",
-        patientName: "Sarah Johnson", // Matches member information
+        patientName: "Sarah Elizabeth Johnson", // Matches member information exactly
         dob: "1990-03-22", // Matches member information
         zip: "75201", // Matches member information
         serviceDates: { from: "2024-04-04", to: "2024-04-04" }, // Service dates OUTSIDE contract period
