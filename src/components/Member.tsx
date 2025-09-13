@@ -37,6 +37,23 @@ const Member = ({ onContractApply }: MemberProps) => {
 
   // Updated mock data for scenario 2 with HCID 9876543210987654
   const getMockMemberData = (searchId: string): MemberData | null => {
+    if (searchId === "H123456789597") {
+      return {
+        memberId: "H123456789597",
+        contracts: [
+          {
+            contractId: "500L",
+            caseEntity: "200000",
+            group: "200000G597", // Group number for scenario 597
+            hcid: "H123456789597",
+            effectiveDate: "01/01/2023",
+            endDate: "01/01/2024",
+            contractState: "WI"
+          }
+        ]
+      };
+    }
+
     if (searchId === "9876543210987654") {
       return {
         memberId: "9876543210987654",
