@@ -44,7 +44,7 @@ const Member = ({ onContractApply }: MemberProps) => {
           {
             contractId: "500L",
             caseEntity: "200000",
-            group: "200000G597", // Group number for scenario 597
+            group: "300000C001", // Group number for scenario 597
             hcid: "H123456789597",
             effectiveDate: "01/01/2023",
             endDate: "01/01/2024",
