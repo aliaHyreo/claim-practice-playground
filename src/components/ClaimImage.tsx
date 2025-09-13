@@ -27,6 +27,18 @@ const ClaimImage = ({ claimImageData }: ClaimImageProps) => {
     });
   };
 
+  const formatDateForForm = (dateString: string) => {
+    const date = new Date(dateString);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return {
+      month: month.toString().padStart(2, '0'),
+      day: day.toString().padStart(2, '0'),
+      year: year.toString()
+    };
+  };
+
   const hasCodeMismatch = claimImageData?.claimLineCodeSystem !== claimImageData?.claimLineCodeImage;
 
   return (
@@ -128,7 +140,7 @@ const ClaimImage = ({ claimImageData }: ClaimImageProps) => {
                 <span className="text-red-600 text-xs font-bold">2. PATIENT'S NAME (Last Name, First Name, Middle Initial)</span>
               </div>
               <div className="p-2">
-                <Input defaultValue="John,Wick" className="text-sm h-6 border-none font-medium" />
+                <Input defaultValue={claimImageData.patientName || "Unknown Patient"} className="text-sm h-6 border-none font-medium" />
               </div>
             </div>
             
@@ -138,9 +150,9 @@ const ClaimImage = ({ claimImageData }: ClaimImageProps) => {
               </div>
               <div className="p-2">
                 <div className="grid grid-cols-3 gap-1 mb-2">
-                  <Input defaultValue="08" className="text-center h-6 text-xs border" />
-                  <Input defaultValue="18" className="text-center h-6 text-xs border" />
-                  <Input defaultValue="1982" className="text-center h-6 text-xs border" />
+                  <Input defaultValue={formatDateForForm(claimImageData.dob).month} className="text-center h-6 text-xs border" />
+                  <Input defaultValue={formatDateForForm(claimImageData.dob).day} className="text-center h-6 text-xs border" />
+                  <Input defaultValue={formatDateForForm(claimImageData.dob).year} className="text-center h-6 text-xs border" />
                 </div>
                 <div className="text-xs text-gray-600 mb-2">MM   DD   YY</div>
                 <div className="flex items-center gap-4">
