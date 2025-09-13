@@ -162,14 +162,55 @@ const ClaimDetails = () => {
         });
       }
     } else if (dcn === "25048AA1001") {
-      // Scenario 2: Contract validation
+      // Scenario 2: Contract validation (509 edit)
       if (actionValue === "pay") {
         const currentMemberData = currentMemberInfo || claim?.memberInfo;
-        // Existing scenario 2 logic would go here...
-        toast({
-          title: "Action Submitted",
-          description: `Action "${actionValue}" has been submitted successfully.`,
-        });
+        
+        // Service dates from claim lines - should be "2023-08-04"
+        const claimServiceDate = claim?.claimLines?.[0]?.serviceFromDate; // "2023-08-04"
+        
+        // Contract dates from member info - initially wrong: "01/01/2020" to "12/31/2024"
+        const contractEffectiveDate = currentMemberData?.effectiveDate; // "01/01/2020" initially
+        const contractEndDate = currentMemberData?.endDate; // "12/31/2024" initially
+        
+        // Parse dates for comparison
+        const parseDate = (dateStr: string): Date => {
+          if (!dateStr) return new Date(0);
+          
+          // Handle MM/DD/YYYY format
+          if (dateStr.includes('/')) {
+            const [month, day, year] = dateStr.split('/');
+            return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+          }
+          
+          // Handle YYYY-MM-DD format
+          return new Date(dateStr);
+        };
+        
+        const serviceDate = parseDate(claimServiceDate || '');
+        const effectiveDate = parseDate(contractEffectiveDate || '');
+        const endDate = parseDate(contractEndDate || '');
+        
+        // Check if service date falls within contract period
+        const isServiceDateValid = serviceDate >= effectiveDate && serviceDate <= endDate;
+        
+        if (isServiceDateValid) {
+          toast({
+            title: "🎉 VALIDATION SUCCESS - SCENARIO 509 PASS",
+            description: `✅ Service date ${claimServiceDate} falls within contract period (${contractEffectiveDate} to ${contractEndDate}). Payment can be processed!`,
+            duration: 8000,
+            className: "border-2 border-green-500 bg-green-50 text-green-900"
+          });
+          setTimeout(() => navigate("/search"), 1500);
+        } else {
+          toast({
+            title: "❌ CONTRACT DATE ERROR - SCENARIO 509",
+            description: `Service date ${claimServiceDate} falls outside contract period (${contractEffectiveDate} to ${contractEndDate}). Please apply the correct group/contract from Member tab.`,
+            variant: "destructive",
+            duration: 12000,
+            className: "border-2 border-red-500 bg-red-50 text-red-900"
+          });
+        }
       } else {
         toast({
           title: "Action Submitted", 
