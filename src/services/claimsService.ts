@@ -1102,8 +1102,8 @@ export class ClaimsService {
       return [
         {
           lineNo: 1,
-          serviceFromDate: "2024-04-04", // Service date OUTSIDE contract period (01/01/2023 - 01/01/2024)
-          serviceToDate: "2024-04-04", // Service date OUTSIDE contract period
+          serviceFromDate: "3/3/2024", // Service date OUTSIDE contract period (01/01/2023 - 01/01/2024)
+          serviceToDate: "3/3/2024", // Service date OUTSIDE contract period
           pos: "23",
           service: "Emergency Visit",
           procedureCode: "99285",
@@ -1111,34 +1111,6 @@ export class ClaimsService {
           units: 1,
           diagnosis: "S72.001A",
           billed: 2500
-        }
-      ];
-    }
-    if (dcn === "25048AA1002") {
-      return [
-        {
-          lineNo: 1,
-          serviceFromDate: "09/15/2023",
-          serviceToDate: "09/15/2023",
-          pos: "23",
-          service: "Emergency Department Visit",
-          procedureCode: "99285",
-          modifiers: ["ER", "25"],
-          units: 1,
-          diagnosis: "S72.001A",
-          billed: 2500
-        },
-        {
-          lineNo: 2,
-          serviceFromDate: "09/16/2023",
-          serviceToDate: "09/17/2023",
-          pos: "21",
-          service: "Inpatient Hospital Visit",
-          procedureCode: "99223",
-          modifiers: [],
-          units: 2,
-          diagnosis: "S72.001A",
-          billed: 800
         }
       ];
     }
