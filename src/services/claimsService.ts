@@ -304,11 +304,11 @@ export class ClaimsService {
         status: claimData.status,
         scenarioType: claimData.scenario_type,
         memberInfo,
-        providerInfo: this.getMockProviderInfo(),
-        paymentInfo: this.getMockPaymentInfo(),
-        claimHeaderInfo: this.getMockClaimHeaderInfo(),
+        providerInfo: this.getMockProviderInfo(dcn),
+        paymentInfo: this.getMockPaymentInfo(dcn),
+        claimHeaderInfo: this.getMockClaimHeaderInfo(dcn),
         claimLines: ClaimsService.getMockClaimLines(dcn),
-        claimData: this.getMockClaimData(),
+        claimData: this.getMockClaimData(dcn),
         searchData: { claimImage: this.getMockClaimImageData(dcn) }
       };
     } catch (error) {
@@ -403,7 +403,128 @@ export class ClaimsService {
     }));
   }
 
-  static getMockProviderInfo(): ProviderInfo {
+  static getMockProviderInfo(dcn?: string): ProviderInfo {
+    // Scenario 1: DCN 25048AA1000
+    if (dcn === "25048AA1000") {
+      return {
+        billingName: "MEDICAL GROUP LLC",
+        billingNPI: "1234567890",
+        billingTaxId: "123456789",
+        emergencyPricingInd: "N",
+        taxonomy: "207Q00000X",
+        specialty: "Family Medicine",
+        networkOption: "In-Network",
+        licenseNumber: "MD12345",
+        providerEpin: "EPIN123",
+        renderingNPI: "9876543210",
+        renderingName: "Dr. Smith",
+        renderingAddress: "123 Medical St, City, State 12345",
+        pricingState: "CA",
+        npi8: "87654321",
+        nsbIndicator: "Y",
+        alternateFacilityNPI: "1111111111",
+        serviceFacilityTier: "Tier 1",
+        serviceProvider: "Primary",
+        referringNPI7: "7777777777",
+        referringNPI: "7777777777",
+        referringPhysician: "Dr. Johnson",
+        taxonomy6: "207Q00000X",
+        pricingZip: "12345",
+        providerSps: "SPS123",
+        bhaProviderIndicator: "N",
+        locationCode: "LOC001",
+        nationalState: "CA",
+        address5: "123 Medical St",
+        address: "123 Medical St, City, State 12345",
+        medicareId: "MED123456",
+        providerEpin4: "EPIN456",
+        providerSps3: "SPS456",
+        facilityType: "Office",
+        billingName2: "MEDICAL GROUP LLC"
+      };
+    }
+    
+    // Scenario 2: DCN 25048AA1001
+    if (dcn === "25048AA1001") {
+      return {
+        billingName: "KENTUCKY HEALTH CLINIC",
+        billingNPI: "2345678901",
+        billingTaxId: "234567890",
+        emergencyPricingInd: "Y",
+        taxonomy: "208D00000X",
+        specialty: "Internal Medicine",
+        networkOption: "Out-of-Network",
+        licenseNumber: "KY67890",
+        providerEpin: "EPIN789",
+        renderingNPI: "8765432109",
+        renderingName: "Dr. Williams",
+        renderingAddress: "456 Health Ave, Louisville, KY 40202",
+        pricingState: "KY",
+        npi8: "76543210",
+        nsbIndicator: "N",
+        alternateFacilityNPI: "2222222222",
+        serviceFacilityTier: "Tier 2",
+        serviceProvider: "Secondary",
+        referringNPI7: "8888888888",
+        referringNPI: "8888888888",
+        referringPhysician: "Dr. Davis",
+        taxonomy6: "208D00000X",
+        pricingZip: "40202",
+        providerSps: "SPS789",
+        bhaProviderIndicator: "Y",
+        locationCode: "LOC002",
+        nationalState: "KY",
+        address5: "456 Health Ave",
+        address: "456 Health Ave, Louisville, KY 40202",
+        medicareId: "MED789012",
+        providerEpin4: "EPIN012",
+        providerSps3: "SPS012",
+        facilityType: "Clinic",
+        billingName2: "KENTUCKY HEALTH CLINIC"
+      };
+    }
+    
+    // Scenario 3: DCN 25048AA1002
+    if (dcn === "25048AA1002") {
+      return {
+        billingName: "EMERGENCY MEDICAL CENTER",
+        billingNPI: "3456789012",
+        billingTaxId: "345678901",
+        emergencyPricingInd: "Y",
+        taxonomy: "207T00000X",
+        specialty: "Emergency Medicine",
+        networkOption: "In-Network",
+        licenseNumber: "TX34567",
+        providerEpin: "EPIN345",
+        renderingNPI: "7654321098",
+        renderingName: "Dr. Rodriguez",
+        renderingAddress: "789 Emergency Blvd, Dallas, TX 75201",
+        pricingState: "TX",
+        npi8: "65432109",
+        nsbIndicator: "Y",
+        alternateFacilityNPI: "3333333333",
+        serviceFacilityTier: "Tier 1",
+        serviceProvider: "Emergency",
+        referringNPI7: "9999999999",
+        referringNPI: "9999999999",
+        referringPhysician: "Dr. Martinez",
+        taxonomy6: "207T00000X",
+        pricingZip: "75201",
+        providerSps: "SPS345",
+        bhaProviderIndicator: "N",
+        locationCode: "LOC003",
+        nationalState: "TX",
+        address5: "789 Emergency Blvd",
+        address: "789 Emergency Blvd, Dallas, TX 75201",
+        medicareId: "MED345678",
+        providerEpin4: "EPIN678",
+        providerSps3: "SPS678",
+        facilityType: "Hospital",
+        billingName2: "EMERGENCY MEDICAL CENTER"
+      };
+    }
+    
+    // Default scenario 1 data
     return {
       billingName: "MEDICAL GROUP LLC",
       billingNPI: "1234567890",
@@ -442,7 +563,137 @@ export class ClaimsService {
     };
   }
 
-  static getMockPaymentInfo(): PaymentInfo {
+  static getMockPaymentInfo(dcn?: string): PaymentInfo {
+    // Scenario 1: DCN 25048AA1000
+    if (dcn === "25048AA1000") {
+      return {
+        claim: {
+          deductible: 0,
+          copay: 20,
+          coinsurance: 0,
+          coins: 0,
+          totalPaid: 240,
+          patientResponsibility: 60,
+          patientLiability: 60,
+          memberSurcharge: 0,
+          nonEligible: 0,
+          hraPaid: 0,
+          claimPaid: 240,
+          pricingAllowedAmount: 300,
+          totalCharge: 300,
+          finalizationCode: "PAID",
+          primaryPaidAmount: 240,
+          allowedAmount: 300,
+          writeOffAmount: 60,
+          benefitPeriod: "Calendar Year",
+          benefitPeriodUsed: 1200,
+          benefitPeriodRemaining: 800,
+          lifetimeBenefit: 10000,
+          lifetimeBenefitUsed: 5000,
+          lifetimeBenefitRemaining: 5000
+        },
+        member: {
+          memberPaidAmount: 240,
+          checkNumber: "CHK123456",
+          checkStatus: "Check not Found",
+          checkStatusDate: "2025-06-01",
+          paidTo: "MEDICAL GROUP LLC",
+          accountNumber: "-",
+          eftCheckDate: "",
+          priced: ""
+        },
+        provider: {},
+        drg: {}
+      };
+    }
+    
+    // Scenario 2: DCN 25048AA1001
+    if (dcn === "25048AA1001") {
+      return {
+        claim: {
+          deductible: 500,
+          copay: 0,
+          coinsurance: 20,
+          coins: 40,
+          totalPaid: 160,
+          patientResponsibility: 540,
+          patientLiability: 540,
+          memberSurcharge: 0,
+          nonEligible: 0,
+          hraPaid: 0,
+          claimPaid: 160,
+          pricingAllowedAmount: 200,
+          totalCharge: 200,
+          finalizationCode: "PARTIAL",
+          primaryPaidAmount: 160,
+          allowedAmount: 200,
+          writeOffAmount: 40,
+          benefitPeriod: "Calendar Year",
+          benefitPeriodUsed: 2500,
+          benefitPeriodRemaining: 500,
+          lifetimeBenefit: 15000,
+          lifetimeBenefitUsed: 8000,
+          lifetimeBenefitRemaining: 7000
+        },
+        member: {
+          memberPaidAmount: 160,
+          checkNumber: "CHK789012",
+          checkStatus: "Check Processed",
+          checkStatusDate: "2025-08-15",
+          paidTo: "KENTUCKY HEALTH CLINIC",
+          accountNumber: "ACC789012",
+          eftCheckDate: "2025-08-14",
+          priced: "Y"
+        },
+        provider: {},
+        drg: {}
+      };
+    }
+    
+    // Scenario 3: DCN 25048AA1002
+    if (dcn === "25048AA1002") {
+      return {
+        claim: {
+          deductible: 1000,
+          copay: 100,
+          coinsurance: 10,
+          coins: 150,
+          totalPaid: 1350,
+          patientResponsibility: 1250,
+          patientLiability: 1250,
+          memberSurcharge: 50,
+          nonEligible: 0,
+          hraPaid: 200,
+          claimPaid: 1350,
+          pricingAllowedAmount: 2500,
+          totalCharge: 2500,
+          finalizationCode: "PAID",
+          primaryPaidAmount: 1350,
+          allowedAmount: 2500,
+          writeOffAmount: 1150,
+          benefitPeriod: "Calendar Year",
+          benefitPeriodUsed: 5000,
+          benefitPeriodRemaining: 3000,
+          lifetimeBenefit: 25000,
+          lifetimeBenefitUsed: 12000,
+          lifetimeBenefitRemaining: 13000
+        },
+        member: {
+          memberPaidAmount: 1350,
+          checkNumber: "CHK345678",
+          checkStatus: "Check Issued",
+          checkStatusDate: "2025-09-10",
+          paidTo: "EMERGENCY MEDICAL CENTER",
+          accountNumber: "ACC345678",
+          eftCheckDate: "2025-09-09",
+          priced: "Y"
+        },
+        provider: {},
+        drg: {}
+      };
+    }
+    
+    // Default scenario 1 data
     return {
       claim: {
         deductible: 0,
@@ -484,7 +735,122 @@ export class ClaimsService {
     };
   }
 
-  static getMockClaimHeaderInfo(): ClaimHeaderInfo {
+  static getMockClaimHeaderInfo(dcn?: string): ClaimHeaderInfo {
+    // Scenario 1: DCN 25048AA1000
+    if (dcn === "25048AA1000") {
+      return {
+        generalClaimData: {
+          serviceFromDate: "08/03/2023",
+          serviceToDate: "08/03/2023",
+          assignmentOfBenefits: "Y",
+          providerParticipation: "PAR",
+          providerContract: "CEPMS0",
+          treatmentAuth: "-",
+          patientAccount: "N41127.23297",
+          emergency: "No",
+          employment: "No",
+          coveredZipRadius: "-",
+          frequency: "-",
+          bbiIndicator: "-",
+          pciIndicator: "-",
+          fsbInd: "None",
+          fsbExclusion: "X"
+        },
+        benefitIndicators: {
+          cob: "No",
+          cobRule: "-",
+          medInd: "No",
+          medicareAdvantage: "Yes",
+          cdhp: "N",
+          planPayer: "N",
+          cobPercentage: "0"
+        },
+        diagnosisCodes: {
+          dx1: "G800",
+          dx2: "0",
+          dx3: "0",
+          medRule: "-"
+        }
+      };
+    }
+    
+    // Scenario 2: DCN 25048AA1001
+    if (dcn === "25048AA1001") {
+      return {
+        generalClaimData: {
+          serviceFromDate: "08/04/2023",
+          serviceToDate: "08/04/2023",
+          assignmentOfBenefits: "N",
+          providerParticipation: "NON-PAR",
+          providerContract: "OUTNET1",
+          treatmentAuth: "AUTH456789",
+          patientAccount: "KY789.45612",
+          emergency: "Yes",
+          employment: "Yes",
+          coveredZipRadius: "50",
+          frequency: "1",
+          bbiIndicator: "Y",
+          pciIndicator: "N",
+          fsbInd: "Partial",
+          fsbExclusion: "N"
+        },
+        benefitIndicators: {
+          cob: "Yes",
+          cobRule: "Primary",
+          medInd: "Yes",
+          medicareAdvantage: "No",
+          cdhp: "Y",
+          planPayer: "Y",
+          cobPercentage: "80"
+        },
+        diagnosisCodes: {
+          dx1: "Z00.00",
+          dx2: "M25.511",
+          dx3: "I10",
+          medRule: "ACTIVE"
+        }
+      };
+    }
+    
+    // Scenario 3: DCN 25048AA1002
+    if (dcn === "25048AA1002") {
+      return {
+        generalClaimData: {
+          serviceFromDate: "09/15/2023",
+          serviceToDate: "09/17/2023",
+          assignmentOfBenefits: "Y",
+          providerParticipation: "PAR",
+          providerContract: "EMRG001",
+          treatmentAuth: "EMRG789123",
+          patientAccount: "TX345.67890",
+          emergency: "Yes",
+          employment: "No",
+          coveredZipRadius: "25",
+          frequency: "2",
+          bbiIndicator: "N",
+          pciIndicator: "Y",
+          fsbInd: "Full",
+          fsbExclusion: "Y"
+        },
+        benefitIndicators: {
+          cob: "No",
+          cobRule: "-",
+          medInd: "No",
+          medicareAdvantage: "No",
+          cdhp: "N",
+          planPayer: "N",
+          cobPercentage: "0"
+        },
+        diagnosisCodes: {
+          dx1: "S72.001A",
+          dx2: "V87.0XXA",
+          dx3: "Z87.891",
+          medRule: "TRAUMA"
+        }
+      };
+    }
+    
+    // Default scenario 1 data
     return {
       generalClaimData: {
         serviceFromDate: "08/03/2023",
@@ -521,20 +887,97 @@ export class ClaimsService {
     };
   }
 
-  static getMockClaimData(): ClaimData {
+  static getMockClaimData(dcn?: string): ClaimData {
+    // Scenario 1: DCN 25048AA1000
+    if (dcn === "25048AA1000") {
+      return {
+        originalClaim: {
+          lineNo: 1,
+          from: "8/3/2023",
+          procedure: "84284",
+          modifiers: "",
+          units: 1,
+          billed: 300
+        },
+        claimsXten: {
+          billed: 300,
+          procedure: "84284",
+          modifiers: "",
+          units: 1
+        },
+        overrides: {},
+        adjustments: {}
+      };
+    }
+    
+    // Scenario 2: DCN 25048AA1001
+    if (dcn === "25048AA1001") {
+      return {
+        originalClaim: {
+          lineNo: 1,
+          from: "8/4/2023",
+          procedure: "99213",
+          modifiers: "25",
+          units: 1,
+          billed: 200
+        },
+        claimsXten: {
+          billed: 200,
+          procedure: "99213",
+          modifiers: "25",
+          units: 1
+        },
+        overrides: {
+          procedureCode: "99213",
+          contractGroup: "200000M001"
+        },
+        adjustments: {
+          reason: "Contract group updated to active contract"
+        }
+      };
+    }
+    
+    // Scenario 3: DCN 25048AA1002
+    if (dcn === "25048AA1002") {
+      return {
+        originalClaim: {
+          lineNo: 1,
+          from: "9/15/2023",
+          procedure: "99285",
+          modifiers: "ER,25",
+          units: 1,
+          billed: 2500
+        },
+        claimsXten: {
+          billed: 2500,
+          procedure: "99285",
+          modifiers: "ER,25",
+          units: 1
+        },
+        overrides: {
+          emergencyInd: "Y",
+          authRequired: "N"
+        },
+        adjustments: {
+          reason: "Emergency service authorization override"
+        }
+      };
+    }
+    
+    // Default scenario 1 data
     return {
       originalClaim: {
         lineNo: 1,
-        from: "8/4/2023",
-        procedure: "E9973",
-        modifiers: "NU,EU, KX",
+        from: "8/3/2023",
+        procedure: "84284",
+        modifiers: "",
         units: 1,
         billed: 300
       },
       claimsXten: {
         billed: 300,
-        procedure: "E9973",
-        modifiers: "NU,EU, KX",
+        procedure: "84284",
+        modifiers: "",
         units: 1
       },
       overrides: {},
@@ -572,14 +1015,34 @@ export class ClaimsService {
         dob: "1982-08-18", // Same as scenario 1
         zip: "41701", // Same as scenario 1
         serviceDates: { from: "2023-08-04", to: "2023-08-04" }, // Updated service dates
-        claimLineCodeSystem: "84284", // Same as scenario 1
-        claimLineCodeImage: "E9973", // Same as scenario 1
+        claimLineCodeSystem: "99213", // Updated to match scenario 2
+        claimLineCodeImage: "99213", // Updated to match scenario 2
         eligibilityValidation: [
           "Confirm contract group",
           "Verify eligibility dates", 
           "Check contract validation",
           "Update contract if expired",
           "Apply correct contract group"
+        ]
+      };
+    }
+    
+    // Scenario 3: DCN 25048AA1002 - Emergency services
+    if (dcn === "25048AA1002") {
+      return {
+        dcn: "25048AA1002",
+        patientName: "Sarah Johnson",
+        dob: "1990-03-22",
+        zip: "75201",
+        serviceDates: { from: "2023-09-15", to: "2023-09-17" },
+        claimLineCodeSystem: "99285",
+        claimLineCodeImage: "99285",
+        eligibilityValidation: [
+          "Confirm emergency authorization",
+          "Verify emergency facility status",
+          "Check emergency service coverage",
+          "Validate emergency diagnosis codes",
+          "Apply emergency service rules"
         ]
       };
     }
@@ -598,6 +1061,24 @@ export class ClaimsService {
   }
 
   static getMockClaimLines(dcn?: string): ClaimLine[] {
+    // Scenario 1: DCN 25048AA1000
+    if (dcn === "25048AA1000") {
+      return [
+        {
+          lineNo: 1,
+          serviceFromDate: "08/03/2023",
+          serviceToDate: "08/03/2023",
+          pos: "11",
+          service: "Lab Test", 
+          procedureCode: "84284",
+          modifiers: [],
+          units: 1,
+          diagnosis: "G800",
+          billed: 300
+        }
+      ];
+    }
+    
     // Scenario 2: DCN 25048AA1001 - Service dates that require active group
     if (dcn === "25048AA1001") {
       return [
@@ -608,7 +1089,7 @@ export class ClaimsService {
           pos: "11", 
           service: "Office Visit",
           procedureCode: "99213",
-          modifiers: [],
+          modifiers: ["25"],
           units: 1,
           diagnosis: "Z00.00",
           billed: 200
@@ -616,18 +1097,48 @@ export class ClaimsService {
       ];
     }
     
-    // Default claim lines (Scenario 1 and others)
+    // Scenario 3: DCN 25048AA1002 - Emergency services
+    if (dcn === "25048AA1002") {
+      return [
+        {
+          lineNo: 1,
+          serviceFromDate: "09/15/2023",
+          serviceToDate: "09/15/2023",
+          pos: "23",
+          service: "Emergency Department Visit",
+          procedureCode: "99285",
+          modifiers: ["ER", "25"],
+          units: 1,
+          diagnosis: "S72.001A",
+          billed: 2500
+        },
+        {
+          lineNo: 2,
+          serviceFromDate: "09/16/2023",
+          serviceToDate: "09/17/2023",
+          pos: "21",
+          service: "Inpatient Hospital Visit",
+          procedureCode: "99223",
+          modifiers: [],
+          units: 2,
+          diagnosis: "S72.001A",
+          billed: 800
+        }
+      ];
+    }
+    
+    // Default scenario 1 data
     return [
       {
         lineNo: 1,
         serviceFromDate: "08/03/2023",
         serviceToDate: "08/03/2023",
         pos: "11",
-        service: "Office Visit", 
+        service: "Lab Test", 
         procedureCode: "84284",
         modifiers: [],
         units: 1,
-        diagnosis: "Z00.00",
+        diagnosis: "G800",
         billed: 300
       }
     ];
@@ -663,7 +1174,13 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
         product: "Premium Health",
         groupId: "GID456",
         networkName: "HealthNet Plus",
-        networkId: "NET789"
+        networkId: "NET789",
+        address: "456 Wrong St",
+        city: "Wrong City",
+        state: "CA",
+        zipCode: "90210",
+        effectiveDate: "01/01/2020",
+        endDate: "12/31/2024"
       };
     }
     
@@ -701,6 +1218,42 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
         zipCode: "41701", // ✅ CORRECT - Matches claim form
         effectiveDate: "04/28/2020", // ❌ WRONG - Expired effective date (MM/DD/YYYY format)
         endDate: "06/07/2022" // ❌ WRONG - Expired end date (MM/DD/YYYY format)
+      };
+    }
+    
+    // SCENARIO 3 (DCN: 25048AA1002) - EMERGENCY SERVICES
+    if (dcn === "25048AA1002") {
+      return {
+        prefix: "Ms",
+        firstName: "Sarah",
+        middleName: "Elizabeth",
+        lastName: "Johnson",
+        dob: "1990-03-22",
+        sex: "F",
+        hcid: "H987654321",
+        memberPrefix: "02",
+        programCode: "PPO",
+        relationship: "Self",
+        memberCode: "002",
+        contractType: "Family",
+        erisa: "N",
+        pcp: "Dr. Michael Brown",
+        pcpState: "TX",
+        pcpRelationship: "Primary",
+        subscriberId: "987654321",
+        groupName: "Tech Innovations Corp",
+        groupContract: "GRP999",
+        detailContractCode: "DCC999",
+        product: "PPO Gold",
+        groupId: "GID999",
+        networkName: "Nationwide Health",
+        networkId: "NET999",
+        address: "789 Tech Blvd",
+        city: "Dallas",
+        state: "TX",
+        zipCode: "75201",
+        effectiveDate: "01/01/2023",
+        endDate: "12/31/2024"
       };
     }
 
