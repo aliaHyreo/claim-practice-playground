@@ -169,9 +169,17 @@ const ClaimDetails = () => {
         // Service dates from claim lines - should be "2023-08-04"
         const claimServiceDate = claim?.claimLines?.[0]?.serviceFromDate; // "2023-08-04"
         
-        // Contract dates from member info - initially wrong: "01/01/2020" to "12/31/2024"
-        const contractEffectiveDate = currentMemberData?.effectiveDate; // "01/01/2020" initially
-        const contractEndDate = currentMemberData?.endDate; // "12/31/2024" initially
+        // Contract dates from member info - check for group "200000M001" which should have valid dates
+        const contractEffectiveDate = currentMemberData?.effectiveDate;
+        const contractEndDate = currentMemberData?.endDate;
+        const appliedGroup = currentMemberData?.groupId;
+        
+        console.log("Scenario 509 validation:", {
+          claimServiceDate,
+          contractEffectiveDate,
+          contractEndDate,
+          appliedGroup
+        });
         
         // Parse dates for comparison
         const parseDate = (dateStr: string): Date => {
@@ -191,17 +199,26 @@ const ClaimDetails = () => {
         const effectiveDate = parseDate(contractEffectiveDate || '');
         const endDate = parseDate(contractEndDate || '');
         
-        // Check if service date falls within contract period
+        // Check if service date falls within contract period AND correct group is applied
         const isServiceDateValid = serviceDate >= effectiveDate && serviceDate <= endDate;
+        const isCorrectGroupApplied = appliedGroup === "200000M001";
         
-        if (isServiceDateValid) {
+        if (isServiceDateValid && isCorrectGroupApplied) {
           toast({
             title: "🎉 VALIDATION SUCCESS - SCENARIO 509 PASS",
-            description: `✅ Service date ${claimServiceDate} falls within contract period (${contractEffectiveDate} to ${contractEndDate}). Payment can be processed!`,
+            description: `✅ Service date ${claimServiceDate} falls within contract period (${contractEffectiveDate} to ${contractEndDate}) for group ${appliedGroup}. Payment can be processed!`,
             duration: 8000,
             className: "border-2 border-green-500 bg-green-50 text-green-900"
           });
           setTimeout(() => navigate("/search"), 1500);
+        } else if (!isCorrectGroupApplied) {
+          toast({
+            title: "❌ INCORRECT GROUP APPLIED - SCENARIO 509",
+            description: `Please apply group "200000M001" from the Member tab. Current applied group: "${appliedGroup || 'None'}"`,
+            variant: "destructive",
+            duration: 12000,
+            className: "border-2 border-red-500 bg-red-50 text-red-900"
+          });
         } else {
           toast({
             title: "❌ CONTRACT DATE ERROR - SCENARIO 509",
@@ -213,7 +230,7 @@ const ClaimDetails = () => {
         }
       } else {
         toast({
-          title: "Action Submitted", 
+          title: "Action Submitted",
           description: `Action "${actionValue}" has been submitted successfully.`,
         });
       }
@@ -259,12 +276,16 @@ const ClaimDetails = () => {
     endDate: string;
   }) => {
     // Update the current member info with the new contract data
+    // For scenario 509, we need to preserve all existing member data and only update the group/contract fields
     const updatedMemberInfo = {
       ...currentMemberInfo,
       groupId: contractData.groupId,
       groupContract: contractData.groupContract,
       effectiveDate: contractData.effectiveDate,
-      endDate: contractData.endDate
+      endDate: contractData.endDate,
+      // Ensure we keep the groupName and detailContractCode aligned with the group
+      groupName: contractData.groupId === "200000M001" ? "Health Plan Group 2023" : currentMemberInfo?.groupName,
+      detailContractCode: contractData.groupId === "200000M001" ? "200000M001" : currentMemberInfo?.detailContractCode
     };
     
     setCurrentMemberInfo(updatedMemberInfo);
@@ -276,6 +297,8 @@ const ClaimDetails = () => {
         memberInfo: updatedMemberInfo 
       } : null);
     }
+    
+    console.log("Contract applied - Updated member info:", updatedMemberInfo);
   };
 
   const handleMemberUpdate = (updatedMember: MemberInfo) => {
