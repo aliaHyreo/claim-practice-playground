@@ -1097,7 +1097,23 @@ export class ClaimsService {
       ];
     }
     
-    // Scenario 3: DCN 25048AA1002 - Emergency services
+    // Scenario 3: DCN 25048AA1002 - 597 SOFT EDIT (Service date outside contract period)
+    if (dcn === "25048AA1002") {
+      return [
+        {
+          lineNo: 1,
+          serviceFromDate: "2024-04-04", // Service date OUTSIDE contract period (01/01/2023 - 01/01/2024)
+          serviceToDate: "2024-04-04", // Service date OUTSIDE contract period
+          pos: "23",
+          service: "Emergency Visit",
+          procedureCode: "99285",
+          modifiers: ["ER", "25"],
+          units: 1,
+          diagnosis: "S72.001A",
+          billed: 2500
+        }
+      ];
+    }
     if (dcn === "25048AA1002") {
       return [
         {
@@ -1221,7 +1237,7 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
       };
     }
     
-    // SCENARIO 3 (DCN: 25048AA1002) - EMERGENCY SERVICES
+    // SCENARIO 3 (DCN: 25048AA1002) - 597 SOFT EDIT (SERVICE DATE OUTSIDE CONTRACT)
     if (dcn === "25048AA1002") {
       return {
         prefix: "Ms",
@@ -1230,7 +1246,7 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
         lastName: "Johnson",
         dob: "1990-03-22",
         sex: "F",
-        hcid: "H987654321",
+        hcid: "H123456789597", // Unique HCID for scenario 3
         memberPrefix: "02",
         programCode: "PPO",
         relationship: "Self",
@@ -1242,18 +1258,18 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
         pcpRelationship: "Primary",
         subscriberId: "987654321",
         groupName: "Tech Innovations Corp",
-        groupContract: "GRP999",
-        detailContractCode: "DCC999",
+        groupContract: "500L", // Contract matches claim
+        detailContractCode: "500L",
         product: "PPO Gold",
-        groupId: "GID999",
+        groupId: "300000C001", // Group matches claim
         networkName: "Nationwide Health",
         networkId: "NET999",
         address: "789 Tech Blvd",
         city: "Dallas",
         state: "TX",
         zipCode: "75201",
-        effectiveDate: "01/01/2023",
-        endDate: "12/31/2024"
+        effectiveDate: "01/01/2023", // MM/DD/YYYY format
+        endDate: "01/01/2024" // MM/DD/YYYY format - expired before service date
       };
     }
 
@@ -1377,6 +1393,18 @@ export const searchContractsByHCID = async (hcid: string): Promise<ContractInfo[
           groupNumber: "200000M001", // New/valid contract that covers service dates
           effectiveDate: "01/01/2023", // MM/DD/YYYY format
           endDate: "01/01/2024"
+        }
+      ];
+    }
+    
+    // Mock contract data for scenario 3 testing (597 - Service date outside contract)
+    if (hcid === "H123456789597") {
+      return [
+        {
+          contractId: "500L",
+          groupNumber: "300000C001", // Contract matches but is expired relative to service date
+          effectiveDate: "01/01/2023", // MM/DD/YYYY format
+          endDate: "01/01/2024" // MM/DD/YYYY format - expired before service date 2024-04-04
         }
       ];
     }

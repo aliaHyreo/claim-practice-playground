@@ -262,6 +262,47 @@ const ClaimDetails = () => {
         return;
       }
 
+      // For scenario 3 (DCN 25048AA1002), 597 SOFT EDIT - Service date outside contract period
+      if (dcn === "25048AA1002") {
+        // Validate service dates fall within contract period
+        const serviceDate = new Date(serviceDateFrom);
+        const contractStart = parseContractDate(effectiveDate);
+        const contractEnd = parseContractDate(endDate);
+
+        const isServiceDateValid = serviceDate >= contractStart && serviceDate <= contractEnd;
+        
+        if (selectedAction === "deny" as string) {
+          if (!isServiceDateValid) {
+            toast({
+              title: "🎉 VALIDATION SUCCESS - SCENARIO 3 PASS (597 SOFT EDIT)",
+              description: `✅ Claim correctly denied due to service date outside contract period!\n• Service Date: ${formatDateForValidationDisplay(serviceDateFrom)}\n• Contract Period: ${formatDateForValidationDisplay(effectiveDate)} to ${formatDateForValidationDisplay(endDate)}\n• Action: DENY (Correct for 597 scenario)`,
+              duration: 8000,
+              className: "border-2 border-green-500 bg-green-50 text-green-900"
+            });
+            setTimeout(() => navigate("/search"), 1500);
+          } else {
+            toast({
+              title: "❌ SCENARIO 3 VALIDATION ERROR",
+              description: `Service date is within contract period but deny action was selected. Expected: Service date outside contract period for 597 scenario.`,
+              variant: "destructive",
+              duration: 10000,
+              className: "border-2 border-red-500 bg-red-50 text-red-900"
+            });
+          }
+        } else {
+          // Any action other than deny should fail
+          toast({
+            title: "❌ SCENARIO 3 VALIDATION ERROR (597 SOFT EDIT)",
+            description: `Service date ${formatDateForValidationDisplay(serviceDateFrom)} falls outside contract period (${formatDateForValidationDisplay(effectiveDate)} to ${formatDateForValidationDisplay(endDate)}). No active eligibility for service dates. Action "${selectedAction.toUpperCase()}" should be DENY for this scenario.`,
+            variant: "destructive",
+            duration: 12000,
+            className: "border-2 border-red-500 bg-red-50 text-red-900"
+          });
+        }
+        setSelectedAction("");
+        return;
+      }
+
       // For other scenarios, check if current contract is expired
       const currentDate = new Date();
       const contractEndDate = parseContractDate(endDate);
