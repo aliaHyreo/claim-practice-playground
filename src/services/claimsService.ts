@@ -1016,7 +1016,7 @@ export class ClaimsService {
     if (dcn === "25048AA1000") {
       return {
         dcn: "25048AA1000",
-        patientName: "John Wick S", // This is the CORRECT name from claim image
+        patientName: "John Wick", // This is the CORRECT name from claim image
         dob: "1982-08-18",
         zip: "41701",
         serviceDates: { from: "2023-08-03", to: "2023-08-03" },
