@@ -12,14 +12,14 @@ const EventResolution = ({ edits }: EventResolutionProps) => {
   return (
     <div className="space-y-4">
       {/* Info section */}
-      <Card className="bg-muted/30">
+      {/* <Card className="bg-muted/30">
         <CardContent className="p-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
             This is the claim number. These are the edits triggering on this case. Blue edits are soft edits (auto-resolved). 
             The highlighted one (507) requires manual resolution. This tab is read-only and shows event resolution details.
           </p>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Edits list */}
       <div className="space-y-3">

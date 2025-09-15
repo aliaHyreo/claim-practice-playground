@@ -400,23 +400,23 @@ export class ClaimsService {
         case "507":
           return {
             code: edit,
-            description: "Patient information mismatch - verify member demographics",
+            description: "Eligibility found is partial",
             type: 'error',
-            status: 'active'
+            status: 'critical'
           };
         case "509":
           return {
             code: edit,
-            description: "Contract group validation required - verify active eligibility",
-            type: 'warning',
-            status: 'active'
+            description: "Contract not in effect for group/member",
+            type: 'error',
+            status: 'critical'
           };
         case "597":
           return {
             code: edit,
-            description: "No active eligibility for service dates - service date outside contract period",
+            description: "No active eligibility for service dates",
             type: 'error',
-            status: 'active'
+            status: 'critical'
           };
         default:
           return {

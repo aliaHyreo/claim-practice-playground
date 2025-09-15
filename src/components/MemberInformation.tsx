@@ -252,9 +252,9 @@ const MemberInformation = ({ memberInfo, onMemberUpdate }: MemberInformationProp
                         <div className="text-sm text-muted-foreground">
                           DOB: {formatDateToDisplay(member.dob)} | Subscriber ID: {member.subscriberId}
                         </div>
-                        <div className="text-sm text-muted-foreground">
+                        {/* <div className="text-sm text-muted-foreground">
                           {member.address}, {member.city}, {member.state} {member.zipCode}
-                        </div>
+                        </div> */}
                       </div>
                       <Button variant="outline" size="sm">
                         <Check className="h-4 w-4 mr-2" />

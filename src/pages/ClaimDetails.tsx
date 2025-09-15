@@ -69,7 +69,7 @@ const ClaimDetails = () => {
       case "507":
         return "destructive"; // Red for critical member info mismatch
       case "509": 
-        return "outline"; // Orange/warning for contract validation
+        return "destructive"; // Orange/warning for contract validation
       case "597":
         return "destructive"; // Red for no active eligibility
       default:
@@ -425,7 +425,7 @@ const ClaimDetails = () => {
                          edit === "507" 
                            ? "bg-red-100 text-red-800 border-red-200" 
                            : edit === "509"
-                           ? "bg-orange-100 text-orange-800 border-orange-200"
+                           ? "bg-red-100 text-red-800 border-red-200"
                            : edit === "597"
                            ? "bg-red-100 text-red-800 border-red-200"
                            : "bg-blue-100 text-blue-800 border-blue-200"
