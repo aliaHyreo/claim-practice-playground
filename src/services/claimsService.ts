@@ -408,8 +408,8 @@ export class ClaimsService {
           return {
             code: edit,
             description: "Contract group validation required - verify active eligibility",
-            type: 'warning',
-            status: 'active'
+            type: 'error',
+            status: 'critical'
           };
         case "597":
           return {
