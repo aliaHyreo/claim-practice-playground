@@ -4,14 +4,32 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, ArrowLeft } from "lucide-react";
+import { Search, ArrowLeft, Copy } from "lucide-react";
 import { ClaimsService, type Claim } from "@/services/claimsService";
+import { useToast } from "@/hooks/use-toast";
 
 const SearchClaims = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [claims, setClaims] = useState<Claim[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
+
+  const copyToClipboard = async (dcn: string) => {
+    try {
+      await navigator.clipboard.writeText(dcn);
+      toast({
+        title: "Copied!",
+        description: `DCN ${dcn} copied to clipboard`,
+      });
+    } catch (err) {
+      toast({
+        title: "Failed to copy",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleSearch = async () => {
     const results = await ClaimsService.searchClaims(searchTerm);
@@ -63,6 +81,53 @@ const SearchClaims = () => {
                 <Search className="w-4 h-4 mr-2" />
                 Search
               </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Test Scenarios */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="text-lg">Test Scenarios</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground">507 -</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => copyToClipboard("25048AA1000")}
+                  className="h-auto p-1 text-primary hover:text-primary/80 font-mono"
+                >
+                  25048AA1000
+                  <Copy className="w-3 h-3 ml-1" />
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground">509 -</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => copyToClipboard("25048AA1001")}
+                  className="h-auto p-1 text-primary hover:text-primary/80 font-mono"
+                >
+                  25048AA1001
+                  <Copy className="w-3 h-3 ml-1" />
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground">597 -</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => copyToClipboard("25048AA1002")}
+                  className="h-auto p-1 text-primary hover:text-primary/80 font-mono"
+                >
+                  25048AA1002
+                  <Copy className="w-3 h-3 ml-1" />
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
