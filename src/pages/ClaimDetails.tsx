@@ -509,13 +509,13 @@ const ClaimDetails = () => {
                   Event Resolution
                 </TabsTrigger>
                 <TabsTrigger value="member-info" className="text-xs md:text-sm">
-                  Member Information
+                  Member Info
                 </TabsTrigger>
                 <TabsTrigger value="provider-info" className="text-xs md:text-sm">
-                  Provider Information
+                  Provider Info
                 </TabsTrigger>
                 <TabsTrigger value="payment-info" className="text-xs md:text-sm">
-                  Payment Information
+                  Payment Info
                 </TabsTrigger>
                 <TabsTrigger value="claim-header" className="text-xs md:text-sm">
                   Claim Header
