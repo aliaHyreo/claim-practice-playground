@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, ArrowLeft, Copy } from "lucide-react";
+import { Search, ArrowLeft, Copy, FileText } from "lucide-react";
 import { ClaimsService, type Claim } from "@/services/claimsService";
 import { useToast } from "@/hooks/use-toast";
 
@@ -128,6 +128,17 @@ const SearchClaims = () => {
                   <Copy className="w-3 h-3 ml-1" />
                 </Button>
               </div>
+            </div>
+            <div className="mt-4 pt-3 border-t border-border">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.open("/SOP_s_for_Professional_claims_Eligibilty_edits.pdf", "_blank")}
+                className="text-primary border-primary hover:bg-primary hover:text-primary-foreground"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                View SOP Guidelines
+              </Button>
             </div>
           </CardContent>
         </Card>
