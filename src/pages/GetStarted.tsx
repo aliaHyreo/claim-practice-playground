@@ -15,7 +15,7 @@ const GetStarted = () => {
           </div>
           <div className="space-y-2">
             <CardTitle className="text-3xl font-bold text-foreground">
-              Carelon ClearClaim
+              Carelon ClaimDesk
             </CardTitle>
             <CardDescription className="text-lg text-muted-foreground">
               Practice claim edits and resolutions in a safe simulator.
