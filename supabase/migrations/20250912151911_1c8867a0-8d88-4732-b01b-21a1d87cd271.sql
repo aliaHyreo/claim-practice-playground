@@ -1,4 +1,4 @@
--- Insert claim record for Scenario 2 (DCN 25048AA1001)
+-- Insert claim record for Scenario 2 (Claim Number 25048AA1001)
 INSERT INTO public.claims (
   dcn, 
   billed, 

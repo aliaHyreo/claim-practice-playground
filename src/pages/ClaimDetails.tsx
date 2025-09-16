@@ -29,13 +29,13 @@ const ClaimDetails = () => {
 
   useEffect(() => {
     if (dcn) {
-      ClaimsService.getClaimByDCN(dcn).then(foundClaim => {
+      ClaimsService.getClaimByClaimNumber(dcn).then(foundClaim => {
         setClaim(foundClaim);
         
         if (!foundClaim) {
           toast({
             title: "Claim not found",
-            description: `No claim found with DCN: ${dcn}`,
+            description: `No claim found with Claim Number: ${dcn}`,
             variant: "destructive",
           });
         }
@@ -80,7 +80,7 @@ const ClaimDetails = () => {
   const handleActionSubmit = () => {
     const actionValue = selectedAction as string;
     
-    // Handle different scenarios based on DCN
+    // Handle different scenarios based on Claim Number
     if (dcn === "25048AA1000") {
       // Scenario 1: Basic data validation
       if (actionValue === "pay") {
@@ -408,9 +408,9 @@ const ClaimDetails = () => {
           <CardContent className="p-6">
             {/* Main header row */}
             <div className="flex items-center gap-6">
-              {/* DCN Section */}
+              {/* Claim Number Section */}
               <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
-                <div className="text-xs text-blue-600 font-medium mb-1">DCN</div>
+                <div className="text-xs text-blue-600 font-medium mb-1">Claim Number</div>
                 <div className="font-bold text-sm text-blue-900">{claim.dcn}</div>
               </div>
               

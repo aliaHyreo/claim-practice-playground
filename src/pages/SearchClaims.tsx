@@ -20,7 +20,7 @@ const SearchClaims = () => {
       await navigator.clipboard.writeText(dcn);
       toast({
         title: "Copied!",
-        description: `DCN ${dcn} copied to clipboard`,
+        description: `Claim Number ${dcn} copied to clipboard`,
       });
     } catch (err) {
       toast({
@@ -63,12 +63,12 @@ const SearchClaims = () => {
         {/* Search Section */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="text-xl">DCN Search</CardTitle>
+            <CardTitle className="text-xl">Claim Number Search</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex gap-4 max-w-md">
               <Input
-                placeholder="Enter DCN number"
+                placeholder="Enter Claim Number number"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -156,7 +156,7 @@ const SearchClaims = () => {
                 <div className="text-center py-12">
                   <div className="text-muted-foreground text-lg">No claim found.</div>
                   <div className="text-muted-foreground text-sm mt-2">
-                    Try a different DCN number or check your search criteria.
+                    Try a different Claim Number number or check your search criteria.
                   </div>
                 </div>
               ) : (

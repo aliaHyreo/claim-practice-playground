@@ -8,7 +8,7 @@ This application simulates a healthcare claims processing system with three dist
 
 ## 🎯 Key Features
 
-- **Claims Search & Management**: Search claims by DCN (Document Control Number) and view comprehensive claim details
+- **Claims Search & Management**: Search claims by Claim Number (Document Control Number) and view comprehensive claim details
 - **Scenario-Based Processing**: Three distinct scenarios simulating real-world claims processing challenges
 - **Member Information Management**: Search and validate member demographics and contract information
 - **Provider Information Display**: Comprehensive provider details and network participation
@@ -19,21 +19,21 @@ This application simulates a healthcare claims processing system with three dist
 
 ## 📋 The Three Scenarios
 
-### Scenario 507 - Patient Information Mismatch (DCN: 25048AA1000)
+### Scenario 507 - Patient Information Mismatch (Claim Number: 25048AA1000)
 **Challenge**: Member demographics in the system don't match the claim form data
 - **Edit Code**: 507 - "Patient information mismatch - verify member demographics"
 - **Validation**: System validates patient name, DOB, and subscriber ID against claim form
 - **Expected Action**: PAY (after correcting member information)
 - **Learning Objective**: Importance of accurate member data validation
 
-### Scenario 509 - Contract Group Validation (DCN: 25048AA1001)
+### Scenario 509 - Contract Group Validation (Claim Number: 25048AA1001)
 **Challenge**: Contract group validation required - verify active eligibility
 - **Edit Code**: 509 - "Contract group validation required - verify active eligibility"
 - **Validation**: Service date must fall within contract effective period for correct group
 - **Expected Action**: PAY (after applying correct group "200000M001")
 - **Learning Objective**: Understanding contract periods and group eligibility
 
-### Scenario 597 - Service Date Outside Contract Period (DCN: 25048AA1002)
+### Scenario 597 - Service Date Outside Contract Period (Claim Number: 25048AA1002)
 **Challenge**: No active eligibility for service dates
 - **Edit Code**: 597 - "No active eligibility for service dates - service date outside contract period"
 - **Validation**: Service date falls outside member's contract effective period
@@ -277,7 +277,7 @@ The application connects to Supabase using the following configuration:
 - Navigation to search functionality
 
 ### 2. Search Claims Page
-- Search interface for finding claims by DCN
+- Search interface for finding claims by Claim Number
 - Results table showing claim summary information
 - Direct navigation to claim details
 

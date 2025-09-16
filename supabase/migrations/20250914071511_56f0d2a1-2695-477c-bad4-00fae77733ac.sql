@@ -1,4 +1,4 @@
--- Add missing data for DCN 25048AA1001 (scenario 509)
+-- Add missing data for Claim Number 25048AA1001 (scenario 509)
 UPDATE claims 
 SET 
   title = 'Mr.',

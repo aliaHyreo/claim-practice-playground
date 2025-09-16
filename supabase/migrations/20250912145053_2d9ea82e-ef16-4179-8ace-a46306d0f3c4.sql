@@ -1,4 +1,4 @@
--- Insert claim data for Scenario 2 (DCN: 25048AA1001)
+-- Insert claim data for Scenario 2 (Claim Number: 25048AA1001)
 INSERT INTO claims (dcn, billed, allowed, paid, edits, scenario_type, status) 
 VALUES ('25048AA1001', 300.00, 100.00, 0.00, ARRAY['507'], 'scenario_2', 'pending');
 

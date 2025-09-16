@@ -1,4 +1,4 @@
--- Insert scenario 3 (597) claim data for DCN 25048AA1002
+-- Insert scenario 3 (597) claim data for Claim Number 25048AA1002
 INSERT INTO claims (
   dcn, 
   title, 

@@ -249,7 +249,7 @@ export interface Claim {
 }
 
 export class ClaimsService {
-  static async getClaimByDCN(dcn: string): Promise<Claim | null> {
+  static async getClaimByClaimNumber(dcn: string): Promise<Claim | null> {
     try {
       const { data: claimData, error: claimError } = await supabase
         .from('claims')
@@ -261,7 +261,7 @@ export class ClaimsService {
       if (!claimData) return null;
 
       // Get member info separately
-      const memberInfo = await getMemberInfoByDCN(dcn);
+      const memberInfo = await getMemberInfoByClaimNumber(dcn);
 
       // Get claim lines
       const { data: linesData, error: linesError } = await supabase
@@ -312,7 +312,7 @@ export class ClaimsService {
         searchData: { claimImage: this.getMockClaimImageData(dcn) }
       };
     } catch (error) {
-      console.error('Error getting claim by DCN:', error);
+      console.error('Error getting claim by Claim Number:', error);
       return null;
     }
   }
@@ -320,7 +320,7 @@ export class ClaimsService {
   static async refreshClaimData(dcn: string): Promise<Claim | null> {
     // In a real application, this would refresh data from external systems
     // For now, just return the same data
-    return this.getClaimByDCN(dcn);
+    return this.getClaimByClaimNumber(dcn);
   }
 
   static async getAllClaims(): Promise<Claim[]> {
@@ -430,7 +430,7 @@ export class ClaimsService {
   }
 
   static getMockProviderInfo(dcn?: string): ProviderInfo {
-    // Scenario 1: DCN 25048AA1000
+    // Scenario 1: Claim Number 25048AA1000
     if (dcn === "25048AA1000") {
       return {
         billingName: "MEDICAL GROUP LLC",
@@ -470,7 +470,7 @@ export class ClaimsService {
       };
     }
     
-    // Scenario 2: DCN 25048AA1001
+    // Scenario 2: Claim Number 25048AA1001
     if (dcn === "25048AA1001") {
       return {
         billingName: "KENTUCKY HEALTH CLINIC",
@@ -510,7 +510,7 @@ export class ClaimsService {
       };
     }
     
-    // Scenario 3: DCN 25048AA1002
+    // Scenario 3: Claim Number 25048AA1002
     if (dcn === "25048AA1002") {
       return {
         billingName: "EMERGENCY MEDICAL CENTER",
@@ -590,7 +590,7 @@ export class ClaimsService {
   }
 
   static getMockPaymentInfo(dcn?: string): PaymentInfo {
-    // Scenario 1: DCN 25048AA1000
+    // Scenario 1: Claim Number 25048AA1000
     if (dcn === "25048AA1000") {
       return {
         claim: {
@@ -633,7 +633,7 @@ export class ClaimsService {
       };
     }
     
-    // Scenario 2: DCN 25048AA1001
+    // Scenario 2: Claim Number 25048AA1001
     if (dcn === "25048AA1001") {
       return {
         claim: {
@@ -676,7 +676,7 @@ export class ClaimsService {
       };
     }
     
-    // Scenario 3: DCN 25048AA1002
+    // Scenario 3: Claim Number 25048AA1002
     if (dcn === "25048AA1002") {
       return {
         claim: {
@@ -762,7 +762,7 @@ export class ClaimsService {
   }
 
   static getMockClaimHeaderInfo(dcn?: string): ClaimHeaderInfo {
-    // Scenario 1: DCN 25048AA1000
+    // Scenario 1: Claim Number 25048AA1000
     if (dcn === "25048AA1000") {
       return {
         generalClaimData: {
@@ -800,7 +800,7 @@ export class ClaimsService {
       };
     }
     
-    // Scenario 2: DCN 25048AA1001
+    // Scenario 2: Claim Number 25048AA1001
     if (dcn === "25048AA1001") {
       return {
         generalClaimData: {
@@ -838,7 +838,7 @@ export class ClaimsService {
       };
     }
     
-    // Scenario 3: DCN 25048AA1002
+    // Scenario 3: Claim Number 25048AA1002
     if (dcn === "25048AA1002") {
       return {
         generalClaimData: {
@@ -914,7 +914,7 @@ export class ClaimsService {
   }
 
   static getMockClaimData(dcn?: string): ClaimData {
-    // Scenario 1: DCN 25048AA1000
+    // Scenario 1: Claim Number 25048AA1000
     if (dcn === "25048AA1000") {
       return {
         originalClaim: {
@@ -936,7 +936,7 @@ export class ClaimsService {
       };
     }
     
-    // Scenario 2: DCN 25048AA1001
+    // Scenario 2: Claim Number 25048AA1001
     if (dcn === "25048AA1001") {
       return {
         originalClaim: {
@@ -963,7 +963,7 @@ export class ClaimsService {
       };
     }
     
-    // Scenario 3: DCN 25048AA1002
+    // Scenario 3: Claim Number 25048AA1002
     if (dcn === "25048AA1002") {
       return {
         originalClaim: {
@@ -1012,7 +1012,7 @@ export class ClaimsService {
   }
 
   static getMockClaimImageData(dcn: string): ClaimImageData {
-    // Scenario 1: DCN 25048AA1000 - Member name mismatch (John Wick S vs John Wick)
+    // Scenario 1: Claim Number 25048AA1000 - Member name mismatch (John Wick S vs John Wick)
     if (dcn === "25048AA1000") {
       return {
         dcn: "25048AA1000",
@@ -1033,7 +1033,7 @@ export class ClaimsService {
       };
     }
     
-    // Scenario 2: DCN 25048AA1001 - Contract group mismatch (509 edit)
+    // Scenario 2: Claim Number 25048AA1001 - Contract group mismatch (509 edit)
     if (dcn === "25048AA1001") {
       return {
         dcn: "25048AA1001",
@@ -1053,7 +1053,7 @@ export class ClaimsService {
       };
     }
     
-    // Scenario 3: DCN 25048AA1002 - 597 SOFT EDIT (Service date outside contract)
+    // Scenario 3: Claim Number 25048AA1002 - 597 SOFT EDIT (Service date outside contract)
     if (dcn === "25048AA1002") {
       return {
         dcn: "25048AA1002",
@@ -1087,7 +1087,7 @@ export class ClaimsService {
   }
 
   static getMockClaimLines(dcn?: string): ClaimLine[] {
-    // Scenario 1: DCN 25048AA1000
+    // Scenario 1: Claim Number 25048AA1000
     if (dcn === "25048AA1000") {
       return [
         {
@@ -1105,7 +1105,7 @@ export class ClaimsService {
       ];
     }
     
-    // Scenario 2: DCN 25048AA1001 - Service dates that require active group (509 edit)
+    // Scenario 2: Claim Number 25048AA1001 - Service dates that require active group (509 edit)
     if (dcn === "25048AA1001") {
       return [
         {
@@ -1123,7 +1123,7 @@ export class ClaimsService {
       ];
     }
     
-    // Scenario 3: DCN 25048AA1002 - 597 SOFT EDIT (Service date outside contract period)
+    // Scenario 3: Claim Number 25048AA1002 - 597 SOFT EDIT (Service date outside contract period)
     if (dcn === "25048AA1002") {
       return [
         {
@@ -1159,10 +1159,10 @@ export class ClaimsService {
   }
 }
 
-// Get member info by DCN - loads the first (expired) contract initially
-export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null> => {
+// Get member info by ClaimNumber - loads the first (expired) contract initially
+export const getMemberInfoByClaimNumber = async (dcn: string): Promise<MemberInfo | null> => {
   try {
-    // SCENARIO 1 (DCN: 25048AA1000) - PATIENT DATA IS WRONG
+    // SCENARIO 1 (Claim Number: 25048AA1000) - PATIENT DATA IS WRONG
     if (dcn === "25048AA1000") {
       return {
         prefix: "Mr",
@@ -1198,7 +1198,7 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
       };
     }
     
-    // SCENARIO 2 (DCN: 25048AA1001) - PATIENT DATA IS CORRECT, GROUP DATA IS WRONG (509 edit)
+    // SCENARIO 2 (Claim Number: 25048AA1001) - PATIENT DATA IS CORRECT, GROUP DATA IS WRONG (509 edit)
     if (dcn === "25048AA1001") {
       // Return all correct patient data but with expired group information
       return {
@@ -1235,7 +1235,7 @@ export const getMemberInfoByDCN = async (dcn: string): Promise<MemberInfo | null
       };
     }
     
-    // SCENARIO 3 (DCN: 25048AA1002) - 597 SOFT EDIT (SERVICE DATE OUTSIDE CONTRACT)
+    // SCENARIO 3 (Claim Number: 25048AA1002) - 597 SOFT EDIT (SERVICE DATE OUTSIDE CONTRACT)
     if (dcn === "25048AA1002") {
       return {
         prefix: "Ms",
