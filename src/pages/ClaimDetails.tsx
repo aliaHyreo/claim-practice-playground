@@ -26,6 +26,7 @@ const ClaimDetails = () => {
   const [selectedAction, setSelectedAction] = useState<string>("");
   const [currentMemberInfo, setCurrentMemberInfo] = useState<MemberInfo | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [actionCode, setActionCode] = useState<string>('');
 
   useEffect(() => {
     if (dcn) {
@@ -321,6 +322,17 @@ const ClaimDetails = () => {
     }
     setSelectedAction("");
   };
+  const handleActionCodeChange = (newActionCode: string) => {
+    setActionCode(newActionCode);
+    if (claim) {
+      setClaim({ ...claim, actionCode: newActionCode });
+    }
+    toast({
+      title: "Action Code Updated",
+      description: `Action code changed to: ${newActionCode === 'S' ? 'S - Pay' : 'X - Deny'}`,
+    });
+  };
+
   const handleContractApply = (contractData: {
     groupId: string;
     groupContract: string;
@@ -614,7 +626,11 @@ const ClaimDetails = () => {
               </TabsContent>
 
               <TabsContent value="claim-data">
-                <ClaimData key={`data-${refreshKey}`} claimData={claim.claimData} />
+                <ClaimData 
+                  key={`data-${refreshKey}`} 
+                  claimData={claim.claimData} 
+                  onActionCodeChange={handleActionCodeChange}
+                />
               </TabsContent>
 
               <TabsContent value="search">
