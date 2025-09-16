@@ -61,12 +61,12 @@ const SearchClaims = () => {
         </div>
 
         {/* Search Section */}
-        <Card className="mb-8">
-          <CardHeader>
+        <Card className="mb-6">
+          {/* <CardHeader>
             <CardTitle className="text-xl">Claim Number Search</CardTitle>
-          </CardHeader>
+          </CardHeader> */}
           <CardContent>
-            <div className="flex gap-4 max-w-md">
+            <div className="flex gap-4 max-w-md pt-6">
               <Input
                 placeholder="Enter Claim Number number"
                 value={searchTerm}
@@ -91,7 +91,7 @@ const SearchClaims = () => {
             <CardTitle className="text-lg">Scenarios</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3 text-sm grid grid-cols-4 gap-3">
+            <div className="mb-2 text-sm grid grid-cols-4 gap-3">
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground">507 -</span>
                 <Button
@@ -129,14 +129,14 @@ const SearchClaims = () => {
                 </Button>
               </div>
             </div>
-            <div className="mt-4 pt-3 border-t border-border">
+            <div className="mt-6 pt-3 border-t border-border">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => window.open("/SOP_s_for_Professional_claims_Eligibilty_edits.pdf", "_blank")}
-                className="text-primary border-primary hover:bg-primary hover:text-primary-foreground"
+                className="mt-1 text-primary border-primary hover:bg-primary hover:text-primary-foreground"
               >
-                <FileText className="w-4 h-4 mr-2" />
+                <FileText className="w-4 h-4 mr-2 " />
                 View SOP Guidelines
               </Button>
             </div>
@@ -148,7 +148,8 @@ const SearchClaims = () => {
           <Card>
             <CardHeader>
               <CardTitle className="text-xl">
-                Search Results {claims.length > 0 && `(${claims.length})`}
+                Search Results
+                {/* Search Results {claims.length > 0 && `(${claims.length})`} */}
               </CardTitle>
             </CardHeader>
             <CardContent>
