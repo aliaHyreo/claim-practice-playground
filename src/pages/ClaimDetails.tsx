@@ -376,6 +376,31 @@ const ClaimDetails = () => {
       } : null);
     }
     
+    // Check if this is scenario 509 and if the correct group is selected
+    if (dcn === "25048AA1001" && claim) {
+      const isCorrectGroup = contractData.groupId === "200000M001";
+      
+      if (isCorrectGroup) {
+        // Remove 509 edit from filteredEdits but keep all other edits
+        const newFilteredEdits = (claim.edits || []).filter(edit => edit !== "509");
+        setFilteredEdits(newFilteredEdits);
+        
+        console.log("509 scenario: Correct group selected, removing 509 edit", {
+          original: claim.edits,
+          filtered: newFilteredEdits,
+          selectedGroup: contractData.groupId
+        });
+      } else {
+        // Wrong group selected, keep all edits including 509
+        setFilteredEdits(claim.edits || []);
+        
+        console.log("509 scenario: Wrong group selected, keeping 509 edit", {
+          selectedGroup: contractData.groupId,
+          expectedGroup: "200000M001"
+        });
+      }
+    }
+    
     console.log("Contract applied - Preserved all fields, updated only group info:", {
       original: existingMemberInfo,
       updated: updatedMemberInfo
