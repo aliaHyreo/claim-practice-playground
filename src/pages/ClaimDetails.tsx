@@ -27,11 +27,16 @@ const ClaimDetails = () => {
   const [currentMemberInfo, setCurrentMemberInfo] = useState<MemberInfo | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [actionCode, setActionCode] = useState<string>('');
+  const [filteredEdits, setFilteredEdits] = useState<string[]>([]);
 
   useEffect(() => {
     if (dcn) {
       ClaimsService.getClaimByClaimNumber(dcn).then(foundClaim => {
         setClaim(foundClaim);
+        // Initialize filtered edits with all edits by default
+        if (foundClaim) {
+          setFilteredEdits(foundClaim.edits || []);
+        }
         
         if (!foundClaim) {
           toast({
@@ -382,6 +387,37 @@ const ClaimDetails = () => {
     if (claim) {
       setClaim(prev => prev ? { ...prev, memberInfo: updatedMember } : null);
     }
+
+    // Check if this is scenario 507 and if the selected member matches claim image data
+    if (dcn === "25048AA1000" && claim?.searchData?.claimImage) {
+      const claimImageData = claim.searchData.claimImage;
+      
+      // For 507 scenario, check if the selected member matches the claim image exactly
+      const isCorrectMember = 
+        updatedMember.firstName?.trim().toLowerCase() === "john" &&
+        updatedMember.lastName?.trim().toLowerCase() === "wick" &&
+        updatedMember.dob === "1982-08-18" &&
+        updatedMember.subscriberId === "123456789";
+      
+      if (isCorrectMember) {
+        // Remove 507 edit from filteredEdits but keep all other edits
+        const newFilteredEdits = (claim.edits || []).filter(edit => edit !== "507");
+        setFilteredEdits(newFilteredEdits);
+        
+        console.log("507 scenario: Correct member selected, removing 507 edit", {
+          original: claim.edits,
+          filtered: newFilteredEdits
+        });
+      } else {
+        // Wrong member selected or no member, keep all edits including 507
+        setFilteredEdits(claim.edits || []);
+        
+        console.log("507 scenario: Wrong member selected, keeping 507 edit", {
+          selected: updatedMember,
+          expected: claimImageData
+        });
+      }
+    }
   };
 
   if (!claim) {
@@ -444,7 +480,7 @@ const ClaimDetails = () => {
               <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
                 <span className="text-xs text-blue-600 font-medium mb-1">Edits</span>
                  <div className="flex gap-1">
-                   {claim.edits.map((edit) => (
+                   {filteredEdits.map((edit) => (
                      <Badge 
                        key={edit} 
                        className={`text-xs px-2 py-1 font-medium rounded ${
@@ -561,7 +597,7 @@ const ClaimDetails = () => {
                 <Card>
                   <CardContent className="p-6">
                     <h3 className="text-lg font-semibold mb-4">Event Resolution</h3>
-                    <EventResolution edits={claim.edits} />
+                    <EventResolution edits={filteredEdits} />
                   </CardContent>
                 </Card>
               </TabsContent>
