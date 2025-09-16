@@ -929,7 +929,8 @@ export class ClaimsService {
           billed: 300,
           procedure: "84284",
           modifiers: "",
-          units: 1
+          units: 1,
+          payPercent: 30
         },
         overrides: {},
         adjustments: {}
@@ -951,7 +952,8 @@ export class ClaimsService {
           billed: 200,
           procedure: "99213",
           modifiers: "25",
-          units: 1
+          units: 1,
+          payPercent: 100
         },
         overrides: {
           procedureCode: "99213",
@@ -978,7 +980,8 @@ export class ClaimsService {
           billed: 2500,
           procedure: "99285",
           modifiers: "ER,25",
-          units: 1
+          units: 1,
+          payPercent: 100
         },
         overrides: {
           emergencyInd: "Y",
@@ -1004,7 +1007,8 @@ export class ClaimsService {
         billed: 300,
         procedure: "84284",
         modifiers: "",
-        units: 1
+        units: 1,
+        payPercent: 100
       },
       overrides: {},
       adjustments: {}

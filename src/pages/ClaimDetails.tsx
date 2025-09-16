@@ -165,9 +165,16 @@ const ClaimDetails = () => {
           });
         }
       } else {
+        // toast({
+        //   title: "Action Submitted",
+        //   description: `Action "${actionValue}" has been submitted successfully.`,
+        // });
         toast({
-          title: "Action Submitted",
-          description: `Action "${actionValue}" has been submitted successfully.`,
+          title: "❌ ERROR - SCENARIO 1 FAIL",
+          description: `Member information does not match claim form data. Please correct the member information.`,
+          variant: "destructive",
+          duration: 10000,
+          className: "border-2 border-red-500 bg-red-50 text-red-900"
         });
       }
     } else if (dcn === "25048AA1001") {
@@ -238,9 +245,16 @@ const ClaimDetails = () => {
           });
         }
       } else {
+        // toast({
+        //   title: "Action Submitted",
+        //   description: `Action "${actionValue}" has been submitted successfully.`,
+        // });
         toast({
-          title: "Action Submitted",
-          description: `Action "${actionValue}" has been submitted successfully.`,
+          title: "❌ CONTRACT DATE ERROR - SCENARIO 509",
+          description: `Service date falls outside contract period. Please apply the correct group/contract from Member tab.`,
+          variant: "destructive",
+          duration: 10000,
+          className: "border-2 border-red-500 bg-red-50 text-red-900"
         });
       }
     } else if (dcn === "25048AA1002") {
@@ -409,7 +423,7 @@ const ClaimDetails = () => {
             {/* Main header row */}
             <div className="flex items-center gap-6">
               {/* Claim Number Section */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3">
                 <div className="text-xs text-blue-600 font-medium mb-1">Claim Number</div>
                 <div className="font-bold text-sm text-blue-900">{claim.dcn}</div>
               </div>
@@ -505,28 +519,28 @@ const ClaimDetails = () => {
           <CardContent className="p-6">
             <Tabs defaultValue="event-resolution" className="w-full">
               <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 mb-6">
-                <TabsTrigger value="event-resolution" className="text-xs md:text-sm">
+                <TabsTrigger value="event-resolution" className="text-xs md:text-sm data-[state=active]:bg-white">
                   Event Resolution
                 </TabsTrigger>
-                <TabsTrigger value="member-info" className="text-xs md:text-sm">
+                <TabsTrigger value="member-info" className="text-xs md:text-sm data-[state=active]:bg-white">
                   Member Info
                 </TabsTrigger>
-                <TabsTrigger value="provider-info" className="text-xs md:text-sm">
+                <TabsTrigger value="provider-info" className="text-xs md:text-sm data-[state=active]:bg-white">
                   Provider Info
                 </TabsTrigger>
-                <TabsTrigger value="payment-info" className="text-xs md:text-sm">
+                <TabsTrigger value="payment-info" className="text-xs md:text-sm data-[state=active]:bg-white">
                   Payment Info
                 </TabsTrigger>
-                <TabsTrigger value="claim-header" className="text-xs md:text-sm">
+                <TabsTrigger value="claim-header" className="text-xs md:text-sm data-[state=active]:bg-white">
                   Claim Header
                 </TabsTrigger>
-                <TabsTrigger value="claim-lines" className="text-xs md:text-sm">
+                <TabsTrigger value="claim-lines" className="text-xs md:text-sm data-[state=active]:bg-white">
                   Claim Lines
                 </TabsTrigger>
-                <TabsTrigger value="claim-data" className="text-xs md:text-sm">
+                <TabsTrigger value="claim-data" className="text-xs md:text-sm data-[state=active]:bg-white">
                   Claim Data
                 </TabsTrigger>
-                <TabsTrigger value="search" className="text-xs md:text-sm">
+                <TabsTrigger value="search" className="text-xs md:text-sm data-[state=active]:bg-white">
                   Search
                 </TabsTrigger>
               </TabsList>

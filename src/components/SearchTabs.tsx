@@ -31,13 +31,13 @@ const SearchTabs = ({ searchData, onContractApply }: SearchTabsProps) => {
       <CardContent className="p-6">
         <Tabs defaultValue="claim-image" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="claim-image" className="text-sm">
+            <TabsTrigger value="claim-image" className="text-sm data-[state=active]:bg-white">
               Claim Image
             </TabsTrigger>
-            <TabsTrigger value="member" className="text-sm">
+            <TabsTrigger value="member" className="text-sm data-[state=active]:bg-white">
               Member
             </TabsTrigger>
-            <TabsTrigger value="pricing" className="text-sm">
+            <TabsTrigger value="pricing" className="text-sm data-[state=active]:bg-white">
               Pricing
             </TabsTrigger>
           </TabsList>
