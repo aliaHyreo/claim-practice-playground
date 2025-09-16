@@ -30,10 +30,10 @@ const ClaimData: React.FC<ClaimDataProps> = ({ claimData, onActionCodeChange }) 
 
   return (
     <Card className="p-6">
-      <Tabs defaultValue="details" className="w-full">
+      <Tabs defaultValue="editing" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="editing">Editing</TabsTrigger>
+          <TabsTrigger value="editing" className='data-[state=active]:bg-white'>Editing</TabsTrigger>
+          <TabsTrigger value="details" className='data-[state=active]:bg-white'>Details</TabsTrigger>
         </TabsList>
 
         <TabsContent value="details" className="mt-6 space-y-6">
@@ -41,7 +41,7 @@ const ClaimData: React.FC<ClaimDataProps> = ({ claimData, onActionCodeChange }) 
           <div className="space-y-4">
             <div className="border-b pb-2">
               <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <span className="text-base">-</span>
+                {/* <span className="text-base">-</span> */}
                 Additional Claim Data
               </h3>
             </div>
@@ -53,7 +53,7 @@ const ClaimData: React.FC<ClaimDataProps> = ({ claimData, onActionCodeChange }) 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">Media type</Label>
-                    <div className="text-sm text-blue-600">PC</div>
+                    <div className="text-sm">PC</div>
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">Pricing source</Label>
@@ -61,11 +61,11 @@ const ClaimData: React.FC<ClaimDataProps> = ({ claimData, onActionCodeChange }) 
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">Pricing system</Label>
-                    <div className="text-sm text-blue-600">WP</div>
+                    <div className="text-sm">WP</div>
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">Mixer PAR</Label>
-                    <div className="text-sm text-blue-600">Y</div>
+                    <div className="text-sm">Y</div>
                   </div>
                 </div>
                 
@@ -95,7 +95,8 @@ const ClaimData: React.FC<ClaimDataProps> = ({ claimData, onActionCodeChange }) 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">EPSDT</Label>
-                    <div className="text-sm text-blue-600">No</div>
+                    <div className="text-sm">No</div>
+                    {/* <div className="text-sm text-blue-600">No</div> */}
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">Family planning</Label>
@@ -118,7 +119,7 @@ const ClaimData: React.FC<ClaimDataProps> = ({ claimData, onActionCodeChange }) 
           <div className="space-y-4">
             <div className="border-b pb-2">
               <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <span className="text-red-500">+</span>
+                {/* <span className="text-red-500">+</span> */}
                 Additional Rule Data
               </h3>
             </div>
@@ -126,7 +127,7 @@ const ClaimData: React.FC<ClaimDataProps> = ({ claimData, onActionCodeChange }) 
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="action-code" className="text-sm font-medium">
-                  Action Code/Adjustment Reason
+                  Adjustment Reason
                 </Label>
                 <Select value={selectedActionCode} onValueChange={handleActionCodeChange}>
                   <SelectTrigger className="w-full max-w-xs">
@@ -149,9 +150,9 @@ const ClaimData: React.FC<ClaimDataProps> = ({ claimData, onActionCodeChange }) 
 
         <TabsContent value="editing" className="mt-6 space-y-4">
           {/* Editing Badge */}
-          <Badge className="bg-muted text-foreground px-4 py-2 rounded-full">
+          {/* <Badge className="bg-muted text-foreground px-4 py-2 rounded-full">
             Editing
-          </Badge>
+          </Badge> */}
 
           {/* Claims Xten Editing Title */}
           <h2 className="text-xl font-semibold text-foreground border-b pb-2">
@@ -162,7 +163,7 @@ const ClaimData: React.FC<ClaimDataProps> = ({ claimData, onActionCodeChange }) 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Original Claim Table */}
             <div>
-              <h3 className="text-lg font-medium text-foreground mb-3 underline">
+              <h3 className="text-lg font-semibold text-foreground mb-3">
                 Original Claim
               </h3>
               <div className="bg-background rounded-lg shadow overflow-hidden border">
@@ -208,7 +209,7 @@ const ClaimData: React.FC<ClaimDataProps> = ({ claimData, onActionCodeChange }) 
 
             {/* Claims Xten Table */}
             <div>
-              <h3 className="text-lg font-medium text-foreground mb-3 underline">
+              <h3 className="text-lg font-semibold text-foreground mb-3">
                 Claims Xten
               </h3>
               <div className="bg-background rounded-lg shadow overflow-hidden border">
