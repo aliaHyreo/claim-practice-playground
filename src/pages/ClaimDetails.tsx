@@ -486,7 +486,7 @@ const ClaimDetails = () => {
                 </div>
 
                 {/* Refresh Button */}
-                <Button
+                {/* <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleRefresh}
@@ -494,7 +494,7 @@ const ClaimDetails = () => {
                   className="p-2"
                 >
                   <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                </Button>
+                </Button> */}
               </div>
             </div>
           </CardContent>

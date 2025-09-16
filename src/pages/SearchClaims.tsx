@@ -88,10 +88,10 @@ const SearchClaims = () => {
         {/* Test Scenarios */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle className="text-lg">Test Scenarios</CardTitle>
+            <CardTitle className="text-lg">Scenarios</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3 text-sm">
+            <div className="space-y-3 text-sm grid grid-cols-4 gap-3">
               <div className="flex items-center gap-2">
                 <span className="text-muted-foreground">507 -</span>
                 <Button
@@ -198,7 +198,7 @@ const SearchClaims = () => {
                               onClick={() => navigate(`/claim/${claim.dcn}`)}
                               className="text-primary border-primary hover:bg-primary hover:text-primary-foreground rounded-lg"
                             >
-                              Open Claim Detail
+                              Open
                             </Button>
                           </TableCell>
                         </TableRow>

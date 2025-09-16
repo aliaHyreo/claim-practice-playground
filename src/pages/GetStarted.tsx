@@ -11,15 +11,15 @@ const GetStarted = () => {
       <Card className="w-full max-w-lg shadow-lg border-0 bg-card/95 backdrop-blur-sm">
         <CardHeader className="text-center space-y-4 pb-8">
           <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-            {/* <img src="../../public/logo.png" className="w-8 h-8 text-primary" /> */}
-            <Stethoscope className="w-8 h-8 text-primary" />
+            <img src="/logo.png" className="w-8 h-8 text-primary" />
+            {/* <Stethoscope className="w-8 h-8 text-primary" /> */}
           </div>
           <div className="space-y-2">
             <CardTitle className="text-3xl font-bold text-foreground">
-              Carelon ClaimDesk
+              Praxis
             </CardTitle>
             <CardDescription className="text-lg text-muted-foreground">
-              Practice claim edits and resolutions in a safe simulator.
+              The hands-on practice hub.
             </CardDescription>
           </div>
         </CardHeader>
@@ -29,7 +29,7 @@ const GetStarted = () => {
             size="lg"
             className="w-full bg-primary hover:bg-healthcare-blue-dark text-primary-foreground font-semibold py-6 text-lg rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
           >
-            Start Simulator
+            Start
           </Button>
         </CardContent>
       </Card>
