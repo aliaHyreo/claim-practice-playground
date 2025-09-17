@@ -29,7 +29,7 @@ const GetStarted = () => {
             size="lg"
             className="w-full bg-primary hover:bg-healthcare-blue-dark text-primary-foreground font-semibold py-6 text-lg rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
           >
-            Start Simulator
+            Start
           </Button>
         </CardContent>
       </Card>

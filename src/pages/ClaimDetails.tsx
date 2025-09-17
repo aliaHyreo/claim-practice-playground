@@ -177,7 +177,7 @@ const ClaimDetails = () => {
         // });
         toast({
           title: "❌ ERROR - SCENARIO 1 FAIL",
-          description: `Member information does not match claim form data. Please correct the member information.`,
+          description: `507 Scenario Failed`,
           variant: "destructive",
           duration: 10000,
           className: "border-2 border-red-500 bg-red-50 text-red-900"
@@ -257,7 +257,7 @@ const ClaimDetails = () => {
         // });
         toast({
           title: "❌ CONTRACT DATE ERROR - SCENARIO 509",
-          description: `Service date falls outside contract period. Please apply the correct group/contract from Member tab.`,
+          description: `509 Scenario Failed`,
           variant: "destructive",
           duration: 10000,
           className: "border-2 border-red-500 bg-red-50 text-red-900"

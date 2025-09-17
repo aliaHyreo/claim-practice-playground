@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Search, ArrowLeft, Copy, FileText } from "lucide-react";
 import { ClaimsService, type Claim } from "@/services/claimsService";
 import { useToast } from "@/hooks/use-toast";
+import {Tooltip,TooltipContent,TooltipProvider,TooltipTrigger,} from "@/components/ui/tooltip"
 
 const SearchClaims = () => {
   const navigate = useNavigate();
@@ -68,7 +69,7 @@ const SearchClaims = () => {
           <CardContent>
             <div className="flex gap-4 max-w-md pt-6">
               <Input
-                placeholder="Enter Claim Number number"
+                placeholder="Enter Claim Number"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -92,42 +93,69 @@ const SearchClaims = () => {
           </CardHeader>
           <CardContent>
             <div className="mb-2 text-sm grid grid-cols-4 gap-3">
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground">507 -</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => copyToClipboard("25048AA1000")}
-                  className="h-auto p-1 text-primary hover:text-primary/80 font-mono"
-                >
-                  25048AA1000
-                  <Copy className="w-3 h-3 ml-1" />
-                </Button>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground">509 -</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => copyToClipboard("25048AA1001")}
-                  className="h-auto p-1 text-primary hover:text-primary/80 font-mono"
-                >
-                  25048AA1001
-                  <Copy className="w-3 h-3 ml-1" />
-                </Button>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-muted-foreground">597 -</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => copyToClipboard("25048AA1002")}
-                  className="h-auto p-1 text-primary hover:text-primary/80 font-mono"
-                >
-                  25048AA1002
-                  <Copy className="w-3 h-3 ml-1" />
-                </Button>
-              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">507 -</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyToClipboard("25048AA1000")}
+                        className="h-auto p-1 text-primary hover:text-primary/80 font-mono"
+                      >
+                        25048AA1000
+                        <Copy className="w-3 h-3 ml-1" />
+                      </Button>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-black text-white border border-neutral-700">
+                    <p>Eligibility found is partial</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">509 -</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyToClipboard("25048AA1001")}
+                      className="h-auto p-1 text-primary hover:text-primary/80 font-mono"
+                    >
+                      25048AA1001
+                      <Copy className="w-3 h-3 ml-1" />
+                    </Button>
+                  </div>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-black text-white border border-neutral-700">
+                    <p>Contract not in effect for group/member</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">597 -</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyToClipboard("25048AA1002")}
+                      className="h-auto p-1 text-primary hover:text-primary/80 font-mono"
+                    >
+                      25048AA1002
+                      <Copy className="w-3 h-3 ml-1" />
+                    </Button>
+                  </div>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-black text-white border border-neutral-700">
+                    <p>No active eligibility for service dates</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             <div className="mt-6 pt-3 border-t border-border">
               <Button
@@ -157,7 +185,7 @@ const SearchClaims = () => {
                 <div className="text-center py-12">
                   <div className="text-muted-foreground text-lg">No claim found.</div>
                   <div className="text-muted-foreground text-sm mt-2">
-                    Try a different Claim Number number or check your search criteria.
+                    Try a different Claim Number or check your search criteria.
                   </div>
                 </div>
               ) : (
