@@ -504,7 +504,7 @@ const ClaimDetails = () => {
               {/* Edits Section */}
               <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
                 <span className="text-xs text-blue-600 font-medium mb-1">Edits</span>
-                 <div className="flex gap-1">
+                 <div className="flex gap-1"> 
                    {filteredEdits.map((edit) => (
                      <Badge 
                        key={edit} 
