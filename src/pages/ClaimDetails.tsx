@@ -385,7 +385,7 @@ const ClaimDetails = () => {
         const newFilteredEdits = (claim.edits || []).filter(edit => edit !== "509");
         setFilteredEdits(newFilteredEdits);
         
-        console.log("509 scenario: Correct group selected, removing 509 edit", {
+        console.log("509 scenario: Correct group selected, removing 509", {
           original: claim.edits,
           filtered: newFilteredEdits,
           selectedGroup: contractData.groupId
@@ -394,7 +394,7 @@ const ClaimDetails = () => {
         // Wrong group selected, keep all edits including 509
         setFilteredEdits(claim.edits || []);
         
-        console.log("509 scenario: Wrong group selected, keeping 509 edit", {
+        console.log("509 scenario: Wrong group selected, keeping 509", {
           selectedGroup: contractData.groupId,
           expectedGroup: "200000M001"
         });
@@ -429,7 +429,7 @@ const ClaimDetails = () => {
         const newFilteredEdits = (claim.edits || []).filter(edit => edit !== "507");
         setFilteredEdits(newFilteredEdits);
         
-        console.log("507 scenario: Correct member selected, removing 507 edit", {
+        console.log("507 scenario: Correct member selected, removing 507", {
           original: claim.edits,
           filtered: newFilteredEdits
         });
@@ -437,7 +437,7 @@ const ClaimDetails = () => {
         // Wrong member selected or no member, keep all edits including 507
         setFilteredEdits(claim.edits || []);
         
-        console.log("507 scenario: Wrong member selected, keeping 507 edit", {
+        console.log("507 scenario: Wrong member selected, keeping 507", {
           selected: updatedMember,
           expected: claimImageData
         });
@@ -503,7 +503,7 @@ const ClaimDetails = () => {
               
               {/* Edits Section */}
               <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
-                <span className="text-xs text-blue-600 font-medium mb-1">Edits</span>
+                <span className="text-xs text-blue-600 font-medium mb-1">Scenarios</span>
                  <div className="flex gap-1">
                    {filteredEdits.map((edit) => (
                      <Badge 

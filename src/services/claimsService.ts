@@ -421,7 +421,7 @@ export class ClaimsService {
         default:
           return {
             code: edit,
-            description: `Edit ${edit} description`,
+            description: `Scenario ${edit} description`,
             type: 'warning',
             status: 'active'
           };

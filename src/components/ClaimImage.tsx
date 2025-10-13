@@ -915,7 +915,7 @@ const ClaimImage = ({ claimImageData }: ClaimImageProps) => {
         <CardHeader className="pb-3">
           <CardTitle className="text-yellow-800 font-semibold text-sm flex items-center gap-2">
             <AlertTriangle className="w-4 h-4" />
-            Eligibility Validation (Edit 507)
+            Eligibility Validation (Scenario 507)
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
