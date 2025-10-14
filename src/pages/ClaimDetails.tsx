@@ -16,6 +16,7 @@ import ClaimHeaderInformation from "@/components/ClaimHeaderInformation";
 import ClaimLines from "@/components/ClaimLines";
 import ClaimData from "@/components/ClaimData";
 import SearchTabs from "@/components/SearchTabs";
+import Glossary from "@/components/Glossary";
 
 const ClaimDetails = () => {
   const { dcn } = useParams<{ dcn: string }>();
@@ -474,8 +475,8 @@ const ClaimDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="container mx-auto max-w-7xl">
+    <div className="min-h-screen bg-background p-4 pr-0">
+      <div className="container mx-auto max-w-[calc(100vw-24rem)]">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Button
@@ -704,6 +705,9 @@ const ClaimDetails = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Right Sidebar - Glossary */}
+      <Glossary />
     </div>
   );
 };
