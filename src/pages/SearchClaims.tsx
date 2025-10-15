@@ -34,10 +34,17 @@ const SearchClaims = () => {
   };
 
   const handleSearch = async () => {
+    if (searchTerm.length > 0) {
     const results = await ClaimsService.searchClaims(searchTerm);
     setClaims(results);
     setHasSearched(true);
+    }
   };
+
+  const handleClear = async () => {
+    setClaims([]);
+    setHasSearched(false);
+  }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -47,9 +54,22 @@ const SearchClaims = () => {
 
   return (
     <div className="min-h-screen bg-background p-4 pr-0">
-      <div className="flex gap-4 max-w-[calc(100vw-3rem)]">
+      <div className="container flex gap-4 mx-auto max-w-[calc(100vw-24rem)]">
+      {/* <div className="flex gap-4 max-w-[calc(100vw-3rem)]"> */}
         {/* Left Sidebar - Scenarios */}
         <aside className="w-80 flex-shrink-0">
+          <div className="flex items-center gap-4 mb-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/")}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+            <h1 className="text-3xl font-bold text-foreground">Search Claims</h1>
+          </div>
           <Card className="sticky top-4">
             <CardHeader>
               <CardTitle className="text-lg">Scenarios</CardTitle>
@@ -143,22 +163,9 @@ const SearchClaims = () => {
 
         {/* Center - Main Content */}
         <main className="flex-1 min-w-0 pr-4">
-          {/* Header */}
-          <div className="flex items-center gap-4 mb-6">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate("/")}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
-            <h1 className="text-3xl font-bold text-foreground">Search Claims</h1>
-          </div>
 
           {/* Search Section */}
-          <Card className="mb-6">
+          <Card style={{ marginTop: '60px' }}  className="mb-6">
             <CardContent>
               <div className="flex gap-4 pt-6">
                 <Input
@@ -174,6 +181,13 @@ const SearchClaims = () => {
                 >
                   <Search className="w-4 h-4 mr-2" />
                   Search
+                </Button>
+                <Button 
+                  onClick={handleClear}
+                  className="bg-red-400 hover:bg-red-500 px-6 rounded-xl whitespace-nowrap"
+                >
+                  {/* <Search className="w-4 h-4 mr-2" /> */}
+                  Clear
                 </Button>
               </div>
             </CardContent>

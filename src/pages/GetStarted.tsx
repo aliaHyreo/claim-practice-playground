@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const GetStarted = () => {
   const navigate = useNavigate();
@@ -12,16 +13,27 @@ const GetStarted = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = () => {
-    setIsLoading(true);
     
     // Simulate login - replace with your actual login logic
-    setTimeout(() => {
       console.log('Login attempt:', { username, password });
-      navigate("/search");
-      setIsLoading(false);
-    }, 1000);
+      if (username.length > 4 && password.length > 0) {
+        setIsLoading(true);
+        setTimeout(() => {
+          navigate("/search");
+          setIsLoading(false);
+        }, 1000);
+      } else {
+        toast({
+          title: "❌ LOGIN FAILED",
+          description: "The username or password you entered is incorrect. Please try again.",
+          variant: "destructive",
+          duration: 3000,
+          className: "border-2 border-red-500 bg-red-50 text-red-900"
+        });
+      }
   };
 
   return (
