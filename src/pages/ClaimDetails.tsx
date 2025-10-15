@@ -122,13 +122,20 @@ const ClaimDetails = () => {
           currentMemberData.subscriberId === expectedClaimFormData.subscriberId;
         
         if (fieldsMatch) {
-          toast({
-            title: "🎉 VALIDATION SUCCESS - SCENARIO 1 PASS",
-            description: `✅ All data matches perfectly!\n• Patient Name: ${expectedClaimFormData.firstName} ${expectedClaimFormData.lastName}\n• Birth Date: ${expectedClaimFormData.dob}\n• Subscriber ID: ${expectedClaimFormData.subscriberId}`,
-            duration: 8000,
-            className: "border-2 border-green-500 bg-green-50 text-green-900"
+          navigate("/report", {
+            state: {
+              scenarioData: {
+                scenarioNumber: "507",
+                title: "Eligibility Partial Edit Resolution",
+                description: "All data matches perfectly! Patient information verified successfully.",
+                details: [
+                  `Patient Name: ${expectedClaimFormData.firstName} ${expectedClaimFormData.lastName}`,
+                  `Birth Date: ${expectedClaimFormData.dob}`,
+                  `Subscriber ID: ${expectedClaimFormData.subscriberId}`
+                ]
+              }
+            }
           });
-          setTimeout(() => navigate("/search"), 1500);
         } else {
           // Helper function to format date for display
           const formatDateForDisplay = (dateString: string): string => {
@@ -227,13 +234,20 @@ const ClaimDetails = () => {
         const isCorrectGroupApplied = appliedGroup === "200000M001";
         
         if (isServiceDateValid && isCorrectGroupApplied) {
-          toast({
-            title: "🎉 VALIDATION SUCCESS - SCENARIO 509 PASS",
-            description: `✅ Service date ${claimServiceDate} falls within contract period (${contractEffectiveDate} to ${contractEndDate}) for group ${appliedGroup}. Payment can be processed!`,
-            duration: 8000,
-            className: "border-2 border-green-500 bg-green-50 text-green-900"
+          navigate("/report", {
+            state: {
+              scenarioData: {
+                scenarioNumber: "509",
+                title: "Contract Validity Verification",
+                description: "Service date falls within contract period and correct group applied. Payment can be processed!",
+                details: [
+                  `Service Date: ${claimServiceDate}`,
+                  `Contract Period: ${contractEffectiveDate} to ${contractEndDate}`,
+                  `Applied Group: ${appliedGroup}`
+                ]
+              }
+            }
           });
-          setTimeout(() => navigate("/search"), 1500);
         } else if (!isCorrectGroupApplied) {
           toast({
             title: "❌ INCORRECT GROUP APPLIED - SCENARIO 509",
@@ -294,13 +308,20 @@ const ClaimDetails = () => {
       
       if (actionValue === "deny" && isServiceDateOutsideContract) {
         // Correct action for scenario 597 - DENY when service date is outside contract
-        toast({
-          title: "🎉 VALIDATION SUCCESS - SCENARIO 597 PASS",
-          description: `✅ Service date ${claimServiceDate} is outside contract period (${contractEffectiveDate} to ${contractEndDate}). Claim correctly DENIED for no active eligibility.`,
-          duration: 8000,
-          className: "border-2 border-green-500 bg-green-50 text-green-900"
+        navigate("/report", {
+          state: {
+            scenarioData: {
+              scenarioNumber: "597",
+              title: "No Active Eligibility Verification",
+              description: "Service date is outside contract period. Claim correctly DENIED for no active eligibility.",
+              details: [
+                `Service Date: ${claimServiceDate}`,
+                `Contract Period: ${contractEffectiveDate} to ${contractEndDate}`,
+                `Action Taken: DENY`
+              ]
+            }
+          }
         });
-        setTimeout(() => navigate("/search"), 1500);
       } else if (actionValue === "pay" && isServiceDateOutsideContract) {
         // Wrong action for scenario 597 - trying to PAY when should DENY
         toast({
