@@ -496,8 +496,8 @@ const ClaimDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
-      <div className="flex-1 p-4 overflow-y-auto">
+    <div className="bg-background flex">
+      <div className="flex-1 p-4">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Button
