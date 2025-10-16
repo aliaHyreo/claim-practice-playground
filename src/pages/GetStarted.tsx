@@ -118,7 +118,7 @@ const GetStarted = () => {
             </Button>
           </div>
 
-          <div className="mt-6 text-center">
+          {/* <div className="mt-6 text-center">
             <p className="text-sm text-slate-600">
               Don't have an account?{' '}
               <a 
@@ -129,7 +129,7 @@ const GetStarted = () => {
                 Sign up
               </a>
             </p>
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </div>

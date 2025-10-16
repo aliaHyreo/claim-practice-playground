@@ -54,13 +54,13 @@ const SearchClaims = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background w-full">
+    <div className="min-h-[calc(100vh-64px)] bg-background w-full">
       <Header />
       <div className="flex gap-0 overflow-hidden w-full px-4">
         {/* Left Sidebar - Scenarios */}
         <div className="flex flex-col flex-1 min-w-0 pt-4">
           <div className="w-full">
-              <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center gap-4 mb-0">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -68,9 +68,9 @@ const SearchClaims = () => {
                   className="text-muted-foreground hover:text-foreground"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back
+                  {/* Back */}
                 </Button>
-                <h1 className="text-3xl font-bold text-foreground">Search Claims</h1>
+                <h1 className="text-1xl font-bold text-foreground">Search Claims</h1>
               </div>
           </div>
           <div className="flex flex-1 min-w-0 py-4">

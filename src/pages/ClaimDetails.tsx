@@ -539,7 +539,7 @@ const ClaimDetails = () => {
     return (
       <div className="min-h-screen bg-background p-4">
         <div className="container mx-auto max-w-7xl">
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center gap-4 mb-0">
             <Button
               variant="ghost"
               size="sm"
@@ -547,7 +547,7 @@ const ClaimDetails = () => {
               className="text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
+              {/* Back */}
             </Button>
           </div>
           <Card>
@@ -569,7 +569,7 @@ const ClaimDetails = () => {
       <div className="flex flex-1">
         <div className="flex-1 p-4 overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-4 mb-4">
           <Button
             variant="ghost"
             size="sm"
@@ -577,9 +577,9 @@ const ClaimDetails = () => {
             className="text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
+            {/* Back */}
           </Button>
-          <h1 className="text-3xl font-bold text-foreground">Claims Simulator</h1>
+          <h1 className="text-1xl font-bold text-foreground">Claims Simulator</h1>
         </div>
 
         {/* Claim Header Card */}
