@@ -45,7 +45,7 @@ const Glossary = () => {
   return (
     <aside className={cn(
       "flex-shrink-0 transition-all duration-300 border-l border-border bg-background",
-      isOpen ? "w-80" : "w-12"
+      isOpen ? "w-72" : "w-4"
     )}>
       <div className="relative h-full">
         {/* Toggle Button */}
