@@ -496,8 +496,8 @@ const ClaimDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 pr-0">
-      <div className="container mx-auto max-w-[calc(100vw-3rem)]">
+    <div className="min-h-screen bg-background flex">
+      <div className="flex-1 p-4 overflow-y-auto">`
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Button
@@ -727,7 +727,7 @@ const ClaimDetails = () => {
         </Card>
       </div>
 
-      {/* Right Sidebar - Glossary */}
+      {/* Right Sidebar - Navigator */}
       <Glossary />
     </div>
   );

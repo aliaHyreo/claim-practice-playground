@@ -53,11 +53,10 @@ const SearchClaims = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 pr-0">
-      <div className="container flex gap-4 mx-auto max-w-[calc(100vw-3rem)]">
-      {/* <div className="flex gap-4 max-w-[calc(100vw-3rem)]"> */}
+    <div className="min-h-screen bg-background flex">
+      <div className="flex-1 flex gap-0 overflow-hidden">
         {/* Left Sidebar - Scenarios */}
-        <aside className="w-80 flex-shrink-0">
+        <aside className="w-80 flex-shrink-0 border-r border-border p-4">`
           <div className="flex items-center gap-4 mb-6">
             <Button
               variant="ghost"
@@ -162,7 +161,7 @@ const SearchClaims = () => {
         </aside>
 
         {/* Center - Main Content */}
-        <main className="flex-1 min-w-0 pr-4">
+        <main className="flex-1 min-w-0 p-4 overflow-y-auto">`
 
           {/* Search Section */}
           <Card style={{ marginTop: '60px' }}  className="mb-6">
@@ -259,10 +258,10 @@ const SearchClaims = () => {
             </Card>
           )}
         </main>
-      </div>
 
-      {/* Right Sidebar - Glossary */}
-      <Glossary />
+        {/* Right Sidebar - Navigator */}
+        <Glossary />
+      </div>
     </div>
   );
 };
