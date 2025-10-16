@@ -17,6 +17,7 @@ import ClaimLines from "@/components/ClaimLines";
 import ClaimData from "@/components/ClaimData";
 import SearchTabs from "@/components/SearchTabs";
 import Glossary from "@/components/Glossary";
+import Header from "@/components/Header";
 
 const ClaimDetails = () => {
   const { dcn } = useParams<{ dcn: string }>();
@@ -563,8 +564,10 @@ const ClaimDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
-      <div className="flex-1 p-4 overflow-y-auto">
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
+      <div className="flex flex-1">
+        <div className="flex-1 p-4 overflow-y-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Button
@@ -794,8 +797,9 @@ const ClaimDetails = () => {
         </Card>
       </div>
 
-      {/* Right Sidebar - Navigator */}
-      <Glossary />
+        {/* Right Sidebar - Navigator */}
+        <Glossary />
+      </div>
     </div>
   );
 };

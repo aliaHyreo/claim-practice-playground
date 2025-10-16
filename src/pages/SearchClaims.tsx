@@ -9,6 +9,7 @@ import { ClaimsService, type Claim } from "@/services/claimsService";
 import { useToast } from "@/hooks/use-toast";
 import {Tooltip,TooltipContent,TooltipProvider,TooltipTrigger,} from "@/components/ui/tooltip";
 import Glossary from "@/components/Glossary";
+import Header from "@/components/Header";
 
 const SearchClaims = () => {
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ const SearchClaims = () => {
 
   return (
     <div className="min-h-screen bg-background w-full">
+      <Header />
       <div className="flex gap-0 overflow-hidden w-full px-4">
         {/* Left Sidebar - Scenarios */}
         <div className="flex flex-col flex-1 min-w-0 pt-4">
