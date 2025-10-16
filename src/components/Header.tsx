@@ -10,7 +10,7 @@ const Header = () => {
   };
 
   const handleConsolidatedReport = () => {
-    navigate("/report");
+    navigate("/consolidated-report");
   };
 
   return (
