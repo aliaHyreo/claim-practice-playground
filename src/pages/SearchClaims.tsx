@@ -54,7 +54,7 @@ const SearchClaims = () => {
 
   return (
     <div className="min-h-screen bg-background p-4 pr-0">
-      <div className="container flex gap-4 mx-auto max-w-[calc(100vw-24rem)]">
+      <div className="container flex gap-4 mx-auto max-w-[calc(100vw-3rem)]">
       {/* <div className="flex gap-4 max-w-[calc(100vw-3rem)]"> */}
         {/* Left Sidebar - Scenarios */}
         <aside className="w-80 flex-shrink-0">

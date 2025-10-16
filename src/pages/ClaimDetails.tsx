@@ -497,7 +497,7 @@ const ClaimDetails = () => {
 
   return (
     <div className="min-h-screen bg-background p-4 pr-0">
-      <div className="container mx-auto max-w-[calc(100vw-24rem)]">
+      <div className="container mx-auto max-w-[calc(100vw-3rem)]">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Button
