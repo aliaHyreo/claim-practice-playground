@@ -9,6 +9,8 @@ interface ScenarioData {
   title: string;
   description: string;
   details?: string[];
+  steps?: string[];
+  table?: any[];
 }
 
 const ScenarioReport = () => {
@@ -63,6 +65,58 @@ const ScenarioReport = () => {
                       </li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {scenarioData.steps && scenarioData.steps.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-foreground">Steps:</h4>
+                  <ul className="space-y-2">
+                    {scenarioData.steps.map((detail, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        {index + 1}.
+                        <span className="text-muted-foreground">{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {scenarioData.table && scenarioData.table.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-foreground">Praxis Score:</h4>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full border border-border text-sm">
+                      <thead className="bg-muted">
+                        <tr>
+                          <th className="px-3 py-2 text-left">Iteration</th>
+                          <th className="px-3 py-2 text-left">Steps Completion</th>
+                          <th className="px-3 py-2 text-left">Total Steps Passed</th>
+                          <th className="px-3 py-2 text-left">Time Taken (min)</th>
+                          {/* <th className="px-3 py-2 text-left">Remarks</th> */}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {scenarioData.table.map((row, index) => (
+                          <tr
+                            key={index}
+                            className={`border-t ${
+                              index === scenarioData.table.length - 1 ? "bg-green-50" : ""
+                            }`}
+                          >
+                            <td className="px-3 py-2 font-medium">{row.iteration}</td>
+                            <td className="px-3 py-2 font-mono">
+                              {row.stepsCompletion.join(" ")}
+                            </td>
+                            <td className="px-3 py-2">{row.totalStepsPassed}</td>
+                            <td className="px-3 py-2">{row.timeTakenMin}</td>
+                            {/* <td className="px-3 py-2">{row.remarks}</td> */}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )}
 

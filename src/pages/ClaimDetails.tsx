@@ -132,6 +132,28 @@ const ClaimDetails = () => {
                   `Patient Name: ${expectedClaimFormData.firstName} ${expectedClaimFormData.lastName}`,
                   `Birth Date: ${expectedClaimFormData.dob}`,
                   `Subscriber ID: ${expectedClaimFormData.subscriberId}`
+                ],
+                steps: [
+                  `Note patient details from Member Information.`,
+                  `Compare claim details with original claim form.`,
+                  `Search & Apply correct member if name mismatch found`,
+                  `Add the Pay-S action code.`,
+                ],
+                table: [
+                  {
+                    "iteration": 1,
+                    "stepsCompletion": ["🟢", "⚪", "🟢", "⚪"],
+                    "totalStepsPassed": "2/4",
+                    "timeTakenMin": 3,
+                    "remarks": "Missed DOB and forgot Pay-S code"
+                  },
+                  {
+                    "iteration": 2,
+                    "stepsCompletion": ["🟢", "🟢", "🟢", "🟢"],
+                    "totalStepsPassed": "4/4",
+                    "timeTakenMin": 5,
+                    "remarks": "All steps completed correctly"
+                  }
                 ]
               }
             }
@@ -244,6 +266,28 @@ const ClaimDetails = () => {
                   `Service Date: ${claimServiceDate}`,
                   `Contract Period: ${contractEffectiveDate} to ${contractEndDate}`,
                   `Applied Group: ${appliedGroup}`
+                ],
+                steps: [
+                  `Verify that the patient name and other information match.`,
+                  `Verify if the group was active on the service date.`,
+                  `Update group ID if the claim was filed under the wrong group.`,
+                  `Add the Pay-S action code.`,
+                ],
+                table: [
+                  {
+                    "iteration": 1,
+                    "stepsCompletion": ["⚪", "⚪", "🟢", "🟢"],
+                    "totalStepsPassed": "2/4",
+                    "timeTakenMin": 2,
+                    "remarks": "Incorrect patient name"
+                  },
+                  {
+                    "iteration": 2,
+                    "stepsCompletion": ["🟢", "🟢", "🟢", "🟢"],
+                    "totalStepsPassed": "4/4",
+                    "timeTakenMin": 6,
+                    "remarks": "All steps completed correctly"
+                  }
                 ]
               }
             }
@@ -318,6 +362,29 @@ const ClaimDetails = () => {
                 `Service Date: ${claimServiceDate}`,
                 `Contract Period: ${contractEffectiveDate} to ${contractEndDate}`,
                 `Action Taken: DENY`
+              ],
+              steps: [
+                `Verify member details and service dates in Member Information.`,
+                `Check eligibility history for any coverage gaps.`,
+                `Confirm if no active coverage exists for the billed period.`,
+                `Add the Deny-X action code.`,
+                `Reject the claim if coverage is not active.`
+              ],
+              table: [
+                {
+                  "iteration": 1,
+                  "stepsCompletion": ["⚪", "⚪", "⚪", "⚪", "🟢"],
+                  "totalStepsPassed": "1/5",
+                  "timeTakenMin": 3,
+                  "remarks": "Wrong service date"
+                },
+                {
+                  "iteration": 2,
+                  "stepsCompletion": ["🟢", "🟢", "🟢", "🟢", "🟢"],
+                  "totalStepsPassed": "5/5",
+                  "timeTakenMin": 4,
+                  "remarks": "All steps completed correctly"
+                }
               ]
             }
           }
