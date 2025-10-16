@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { CheckCircle2, User } from "lucide-react";
-import Header from "@/components/Header";
 
 interface IterationData {
   iteration: number;
@@ -127,9 +126,7 @@ const ScenarioReport = () => {
   const navigate = useNavigate();
 
   return (
-    <>
-      <Header />
-      <div className="min-h-[calc(100vh-64px)] bg-background p-6">
+    <div className="min-h-screen bg-background p-6">
         <div className="container mx-auto max-w-7xl">
           {/* Report Header */}
           <Card className="mb-6">
@@ -269,7 +266,6 @@ const ScenarioReport = () => {
           </Card>
         </div>
       </div>
-    </>
   );
 };
 
