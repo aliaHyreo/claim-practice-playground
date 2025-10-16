@@ -26,11 +26,7 @@ const Header = () => {
 
         {/* Right Side - User Info and Actions */}
         <div className="flex items-center gap-4">
-          {/* User Name */}
-          <div className="text-sm font-medium text-foreground">
-            James Anderson
-          </div>
-
+          
           {/* Consolidated Report Button */}
           <Button
             variant="outline"
@@ -39,8 +35,13 @@ const Header = () => {
             className="gap-2"
           >
             <FileText className="w-4 h-4" />
-            Consolidated Report
+            Report
           </Button>
+
+          {/* User Name */}
+          <div className="text-sm font-medium text-foreground">
+            James Anderson
+          </div>
 
           {/* Logout Button */}
           <Button
@@ -50,7 +51,6 @@ const Header = () => {
             className="gap-2"
           >
             <LogOut className="w-4 h-4" />
-            Logout
           </Button>
         </div>
       </div>

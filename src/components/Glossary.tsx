@@ -49,7 +49,7 @@ const Glossary = () => {
     )}>
       <div className="relative h-full">
         {/* Toggle Button */}
-        <Button
+        {/* <Button
           variant="outline"
           size="icon"
           onClick={() => setIsOpen(!isOpen)}
@@ -60,7 +60,7 @@ const Glossary = () => {
           ) : (
             <ChevronLeft className="h-4 w-4" />
           )}
-        </Button>
+        </Button> */}
 
         {/* Navigator Panel */}
         <div className={cn(
@@ -68,13 +68,14 @@ const Glossary = () => {
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         )}>
           <div className="border-b border-border p-4">
-            <h2 className="text-lg font-semibold flex items-center gap-2">
-              <Compass className="h-5 w-5 text-primary" />
+            <h2 className="text-1xl font-bold text-foreground flex items-center gap-2">
+              <Compass className="h-4 w-4 text-primary" />
               Navigator
             </h2>
           </div>
           
-          <div className="overflow-y-auto h-[calc(100vh-80px)] p-4 space-y-6">
+          <div className="overflow-y-auto h-full p-4 space-y-6">
+          {/* <div className="overflow-y-auto h-[calc(100vh-80px)] p-4 space-y-6"> */}
             {/* Row 1: App Summary */}
             <div className="space-y-2">
               <h3 className="font-semibold text-sm text-foreground">Overview</h3>
