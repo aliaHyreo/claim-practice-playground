@@ -53,10 +53,10 @@ const SearchClaims = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex w-full">
-      <div className="flex-1 flex gap-0 overflow-hidden w-full px-4">
+    <div className="min-h-screen bg-background w-full">
+      <div className="flex gap-0 overflow-hidden w-full px-4">
         {/* Left Sidebar - Scenarios */}
-        <div className="flex flex-col w-full pt-4">
+        <div className="flex flex-col flex-1 min-w-0 pt-4">
           <div className="w-full">
               <div className="flex items-center gap-4 mb-6">
                 <Button
@@ -71,7 +71,7 @@ const SearchClaims = () => {
                 <h1 className="text-3xl font-bold text-foreground">Search Claims</h1>
               </div>
           </div>
-          <div className="flex w-full py-4">
+          <div className="flex flex-1 min-w-0 py-4">
             <aside className="w-56 flex-shrink-0 pr-2">
               <Card className="sticky top-4">
                 <CardHeader>
