@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, FileText } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -10,7 +11,11 @@ const Header = () => {
   };
 
   const handleConsolidatedReport = () => {
-    navigate("/report");
+    navigate("/consolidated-report");
+  };
+  
+  const handleCohortSummaryReport = () => {
+    navigate("/cohort-report");
   };
 
   return (
@@ -27,16 +32,22 @@ const Header = () => {
         {/* Right Side - User Info and Actions */}
         <div className="flex items-center gap-4">
           
-          {/* Consolidated Report Button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleConsolidatedReport}
-            className="gap-2"
-          >
-            <FileText className="w-4 h-4" />
-            Report
-          </Button>
+          {/* Reports Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  <span>Report</span>
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem  onClick={handleConsolidatedReport}>Consolidated Candidate Report</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleCohortSummaryReport}>Cohort Summary Report</DropdownMenuItem>
+              <DropdownMenuItem>Cohort Plan</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* User Name */}
           <div className="text-sm font-medium text-foreground">
@@ -48,7 +59,7 @@ const Header = () => {
             variant="outline"
             size="sm"
             onClick={handleLogout}
-            className="gap-2"
+            className="gap-2 bg-red-100 hover:bg-red-200"
           >
             <LogOut className="w-4 h-4" />
           </Button>

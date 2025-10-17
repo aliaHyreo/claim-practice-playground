@@ -8,6 +8,8 @@ import SearchClaims from "./pages/SearchClaims";
 import ClaimDetails from "./pages/ClaimDetails";
 import ScenarioReport from "./pages/ScenarioReport";
 import NotFound from "./pages/NotFound";
+import ConsolidatedReport from "./pages/ConsolidatedReport";
+import CohortSummaryReport from "./pages/CohortSummaryReport";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +24,8 @@ const App = () => (
           <Route path="/search" element={<SearchClaims />} />
           <Route path="/claim/:dcn" element={<ClaimDetails />} />
           <Route path="/report" element={<ScenarioReport />} />
+          <Route path="/consolidated-report" element={<ConsolidatedReport />} />
+          <Route path="/cohort-report" element={<CohortSummaryReport />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
